@@ -1,0 +1,198 @@
+plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
+### Plotting function for objects of class "twilight".
+### Produces three plots:
+###
+### "plot1": Expected vs. observed test statistics with
+###          confidence lines. Points exceeding the confidence lines
+###          are highlighted. Reference:
+###          Tusher VG, Tibshirani R and Chu G (2001): Significance
+###          analysis of mircroarrays applied to the ionizing response,
+###          PNAS 98(9), pp. 5116-5121.
+###
+### "plot2": q-values vs. number of rejected hypotheses.
+###
+### "plot3": u-values vs. 1 - local false discovery rate.
+###          Bottom ticks are 1% quantiles of u-values.
+###          If computed, with bootstrap estimate and bootstrap confidence interval.
+###
+### "plot4": Volcano plot: Observed scores vs. local false discovery rate.
+###          Bottom ticks are 1% quantiles of scores.
+###
+### "plot5": Effect size distribution in terms of fold change equivalent scores.
+### "table": Tabulate effect size distribution.
+###
+### Additional input:
+### "grayscale": TRUE or FALSE. FALSE produces colored plots.
+###
+
+  funk1 <- function(yin,kol,...){
+    if (is.nan(yin$result$observed[1])){
+      stop("The input object must contain observed and expected test scores.\n Choose 'plot2' or 'plot3' instead.\n")
+    }
+
+    maxi <- 2*max(abs(yin$result$observed))
+    vert <- 3/4*(min(yin$result$observed)-yin$ci.line)
+    hori <- median(yin$result$expected)
+    
+    if (kol==TRUE){
+      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",...)
+      lines(c(-maxi,maxi),c(-maxi,maxi))
+      points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col=gray(0.5))
+      lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col=gray(0.5))
+      lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col=gray(0.5))      
+      legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col=gray(0.5),yjust=0.5,xjust=0.5,cex=0.8)
+    }
+    
+    if (kol==FALSE){
+      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",...)
+      lines(c(-maxi,maxi),c(-maxi,maxi),lwd=2)
+      points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col="red")
+      lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col="red")
+      lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col="red")      
+      legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col="red",yjust=0.5,xjust=0.5,cex=0.8)
+    }
+  }
+
+
+
+
+
+  funk2 <- function(yin,...){
+    y        <- unique(yin$result$qvalue)
+    hist.num <- hist(yin$result$qvalue,br=c(-1,y),plot=FALSE)$counts
+
+    plot(c(0,y),cumsum(c(0,hist.num)),t="s",xlab="q-value",ylab="No. of rejected hypotheses",...)
+    lines(c(-10,10),c(0,0),col=gray(0.5))
+  }
+
+
+
+
+
+
+  funk3 <- function(yin,kol,...){
+    if (is.nan(yin$result$fdr[1])){
+      stop("The input object must contain local FDR values.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+    }
+
+    q.tick <- quantile(yin$result$pvalue,seq(0,1,by=0.01))
+
+    if (kol==TRUE){
+      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="u-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      lines(c(-10,10),c(0,0),col=gray(0.5))
+      if (is.nan(yin$result$mean.fdr[1])==FALSE){
+        lines(yin$result$pvalue,1-yin$result$lower.fdr,col=gray(0.5),lty=2)
+        lines(yin$result$pvalue,1-yin$result$upper.fdr,col=gray(0.5),lty=2)
+        lines(yin$result$pvalue,1-yin$result$mean.fdr,col=gray(0.5))
+        legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black",gray(0.5),gray(0.5)),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+      }
+      lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
+      axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+    }
+
+    if (kol==FALSE){
+      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="u-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      lines(c(-10,10),c(0,0),col=gray(0.5))
+      if (is.nan(yin$result$mean.fdr[1])==FALSE){
+        lines(yin$result$pvalue,1-yin$result$lower.fdr,col="red",lty=2)
+        lines(yin$result$pvalue,1-yin$result$upper.fdr,col="red",lty=2)
+        lines(yin$result$pvalue,1-yin$result$mean.fdr,col="red")
+        legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black","red","red"),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+      }
+      lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
+      axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+    }
+  }
+
+
+
+
+
+  funk4 <- function(yin,...){
+    if (is.nan(yin$result$fdr[1])){
+      stop("The input object must contain local FDR values.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+    }
+
+    q.tick <- quantile(yin$result$observed,seq(0,1,by=0.01))
+    maxi   <- 2*max(abs(yin$result$observed))
+
+    plot(yin$result$observed,1-yin$result$fdr,t="n",xlab="Observed test score",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+    lines(c(-maxi,maxi),c(0,0),col=gray(0.5))
+    points(yin$result$observed,1-yin$result$fdr)
+    axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+  }
+
+
+
+  funk5 <- function(yin,...){
+    if (is.nan(yin$effect[1])){
+      stop("The input object must contain effect size frequencies.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+    }
+
+    check <- unlist(strsplit(yin$call," "))
+    if (check[2]!="fc."){
+      stop("Effect size distributions can only be estimated with twilight.pval(.,method='fc').\n")
+    }
+
+    all <- hist(yin$result$observed,br=yin$effect$breaks,plot=FALSE)
+
+    x.fc   <- yin$result$observed
+
+    mini   <- ceiling(min(x.fc))
+    maxi   <- floor(max(x.fc))
+    x.tick <- seq(mini,maxi,length=abs(mini)+abs(maxi)+1)
+
+    x.lab  <- (exp(abs(x.tick))-1)*100
+    x.lab  <- paste(sign(x.tick)*round(x.lab),"%",sep="")
+
+    plot(all,col=gray(0.7),xaxt="n",main="",xlab="Fold change equivalent score")
+    plot(yin$effect,col="black",add=TRUE)
+
+    legend(mean(x.tick[5:6]),max(all$counts),legend=c("Mixture","Alternative"),lty=c(1,1),bty="n",col=c(gray(0.7),"black"),lwd=c(2,2),y.intersp=2,cex=0.8)
+    
+    axis(1,at=x.tick,labels=x.lab)
+
+  }
+
+
+
+
+
+
+  funk6 <- function(yin){
+    if (is.nan(yin$effect[1])){
+      stop("The input object must contain effect size frequencies.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+    }
+
+    check <- unlist(strsplit(yin$call," "))
+    if (check[2]!="fc."){
+      stop("Effect size distributions can only be estimated with twilight.pval(.,method='fc').\n")
+    }
+    
+    all <- hist(yin$result$observed,br=yin$effect$breaks,plot=FALSE)
+    fce <- round((exp(abs(yin$effect$mids))-1)*100*sign(yin$effect$mids))
+    tab <- cbind(yin$effect$mids,all$counts,yin$effect$counts)
+
+    rownames(tab) <- paste(fce,"%",sep="")
+    colnames(tab) <- c("LogRatio","Mixture","Alternative")
+    
+    return(tab)
+
+  }
+
+  
+
+
+
+
+  
+  switch(which,
+         plot1 = funk1(x,grayscale,...),
+         plot2 = funk2(x,...),
+         plot3 = funk3(x,grayscale,...),
+         plot4 = funk4(x,...),
+         plot5 = funk5(x,...),
+         table = funk6(x)
+         )
+ 
+}
