@@ -1,6 +1,7 @@
 expval                  Example of twilight.pval result.
 exfdr                   Example of twilight result.
 plot.twilight           A plot function for twilight objects.
+print.twilight          A print function for twilight objects.
 twilight.combi          All permutations of a binary vector.
 twilight.getlambda      Internal function to compute regularization
                         parameter lambda.

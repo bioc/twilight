@@ -123,7 +123,7 @@ The function checks whether complete enumeration of all permutations is possible
 The values in the accompanying data set \Robject{expval} were computed in the same manner but with 10\,000 permutations.
 <<>>=
 data(expval)
-expval$call
+expval
 
 @
 The output object of function \Rfunction{twilight.pval} is of class \Rclass{twilight} with several elements stored in a list.
@@ -208,9 +208,7 @@ Function \Rfunction{twilight} takes \Rclass{twilight} objects or any vector of $
 As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confidence intervals: \Rfunction{twilight(xin=expval, B=1000, boot.ci=0.95)}, as was done for data set \Robject{exfdr}.
 <<>>=
 data(exfdr)
-exfdr$lambda
-exfdr$pi0
-exfdr$boot.pi0
+exfdr
 
 <<>>=
 exfdr$result[1:5,6:9]
