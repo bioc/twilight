@@ -13,7 +13,7 @@ twilight.permute.unpair(v, m, bal = TRUE)
 }
 \value{Returns a matrix where each row contains one permuted vector of class labels.}
 \references{
-Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, submitted.
+Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
 }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight.permute.pair}}, \code{\link{twilight.combi}} }

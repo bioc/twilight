@@ -38,7 +38,7 @@ Additional output consists of
 If \code{xin} is of class \code{twilight}, the remaining slots are filled with corresponding input values. If \code{xin} is not of class \code{twilight}, these slots remain free.
 }
 \references{
-Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, submitted.
+Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
 
 Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, PNAS 100(16), pp. 9440-9445.
 }
@@ -47,6 +47,6 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 
 \examples{
 data(exfdr) # twilight object created by twilight with B=1000 bootstraps
-plot(exfdr,which="plot3")
+plot(exfdr,which="fdr")
 }
 \keyword{ nonparametric }

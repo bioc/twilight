@@ -99,14 +99,21 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
 
     bin.vec <- funk.sep(a,b)
 
-    br <- seq(0,1,by=0.01)
+    br.br <- c(0.01,0.02,0.04,0.05,0.1)
     
-    histmix <- hist(a,plot=FALSE,br=br)
-    hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
-    
-    x <- histmix$mids
-    y <- hist0$density/histmix$density
-    
+    for (i in 1:length(br.br)){
+
+      br <- seq(0,1,by=br.br[i])
+      
+      histmix <- hist(a,plot=FALSE,br=br)
+      hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
+      
+      x <- histmix$mids
+      y <- hist0$density/histmix$density
+
+      if (sum(y==0)==0 & sum(y==Inf)==0 & sum(is.nan(y))==0){break}
+    }
+      
     smooth <- try(smooth.spline(x,y,df=7,w=1/x),silent=TRUE)
 
     if (class(smooth)=="try-error"){
@@ -214,13 +221,21 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
       
       bin.vec <- funk.sep(a,b)
       
-      br      <- seq(0,1,by=0.01)
-      histmix <- hist(a,plot=FALSE,br=br)
-      hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
+      br.br <- c(0.01,0.02,0.04,0.05,0.1)
       
-      x <- histmix$mids
-      y <- hist0$density/histmix$density
-      
+      for (i in 1:length(br.br)){
+        
+        br <- seq(0,1,by=br.br[i])
+        
+        histmix <- hist(a,plot=FALSE,br=br)
+        hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
+        
+        x <- histmix$mids
+        y <- hist0$density/histmix$density
+        
+        if (sum(y==0)==0 & sum(y==Inf)==0 & sum(is.nan(y))==0){break}
+      }
+
       smooth <- try(smooth.spline(x,y,df=7,w=1/x),silent=TRUE)
 
       if (class(smooth)=="try-error"){

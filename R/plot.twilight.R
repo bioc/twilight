@@ -1,33 +1,33 @@
-plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
+plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
 ### Plotting function for objects of class "twilight".
 ### Produces three plots:
 ###
-### "plot1": Expected vs. observed test statistics with
+### "scores": Expected vs. observed test statistics with
 ###          confidence lines. Points exceeding the confidence lines
 ###          are highlighted. Reference:
 ###          Tusher VG, Tibshirani R and Chu G (2001): Significance
 ###          analysis of mircroarrays applied to the ionizing response,
 ###          PNAS 98(9), pp. 5116-5121.
 ###
-### "plot2": q-values vs. number of rejected hypotheses.
+### "qvalues": q-values vs. number of rejected hypotheses.
 ###
-### "plot3": u-values vs. 1 - local false discovery rate.
+### "fdr": u-values vs. 1 - local false discovery rate.
 ###          Bottom ticks are 1% quantiles of u-values.
 ###          If computed, with bootstrap estimate and bootstrap confidence interval.
 ###
-### "plot4": Volcano plot: Observed scores vs. local false discovery rate.
+### "volcano": Volcano plot: Observed scores vs. local false discovery rate.
 ###          Bottom ticks are 1% quantiles of scores.
 ###
-### "plot5": Effect size distribution in terms of fold change equivalent scores.
+### "effectsize": Effect size distribution in terms of fold change equivalent scores.
 ### "table": Tabulate effect size distribution.
 ###
 ### Additional input:
 ### "grayscale": TRUE or FALSE. FALSE produces colored plots.
-###
+### "legend":    TRUE or FALSE. Produces legends in "scores", "fdr" and "effectsize".
 
-  funk1 <- function(yin,kol,...){
+  funk1 <- function(yin,kol,leg,...){
     if (is.nan(yin$result$observed[1])){
-      stop("The input object must contain observed and expected test scores.\n Choose 'plot2' or 'plot3' instead.\n")
+      stop("The input object must contain observed and expected test scores.\n Choose 'qvalues' or 'fdr' instead.\n")
     }
 
     maxi <- 2*max(abs(yin$result$observed))
@@ -40,7 +40,9 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
       points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col=gray(0.5))
       lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col=gray(0.5))
       lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col=gray(0.5))      
-      legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col=gray(0.5),yjust=0.5,xjust=0.5,cex=0.8)
+      if (leg==TRUE){
+        legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col=gray(0.5),yjust=0.5,xjust=0.5,cex=0.8)
+      }
     }
     
     if (kol==FALSE){
@@ -49,7 +51,9 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
       points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col="red")
       lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col="red")
       lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col="red")      
-      legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col="red",yjust=0.5,xjust=0.5,cex=0.8)
+      if (leg==TRUE){
+        legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col="red",yjust=0.5,xjust=0.5,cex=0.8)
+      }
     }
   }
 
@@ -70,9 +74,9 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
 
 
 
-  funk3 <- function(yin,kol,...){
+  funk3 <- function(yin,kol,leg,...){
     if (is.nan(yin$result$fdr[1])){
-      stop("The input object must contain local FDR values.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+      stop("The input object must contain local FDR values.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
     q.tick <- quantile(yin$result$pvalue,seq(0,1,by=0.01))
@@ -84,10 +88,12 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
         lines(yin$result$pvalue,1-yin$result$lower.fdr,col=gray(0.5),lty=2)
         lines(yin$result$pvalue,1-yin$result$upper.fdr,col=gray(0.5),lty=2)
         lines(yin$result$pvalue,1-yin$result$mean.fdr,col=gray(0.5))
-        legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black",gray(0.5),gray(0.5)),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+        if (leg==TRUE){
+          legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black",gray(0.5),gray(0.5)),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+        }
       }
       lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
-      axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+      rug(q.tick)
     }
 
     if (kol==FALSE){
@@ -97,10 +103,12 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
         lines(yin$result$pvalue,1-yin$result$lower.fdr,col="red",lty=2)
         lines(yin$result$pvalue,1-yin$result$upper.fdr,col="red",lty=2)
         lines(yin$result$pvalue,1-yin$result$mean.fdr,col="red")
-        legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black","red","red"),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+        if (leg==TRUE){
+          legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black","red","red"),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+        }
       }
       lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
-      axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+      rug(q.tick)
     }
   }
 
@@ -110,7 +118,7 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
 
   funk4 <- function(yin,...){
     if (is.nan(yin$result$fdr[1])){
-      stop("The input object must contain local FDR values.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+      stop("The input object must contain local FDR values.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
     q.tick <- quantile(yin$result$observed,seq(0,1,by=0.01))
@@ -119,14 +127,14 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
     plot(yin$result$observed,1-yin$result$fdr,t="n",xlab="Observed test score",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
     lines(c(-maxi,maxi),c(0,0),col=gray(0.5))
     points(yin$result$observed,1-yin$result$fdr)
-    axis(1,at=q.tick,labels=FALSE,tcl=0.5)
+    rug(q.tick)
   }
 
 
 
-  funk5 <- function(yin,...){
+  funk5 <- function(yin,leg,...){
     if (is.nan(yin$effect[1])){
-      stop("The input object must contain effect size frequencies.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+      stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
     check <- unlist(strsplit(yin$call," "))
@@ -148,8 +156,10 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
     plot(all,col=gray(0.7),xaxt="n",main="",xlab="Fold change equivalent score")
     plot(yin$effect,col="black",add=TRUE)
 
-    legend(mean(x.tick[5:6]),max(all$counts),legend=c("Mixture","Alternative"),lty=c(1,1),bty="n",col=c(gray(0.7),"black"),lwd=c(2,2),y.intersp=2,cex=0.8)
-    
+    if (leg==TRUE){
+      legend(mean(x.tick[5:6]),max(all$counts),legend=c("Mixture","Alternative"),lty=c(1,1),bty="n",col=c(gray(0.7),"black"),lwd=c(2,2),y.intersp=2,cex=0.8)
+    }
+      
     axis(1,at=x.tick,labels=x.lab)
 
   }
@@ -161,7 +171,7 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
 
   funk6 <- function(yin){
     if (is.nan(yin$effect[1])){
-      stop("The input object must contain effect size frequencies.\n Choose 'plot1' or 'plot2' instead or run twilight.\n")
+      stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
     check <- unlist(strsplit(yin$call," "))
@@ -187,11 +197,11 @@ plot.twilight <- function(x, which="plot3", grayscale=FALSE, ...){
 
   
   switch(which,
-         plot1 = funk1(x,grayscale,...),
-         plot2 = funk2(x,...),
-         plot3 = funk3(x,grayscale,...),
-         plot4 = funk4(x,...),
-         plot5 = funk5(x,...),
+         scores = funk1(x,grayscale,legend,...),
+         qvalues = funk2(x,...),
+         fdr = funk3(x,grayscale,legend,...),
+         volcano = funk4(x,...),
+         effectsize = funk5(x,legend,...),
          table = funk6(x)
          )
  

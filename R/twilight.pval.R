@@ -103,10 +103,9 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
   }
 
   ### prepare matrix of permuted index labels.
-  if ((is.null(yperm))&(verbose)){
-    cat("Check for complete enumeration. \n")
+  if (is.null(yperm)){
     yperm <- twilight.combi(yin,pin=paired,bin=balance)
-    if (is.null(yperm)==FALSE){cat("Complete enumeration possible. \n")}
+    if ((is.null(yperm)==FALSE)&(verbose)){cat("Complete enumeration possible. \n")}
   }
   if ((is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
   if ((is.null(yperm))&(paired==FALSE)){yperm <- twilight.permute.unpair(yin,B,balance)}

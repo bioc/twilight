@@ -44,7 +44,7 @@ Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, Coller H, Loh 
 
 Huber W, von Heydebreck A, Sültmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, Bioinformatics, vol. 18, suppl. 1, pp. S96-S104.
 
-Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, submitted.
+Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
 
 Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, PNAS 100(16), pp. 9440-9445.
 
@@ -67,7 +67,7 @@ id <- as.numeric(golubMerge$ALL.AML)
 
 ### Only 1000 permutations to reduce computation time.
 a <- twilight.pval(golubNorm,id,B=1000)
-plot(a,which="plot1")
-plot(a,which="plot2")
+plot(a,which="scores")
+plot(a,which="qvalues")
 }
 \keyword{ nonparametric }
