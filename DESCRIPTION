@@ -1,5 +1,5 @@
 Package: twilight
-Version: 1.0
+Version: 1.0.1
 Title: Estimation of local false discovery rate
 Author: Stefanie Scheid <stefanie.scheid@molgen.mpg.de>
 Description: Accompanies Scheid and Spang (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, submitted.
@@ -8,4 +8,4 @@ Depends: R (>= 1.9.0), splines (>= 1.9.0), stats (>= 1.9.0)
 Suggests: golubEsets (>= 1.0), vsn (>= 1.4.13), snow (>= 0.2-0)
 License: GPL version 2.0 or newer
 URL: http://compdiag.molgen.mpg.de/software.shtml
-Packaged: Wed Sep 29 09:58:03 2004; scheid
+Packaged: Mon Oct 18 09:44:13 2004; scheid

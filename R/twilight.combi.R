@@ -35,11 +35,6 @@ twilight.combi <- function(xin,pin,bin){
     return(y)
   }
   
-  fac <- function(x){
-    y <- gamma(x+1)
-    return(y)
-  }
-  
   pos <- function(x){
     if (x<0){x <- 0}
     return(x)
@@ -50,7 +45,7 @@ twilight.combi <- function(xin,pin,bin){
     n1 <- sum(xin)
     n0 <- sum(1-xin)
     n  <- n0+n1
-    m  <- fac(n)/fac(n0)/fac(n1)
+    m  <- choose(n,n0)
     
     A     <- matrix(NA,m,n)
     b     <- c(m*n0/n,m*n1/n)
@@ -82,8 +77,8 @@ twilight.combi <- function(xin,pin,bin){
     n  <- n0+n1
     
     if (n0<=n1){
-      m.ceil  <- choose(n0,ceiling(n0/2))*fac(n1)/fac(floor(n0/2))/fac(n1-floor(n0/2))
-      m.floor <- choose(n0,floor(n0/2))*fac(n1)/fac(ceiling(n0/2))/fac(n1-ceiling(n0/2))
+      m.ceil  <- choose(n0,ceiling(n0/2))*choose(n1,floor(n0/2))      
+      m.floor <- choose(n0,floor(n0/2))*choose(n1,ceiling(n0/2))
       
       if (n0%%2==0){A <- matrix(NA,m.ceil,n)}
       if (n0%%2!=0){A <- matrix(NA,m.ceil+m.floor,n)}
@@ -112,8 +107,8 @@ twilight.combi <- function(xin,pin,bin){
     }
         
     if (n1<n0){
-      m.ceil  <- choose(n1,ceiling(n1/2))*fac(n0)/fac(floor(n1/2))/fac(n0-floor(n1/2))
-      m.floor <- choose(n1,floor(n1/2))*fac(n0)/fac(ceiling(n1/2))/fac(n0-ceiling(n1/2))
+      m.ceil  <- choose(n1,ceiling(n1/2))*choose(n0,floor(n1/2))
+      m.floor <- choose(n1,floor(n1/2))*choose(n0,ceiling(n1/2))
       
       if (n1%%2==0){A <- matrix(NA,m.ceil,n)}
       if (n1%%2!=0){A <- matrix(NA,m.ceil+m.floor,n)}
@@ -206,7 +201,7 @@ twilight.combi <- function(xin,pin,bin){
     if (pin==FALSE){
       if (bin==FALSE){
         xout <- NULL
-        m <- fac(n)/fac(n1)/fac(n0)
+        m <- choose(n,n0)
         if (m<=10000){
           xout <- unpair.unbal(xin)
           
@@ -220,8 +215,8 @@ twilight.combi <- function(xin,pin,bin){
         
         n.min <- min(n0,n1)
         n.max <- max(n0,n1)
-        m <- choose(n.min,floor(n.min/2))*fac(n.max)/fac(floor(n.min/2))/fac(n.max-floor(n.min/2))
-        if (n.min%%2!=0){m <- m + choose(n.min,ceiling(n.min/2))*fac(n.max)/fac(ceiling(n.min/2))/fac(n.max-ceiling(n.min/2))}
+        m <- choose(n.min,floor(n.min/2))*choose(n.max,floor(n.min/2))
+        if (n.min%%2!=0){m <- m + choose(n.min,ceiling(n.min/2))*choose(n.max,ceiling(n.min/2))}
         
         if (m<=10000){
           xout <- unpair.bal(xin)
@@ -230,6 +225,10 @@ twilight.combi <- function(xin,pin,bin){
     }
     
     if (pin==TRUE){
+
+      if (n0!=n1){
+        stop("The input vector is not paired.")
+      }
       
       n <- n/2
       
