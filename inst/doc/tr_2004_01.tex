@@ -24,7 +24,7 @@
 
   
 
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.0.2}%'
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1}%'
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -49,13 +49,12 @@ In a typical microarray setting with gene expression data observed under two con
 
 
 
-
 \chapter{Implemented methods}
-\section{Function \texttt{twilight.pval}}
+\section{Function \texttt{twilight.pval}: Testing effect sizes}
 
 \fbox{
 \begin{minipage}{0.95\textwidth}
-\Rfunction{twilight.pval(xin, yin, method="fc", paired=FALSE, B=10000, yperm=NULL, balance=FALSE, quant.ci=0.95, s0=NULL, verbose=TRUE)}
+\Rfunction{twilight.pval(xin, yin, method="fc", paired=FALSE, B=1000, yperm=NULL, balance=FALSE, quant.ci=0.95, s0=NULL, verbose=TRUE)}
 \end{minipage}
 }
 \bigskip       
@@ -111,28 +110,28 @@ Levels: ALL AML
 [67] 2 2 2 2 2 2
 \end{Soutput}
 \end{Schunk}
-Additionally to computation of scores, empirical $p$-values are calculated. Argument \Rfunarg{B} specifies the number of permutations with default set to \Rfunarg{B=10000}. The distribution of scores under the null hypothesis is estimated by computing test scores from the same input matrix with randomly permuted class labels. These permutations are either balanced or unbalanced, with default \Rfunarg{balance=FALSE}. The permutation options are described in detail in section \ref{twilight.combi}. For computing empirical $p$-values, we count for each gene how many of its absolute permutation scores exceed the absolute observed score, and divide by \Rfunarg{B}.
+Additionally to computation of scores, empirical $p$-values are calculated. Argument \Rfunarg{B} specifies the number of permutations with default set to \Rfunarg{B=1000}. The distribution of scores under the null hypothesis is estimated by computing test scores from the same input matrix with randomly permuted class labels. These permutations are either balanced or unbalanced, with default \Rfunarg{balance=FALSE}. The permutation options are described in detail in section \ref{twilight.combi}. For computing empirical $p$-values, we count for each gene how many of \textit{all} absolute permutation scores exceed the absolute observed score, and divide by \Rfunarg{B}$\cdot$(number of genes).
 
 Permutation scores are also used to compute expected scores as described in Tusher et al.~(2001) \cite{tusher01}. In addition, we compute confidence bounds for the maximum absolute difference of each set of permutation scores to expected scores. The width of the confidence bound is chosen with \Rfunarg{quant.ci}. With default \Rfunarg{quant.ci=0.95}, the maximum absolute difference of permutation to expected scores exceeded the confidence bound in only 5\% of all permutations.
 
 Using the optional argument \Rfunarg{yperm}, a user-specified permutation matrix can be passed to the function. In that case, \Rfunarg{yperm} has to be a \textit{binary} matrix where each row is one vector of permuted class labels. The label "1" in \Rfunarg{yperm} corresponds to the higher labeled original class. If the permutation matrix is specified, no other permutation is done and argument \Rfunarg{B} will be ignored. Besides \Rfunction{set.seed}, argument \Rfunarg{yperm} can be used to reproduce results by fixing the matrix of random permutations.
 
-Continuing the example above, we perform a fold change test on the expression data in \Robject{golubNorm} which was transformed to arsinh scale by normalization with \Rfunction{vsn}. As an illustration, we apply function \texttt{twilight.pval} with 1000 permutations only.
+Continuing the example above, we perform a fold change test on the expression data in \Robject{golubNorm} which was transformed to arsinh scale by normalization with \Rfunction{vsn}.
 \begin{Schunk}
 \begin{Sinput}
 > library(twilight)
-> pval <- twilight.pval(golubNorm, id, B = 1000)
+> pval <- twilight.pval(golubNorm, id)
 \end{Sinput}
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. 
+Compute expected scores and p-values. This will take approx. 80 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
 \end{Schunk}
 The function checks whether complete enumeration of all permutations is possible. Complete enumeration is performed as long as the number of permutations does not exceed 10\,000. The admissible sample sizes depend on whether the experiment was paired or unpaired and whether balanced or unbalanced permutations are used. Details are given in section \ref{twilight.combi}.
-The values in the accompanying data set \Robject{expval} were computed in the same manner but with 10\,000 permutations.
+The values in the accompanying data set \Robject{expval} were computed in the same manner as in the example above.
 \begin{Schunk}
 \begin{Sinput}
 > data(expval)
@@ -146,10 +145,10 @@ The values in the accompanying data set \Robject{expval} were computed in the sa
 
  Estimated percentage of non-induced genes:
       pi0 
-0.5799648 
+0.6198193 
 
  Function call:
- Test: fc. Paired: FALSE. Number of permutations: 10000. Balanced: FALSE. 
+ Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
 \end{Soutput}
 \end{Schunk}
 The output object of function \Rfunction{twilight.pval} is of class \Rclass{twilight} with several elements stored in a list.
@@ -174,35 +173,38 @@ The element \Robject{quant.ci} contains the corresponding input value which is p
 > names(expval$result)
 \end{Sinput}
 \begin{Soutput}
-[1] "observed"  "expected"  "candidate" "pvalue"    "qvalue"   
-[6] "fdr"       "mean.fdr"  "lower.fdr" "upper.fdr"
+ [1] "observed"  "expected"  "candidate" "pvalue"    "qvalue"   
+ [6] "fdr"       "mean.fdr"  "lower.fdr" "upper.fdr" "index"    
 \end{Soutput}
 \end{Schunk}
-The dataframe stores observed and expected scores and corresponding empirical $p$-values. The genes are ordered by $p$-value and transcript name. Genes with observed score exceeding the confidence bounds are marked as ``1'' in the binary vector \Robject{result\$candidate}. The output object is passed to function \Rfunction{plot.twilight} to produce a plot as in Tusher et al.~(2001) \cite{tusher01} with additional confidence lines and genes marked as candidates, see Figure \ref{fig_scores}.
+The dataframe stores observed and expected scores and corresponding empirical $p$-values. The genes are ordered by absolute observed test scores. Genes with observed score exceeding the confidence bounds are marked as ``1'' in the binary vector \Robject{result\$candidate}. The output object is passed to function \Rfunction{plot.twilight} to produce a plot as in Tusher et al.~(2001) \cite{tusher01} with additional confidence lines and genes marked as candidates, see Figure \ref{fig_scores}.
 \begin{Schunk}
 \begin{Sinput}
-> expval$result[1:10, 1:5]
+> expval$result[1:7, 1:5]
 \end{Sinput}
 \begin{Soutput}
-              observed   expected candidate pvalue      qvalue
-AB000449_at -0.5591418 -0.2466945         0  1e-04 0.001851991
-AB002559_at  0.4712372  0.2355924         0  1e-04 0.001851991
-AF005043_at -0.3133348 -0.1397644         0  1e-04 0.001851991
-AF009426_at -0.4699483 -0.2045175         0  1e-04 0.001851991
-D00763_at   -0.5043169 -0.2210751         0  1e-04 0.001851991
-D10495_at    1.5156898  0.5192884         1  1e-04 0.001851991
-D13627_at   -0.7540288 -0.3302692         0  1e-04 0.001851991
-D14658_at   -0.6748078 -0.3026529         0  1e-04 0.001851991
-D14664_at    0.8451562  0.3539611         0  1e-04 0.001851991
-D21262_at   -0.7137899 -0.3142349         0  1e-04 0.001851991
+                observed   expected candidate       pvalue
+M84526_at       3.990578  1.1115133         1 1.402721e-07
+M27891_at       3.669657  0.9761424         1 2.805443e-07
+M89957_at      -3.153319 -1.0965293         1 4.208164e-07
+X82240_rna1_at -3.111376 -0.9599907         1 5.610885e-07
+U89922_s_at    -2.954233 -0.8874557         1 7.013606e-07
+M19507_at       2.925666  0.9013118         1 8.416328e-07
+M11722_at      -2.689999 -0.8352241         1 9.819049e-07
+                     qvalue
+M84526_at      0.0006198193
+M27891_at      0.0006198193
+M89957_at      0.0006198193
+X82240_rna1_at 0.0006198193
+U89922_s_at    0.0006198193
+M19507_at      0.0006198193
+M11722_at      0.0006198193
 \end{Soutput}
 \end{Schunk}
-Note that empirical $p$-values are not a monotone transformation of the test scores. For each gene separately, its observed score is compared to its scores under permutation. Consider two genes with equal observed score. The permutation score distributions of the two genes might be different. Thus, the resulting $p$-values differ although the scores are equal. The concept of comparison of observed and expected scores is completely different. The comparison is not done on a gene-wise level but by taking all genes at once into account. Therefore, a candidate gene might have a high difference between observed and expected score but a rather high $p$-value. We recommend to base inference on gene-wise empirical $p$-values, not on differences.
-
 \begin{figure}[t]
 \begin{center}
 \includegraphics{tr_2004_01-010}
-\caption{Expected versus observed test scores. Deviation from the diagonal line gives evidence for differential expresion. The red lines mark the 95\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(expval,which="scores",grayscale=F,legend=T)}.}\label{fig_scores}
+\caption{Expected versus observed test scores. Deviation from the diagonal line gives evidence for differential expression. The red lines mark the 95\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(expval,which="scores",grayscale=F,legend=F)}.}\label{fig_scores}
 \end{center}
 \end{figure}
 
@@ -212,7 +214,7 @@ In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0
 > expval$pi0
 \end{Sinput}
 \begin{Soutput}
-[1] 0.5799648
+[1] 0.6198193
 \end{Soutput}
 \end{Schunk}
 
@@ -223,12 +225,93 @@ In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0
 \end{center}
 \end{figure}
 
+Column \Robject{result\$index} contains the original gene ordering of the input object. With these numbers, resorting of the \Robject{result} table is possible without knowing the original order of the row names.
 
 
 
 
 
+\clearpage
+\section{Function \texttt{twilight.pval}: Testing correlation}
 
+\fbox{
+\begin{minipage}{0.95\textwidth}
+\Rfunction{twilight.pval(xin, yin, method="fc", B=1000, quant.ci=0.95, verbose=TRUE)}
+\end{minipage}
+}
+\bigskip       
+
+From version 1.1 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
+
+Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of correlation scores based on \Rfunarg{B} random permutations of \Rfunarg{yin}. All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
+
+\begin{Schunk}
+\begin{Sinput}
+> gene <- exprs(golubNorm)[expval$result$index[1], ]
+> corr <- twilight.pval(golubNorm, gene, method = "spearman", 
++     quant.ci = 0.99)
+\end{Sinput}
+\begin{Soutput}
+Compute vector of observed statistics. 
+Compute expected scores and p-values. This will take approx. 60 seconds. 
+Compute q-values. 
+Compute values for confidence lines. 
+\end{Soutput}
+\begin{Sinput}
+> corr
+\end{Sinput}
+\begin{Soutput}
+ Twilight object with
+     7129 transcripts
+     observed and expected test statistics
+     p- and q-values
+
+ Estimated percentage of non-induced genes:
+      pi0 
+0.6883784 
+
+ Function call:
+ Test: spearman. Number of permutations: 1000. 
+\end{Soutput}
+\end{Schunk}
+Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted as the overall percentage of genes not correlated to the clinical parameter under the null hypothesis.
+
+\begin{Schunk}
+\begin{Sinput}
+> corr$result[1:10, 1:5]
+\end{Sinput}
+\begin{Soutput}
+                  observed  expected candidate       pvalue
+M84526_at        1.0000000 0.4221174         1 1.402721e-07
+X95735_at        0.7518490 0.3965877         1 2.805443e-07
+M83667_rna1_s_at 0.7416554 0.3838850         1 4.208164e-07
+X52056_at        0.7362531 0.3741694         1 5.610885e-07
+X62654_rna1_at   0.7274744 0.3668445         1 7.013606e-07
+X62320_at        0.7260274 0.3610996         1 8.416328e-07
+X61587_at        0.7236478 0.3556568         1 9.819049e-07
+HG3494-HT3688_at 0.7194353 0.3511736         1 1.122177e-06
+L09209_s_at      0.7188565 0.3470000         1 1.262449e-06
+M27891_at        0.7095633 0.3436175         1 1.402721e-06
+                       qvalue
+M84526_at        0.0006883784
+X95735_at        0.0006883784
+M83667_rna1_s_at 0.0006883784
+X52056_at        0.0006883784
+X62654_rna1_at   0.0006883784
+X62320_at        0.0006883784
+X61587_at        0.0006883784
+HG3494-HT3688_at 0.0006883784
+L09209_s_at      0.0006883784
+M27891_at        0.0006883784
+\end{Soutput}
+\end{Schunk}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics{tr_2004_01-015}
+\caption{Expected versus observed Spearman correlation scores. Deviation from the diagonal line gives evidence for significant correlation. The red lines mark the 99\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(corr,which="scores",grayscale=F,legend=F)}.}\label{fig_corr}
+\end{center}
+\end{figure}
 
 
 
@@ -274,11 +357,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
  Bootstrap estimate of percentage of non-induced
  genes with lower and upper 95% CI:
        pi0 lower.pi0 upper.pi0
- 0.5914281  0.563894 0.6207112
+ 0.6282096 0.5981204 0.6575992
 
  Function call:
- Test: fc. Paired: FALSE. Number of permutations: 10000. Balanced: FALSE. 
- Function twilight used lambda = 0.025 
+ Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
+ Function twilight used lambda = 0.03 
 \end{Soutput}
 \end{Schunk}
 \begin{Schunk}
@@ -286,27 +369,27 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
 > exfdr$result[1:5, 6:9]
 \end{Sinput}
 \begin{Soutput}
-                   fdr   mean.fdr  lower.fdr  upper.fdr
-AB000449_at 0.04504678 0.05547103 0.04409335 0.07451714
-AB002559_at 0.04504678 0.05547103 0.04409335 0.07451714
-AF005043_at 0.04504678 0.05547103 0.04409335 0.07451714
-AF009426_at 0.04504678 0.05547103 0.04409335 0.07451714
-D00763_at   0.04504678 0.05547103 0.04409335 0.07451714
+                      fdr  mean.fdr  lower.fdr upper.fdr
+M84526_at      0.08605050 0.1024667 0.08325147 0.1342973
+M27891_at      0.08605105 0.1024672 0.08325201 0.1342977
+M89957_at      0.08605159 0.1024677 0.08325255 0.1342982
+X82240_rna1_at 0.08605214 0.1024682 0.08325308 0.1342986
+U89922_s_at    0.08605268 0.1024687 0.08325362 0.1342990
 \end{Soutput}
 \end{Schunk}
 The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $u$-values against the corresponding conditional probabilities of being induced given the $u$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-015}
-\caption{Curve of estimated local false discovery over $u$-values. The red lines denote the bootstrap mean (solid line, virtually not visible) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $u$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
+\includegraphics{tr_2004_01-018}
+\caption{Curve of estimated local false discovery over $u$-values. The red lines denote the bootstrap mean (solid line) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $u$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
 \end{center}
 \end{figure}
 
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-016}
+\includegraphics{tr_2004_01-019}
 \caption{Volcano plot of observed test scores versus local false discovery rate. The bottom ticks are 1\% quantiles of observed scores. The plotting call is \texttt{plot(exfdr,which="volcano")}.}\label{fig_volcano}
 \end{center}
 \end{figure}
@@ -315,7 +398,7 @@ Output element \Robject{effect} contains histogram information about the effect 
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-017}
+\includegraphics{tr_2004_01-020}
 \caption{Observed effect size distribution (gray histogram) overlaid with the estimated effect size distribution under the null hypothesis (black histogram). The plotting call is \texttt{plot(exfdr,which="effectsize",legend=T)}.}\label{fig_effectsize}
 \end{center}
 \end{figure}
@@ -328,14 +411,14 @@ The last plotting argument \Rfunarg{which="table"} tabulates the histogram infor
 \end{Sinput}
 \begin{Soutput}
        LogRatio Mixture Alternative
--2234%    -3.15       2         1.9
+-2234%    -3.15       2         2.0
 -2012%    -3.05       0         0.0
--1811%    -2.95       1         1.0
+-1811%    -2.95       1         0.6
 -1629%    -2.85       0         0.0
 -1464%    -2.75       0         0.0
--1315%    -2.65       1         0.9
+-1315%    -2.65       1         1.0
 -1181%    -2.55       0         0.0
--1059%    -2.45       1         1.0
+-1059%    -2.45       1         0.9
 \end{Soutput}
 \end{Schunk}
 
@@ -390,7 +473,7 @@ m = \frac{5!}{2! \cdot 3!} = 10.
 [10,]    1    1    1    0    0
 \end{Soutput}
 \end{Schunk}
-Each row contains one permutation. The first row contains the input vector. In balanced permutations, we omit the input vector and those rows where both original zeros have been shifted to the last three columns. The number of balanced rows is
+Each row contains one permutation. The first row contains the input vector. In balanced permutations, we omit those rows where both original zeros have been shifted to the last three columns. The number of balanced rows is
 \begin{equation}
 m = {2 \choose 1} \cdot \frac{3!}{1! \cdot 2!} = 6.
 \end{equation}
@@ -400,14 +483,17 @@ m = {2 \choose 1} \cdot \frac{3!}{1! \cdot 2!} = 6.
 \end{Sinput}
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5]
-[1,]    0    1    0    1    1
-[2,]    0    1    1    0    1
-[3,]    0    1    1    1    0
-[4,]    1    0    0    1    1
-[5,]    1    0    1    0    1
-[6,]    1    0    1    1    0
+[1,]    0    0    1    1    1
+[2,]    0    1    0    1    1
+[3,]    0    1    1    0    1
+[4,]    0    1    1    1    0
+[5,]    1    0    0    1    1
+[6,]    1    0    1    0    1
+[7,]    1    0    1    1    0
 \end{Soutput}
 \end{Schunk}
+Note that the function returns six balanced rows \textit{and} the original input vector although it is not balanced.
+       
 Next, consider a paired input vector with four pairs. The first zero and the first one are the first pair and so on. In paired settings, values are flipped only within a pair. The number of rows is
 \begin{equation}
 m = \frac{1}{2} \cdot 2^4 = 2^3 = 8.
@@ -437,6 +523,7 @@ m = \frac{1}{2} \cdot 2^4 = 2^3 = 8.
 [8,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
+       
 The matrix above contains only half of all possible $2^4=16$ permutations. The reversed case \Rfunction{1 - twilight.combi(y, pin=TRUE, bin=FALSE)} is omitted as this will lead to the same absolute test scores as \Rfunction{twilight.combi(y, pin=TRUE, bin=FALSE)}. The same concept applies to balanced paired permutations. Now, two pairs are kept fixed and two pairs are flipped in each row. The number of balanced rows is
 \begin{equation}
 m = \frac{1}{2} \cdot {4 \choose 2} = 3.
@@ -447,32 +534,82 @@ m = \frac{1}{2} \cdot {4 \choose 2} = 3.
 \end{Sinput}
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
-[1,]    0    0    1    1    1    1    0    0
-[2,]    0    1    0    1    1    0    1    0
-[3,]    0    1    1    0    1    0    0    1
+[1,]    0    0    0    0    1    1    1    1
+[2,]    0    0    1    1    1    1    0    0
+[3,]    0    1    0    1    1    0    1    0
+[4,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
-The complete enumeration of \Rfunction{twilight.combi} is limited by the sample sizes. The function returns \Rfunarg{NULL} if the resulting number of rows exceeds 10\,000. If \Rfunarg{NULL} is returned, function \Rfunction{twilight.pval} uses the functions \Rfunction{twilight.permute.unpair} and \Rfunction{twilight.permute.pair} which return a matrix of random permutations. For example, use the latter function to compute 7 balanced permutations of the paired vector \Rfunarg{y}.
+Again, the input vector is part of the output.
+
+The complete enumeration of \Rfunction{twilight.combi} is limited by the sample sizes. The function returns \Rfunarg{NULL} if the resulting number of rows exceeds 10\,000. If \Rfunarg{NULL} is returned, function \Rfunction{twilight.pval} uses the functions \Rfunction{twilight.permute.unpair} and \Rfunction{twilight.permute.pair} which return a matrix of random permutations. For example, use the latter function to compute 7 balanced permutations of the paired vector \Rfunarg{y}. Similar to \Rfunction{twilight.combi}, these two functions return the input vector in the first row of their output matrices.
 \begin{Schunk}
 \begin{Sinput}
 > twilight.permute.pair(y, 7, bal = TRUE)
 \end{Sinput}
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
-[1,]    1    1    0    0    0    0    1    1
-[2,]    0    1    1    0    1    0    0    1
-[3,]    0    0    1    1    1    1    0    0
-[4,]    0    0    1    1    1    1    0    0
+[1,]    0    0    0    0    1    1    1    1
+[2,]    0    0    1    1    1    1    0    0
+[3,]    0    1    1    0    1    0    0    1
+[4,]    1    1    0    0    0    0    1    1
 [5,]    0    1    1    0    1    0    0    1
-[6,]    1    1    0    0    0    0    1    1
-[7,]    1    1    0    0    0    0    1    1
+[6,]    0    1    1    0    1    0    0    1
+[7,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
+
+
+
+
 
 
 \section*{Acknowledgements}
 
 This work was done within the context of the Berlin Center for Genome Based Bioinformatics (BCB), part of the German National Genome Network (NGFN), and supported by BMBF grants 031U109C and 03U117 of the German Federal Ministry of Education.
+
+
+
+
+
+
+
+
+\chapter{Differences to earlier versions}
+
+
+\section{Changes in version 1.1}
+
+The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
+
+These two important features gave rise to further changes: The ordering of the \Robject{result} table is now more intuitive because the most significant genes on top have the highest scores, the lowest $p$- and $q$-values and are candidates (if there are any). In addition, the default value of the number of permutations \Rfunarg{B} is lowered to 1000 permutations. Computation of pooled $p$-values is slower than for gene-wise $p$-values. On the other hand, changing to pooled $p$-values increases the number of values in the null distribution by the factor of number of genes. Hence, even with less permutations, the number of null values is larger than before.
+
+We integrated Pearson and Spearman correlation coefficients into \Rfunction{twilight.pval}. Each gene is correlated to an numerical input vector. Expected scores are computed from random permutations of the input vector.
+       
+The \Robject{result} table contains an additional \Robject{index} column with genes indices which comes in handy for sorting back to original ordering.
+
+All output matrices of the permutation functions \Rfunction{twilight.combi}, \Rfunction{twilight.permute.pair} and \Rfunction{twilight.permute.unpair} have the original labeling vector as first row. This is also the case if balanced permutations are wanted, although the input vector is not balanced. Hence, the permutation matrix within \Rfunction{twilight.pval} now includes the original labeling even for balanced permutations implying that the smallest \textit{possible} $p$-value is 1/(number of permutations).
+
+
+\section{Changes in version 1.0.3}
+
+A \Rfunction{print.twilight} function was added which produces a short information about the contents stored in the \Robject{twilight} object.
+
+
+\section{Changes in version 1.0.2}
+
+The \Rfunarg{which} argument of the plot command changed from \Rfunction{plot1} style to more intuitive labels like \Rfunarg{scores} or \Rfunarg{fdr}.
+
+       
+
+
+
+
+       
+
+
+
+
 
 
 

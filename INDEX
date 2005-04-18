@@ -1,15 +1,10 @@
-expval                  Example of twilight.pval result.
 exfdr                   Example of twilight result.
+expval                  Example of twilight.pval result.
 plot.twilight           A plot function for twilight objects.
-print.twilight          A print function for twilight objects.
+twilight                Estimation of local false discovery rate.
 twilight.combi          All permutations of a binary vector.
-twilight.getlambda      Internal function to compute regularization
-                        parameter lambda.
-twilight.getmatrix      Internal function to extract the gene
-                        expression matrix from an expression set.
 twilight.permute.pair   A permutation matrix of paired class labels.
 twilight.permute.unpair
                         A permutation matrix of unpaired class labels.
 twilight.pval           A function to compute p-values from expression
                         sets.
-twilight                Estmation of local false discovery rate.

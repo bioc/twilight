@@ -22,11 +22,12 @@ See vignette.
 Returns a \code{twilight} object consisting of a \code{data.frame} named \code{result} with variables
   \item{pvalue }{Sorted input vector.}
   \item{qvalue }{\eqn{q}-values computed as described in Storey and Tibshirani (2003) with new estimate \code{pi0}.}
+  \item{index }{Index of the original ordering.}
   \item{fdr }{Local false discovery rate averaged over 10 runs of SEP.}
   \item{mean.fdr }{Bootstrap estimate of local false discovery rate.}
   \item{lower.fdr }{Lower \code{boot.ci}-bootstrap confidence bound.}
   \item{upper.fdr }{ Upper \code{boot.ci}-bootstrap confidence bound.}
-Values are sorted by pvalue.
+Values are sorted by \code{pvalue}.
 
 Additional output consists of
   \item{lambda }{Regularization parameter.}

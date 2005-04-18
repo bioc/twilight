@@ -41,7 +41,9 @@ twilight.permute.unpair <- function(v,m,bal=TRUE){
 
       M[i,] <- y[z$ix]
     }
-
+    
+    M[1,] <- v
+    rownames(M) <- NULL
   }
 
   return(M)

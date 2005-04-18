@@ -2,19 +2,19 @@
 \alias{twilight.pval}
 \title{ A function to compute p-values from expression sets. }
 \description{
-The functions implements twosample t, Z and fold change equivalent tests, paired or unpaired. Based on permutations, expected test statistics as given in Tusher et al. (2001) and empirical \eqn{p}-values are computed. Additional output are \eqn{q}-values computed as given in Storey and Tibshirani (2003). The resulting object is of class \code{twilight} and can be passed to functions \code{twilight} or \code{plot.twilight}.
+The functions implements twosample t, Z and fold change equivalent tests, paired or unpaired, and correlation coefficients. Based on permutations, expected test statistics as given in Tusher et al. (2001) and empirical \eqn{p}-values are computed. Additional output are \eqn{q}-values computed as given in Storey and Tibshirani (2003). The resulting object is of class \code{twilight} and can be passed to functions \code{twilight} or \code{plot.twilight}.
 }
 \usage{
-twilight.pval(xin, yin, method = "fc", paired = FALSE, B = 10000, yperm = NULL, balance = FALSE, quant.ci = 0.95, s0=NULL, verbose = TRUE)
+twilight.pval(xin, yin, method = "fc", paired = FALSE, B = 1000, yperm = NULL, balance = FALSE, quant.ci = 0.95, s0=NULL, verbose = TRUE)
 }
 \arguments{
   \item{xin}{ Either an expression set (\code{exprSet}) or a data matrix with rows corresponding to features and columns corresponding to samples. }
   \item{yin}{ A numerical vector containing class labels. The higher label denotes the case, the lower label the control samples to test case vs. control. }
-  \item{method}{ Character string: \code{"fc"} for fold change equivalent test (that is log ratio test), \code{"t"} for t test, and \code{"z"} for Z test. }
-  \item{paired}{ Logical value. Depends on whether the samples are paired. }
+  \item{method}{ Character string: \code{"fc"} for fold change equivalent test (that is log ratio test), \code{"t"} for t test, and \code{"z"} for Z test. With \code{"pearson"} or \code{"spearman"}, the test statistic is either Pearson's correlation coefficient or Spearman's rank correlation coefficient.}
+  \item{paired}{ Logical value. Depends on whether the samples are paired. Ignored if \code{method="pearson"} or \code{method="spearman"}.}
   \item{B}{ Numerical value specifying the number of permutations. }
-  \item{yperm}{ Optional matrix containing in each row a permutation of the class labels in binary format. If \code{yperm} is specified, no other permutation will be done. }
-  \item{balance}{ Logical value. Depends on whether balanced or unbalanced permutations should be done. }
+  \item{yperm}{ Optional matrix containing in each row a permutation of the class labels in binary format. If \code{yperm} is specified, no other permutation will be done. Ignored if \code{method="pearson"} or \code{method="spearman"}.}
+  \item{balance}{ Logical value. Depends on whether balanced or unbalanced permutations should be done. Ignored if \code{method="pearson"} or \code{method="spearman"}.}
   \item{quant.ci}{ Probability value for confidence lines. Lines are symmetric and denote the \code{quant.ci}-quantile of maximal absolute differences between each permutatin and the expected scores. }
   \item{s0}{ Fudge factor for variance correction in Z test. Takes effect only if \code{method="z"}. If \code{s0=NULL}: Fudge factor is set to median of root pooled variances.}
   \item{verbose}{ Logical value for message printing. }
@@ -29,7 +29,8 @@ Returns a \code{twilight} object consisting of a \code{data.frame} named \code{r
   \item{candidate}{Binary vector. \code{"1"} for observations exceeding the confidence lines.}
   \item{pvalue}{Twosided test permutation \eqn{p}-values.}
   \item{qvalue}{\eqn{q}-values computed as described in Storey and Tibshirani (2003).}
-Values are sorted by \code{pvalue}.
+  \item{index}{Index of the original ordering.}
+Values are sorted by absolute \code{observed} scores.
 
 Additional output consists of
   \item{ci.line}{Quantile corresponding to \code{quant.ci}, passed for plotting.}
@@ -65,8 +66,7 @@ golubNorm <- vsn(exprs(golubMerge))
 ### A vector of class labels.
 id <- as.numeric(golubMerge$ALL.AML)
 
-### Only 1000 permutations to reduce computation time.
-a <- twilight.pval(golubNorm,id,B=1000)
+a <- twilight.pval(golubNorm,id)
 plot(a,which="scores")
 plot(a,which="qvalues")
 }

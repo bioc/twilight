@@ -255,6 +255,11 @@ twilight.combi <- function(xin,pin,bin){
   
   ix <- rank(xin,ties.method="first")
   xout <- xout[,ix]
+
+  if (bin==TRUE){
+    xout <- rbind(xin,xout)
+    rownames(xout) <- NULL
+  }
   
   return(xout)
 }

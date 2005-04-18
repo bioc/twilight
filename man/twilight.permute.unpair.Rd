@@ -11,7 +11,7 @@ twilight.permute.unpair(v, m, bal = TRUE)
   \item{m}{ A numerical value giving the number of permutations. }
   \item{bal}{ Logical value. Results in balanced or unbalanced permutations. }
 }
-\value{Returns a matrix where each row contains one permuted vector of class labels.}
+\value{Returns a matrix where each row contains one permuted vector of class labels. Note that even for balanced permutations, the first row always contains the original vector.}
 \references{
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
 }

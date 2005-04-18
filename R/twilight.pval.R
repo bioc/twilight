@@ -1,4 +1,4 @@
-twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,balance=FALSE,quant.ci=0.95,s0=NULL,verbose=TRUE){ 
+twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,balance=FALSE,quant.ci=0.95,s0=NULL,verbose=TRUE){ 
 ### Function computes test statistics for paired or unpaired twosided
 ### t-test, Z-test or Fold change test.
 ###
@@ -12,6 +12,8 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
 ###
 ### "method":   "t" for t statistic, "z" for Z statistic and "fc" for
 ###             Fold change equivalent (that is log ratio).
+###             "pearson" for Pearson correlation.
+###             "spearman" for Spearman rank correlation.
 ### "paired":   TRUE or FALSE. Depends on test setting.
 ### "B":        Number of permutations to estimate the null distribution
 ###             and the expected test statistics.
@@ -73,44 +75,63 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
     }    
   }
 
-  if (is.null(yperm)==FALSE){
-    if (length(yin)!=dim(yperm)[2]){
-      stop("Dimensions of permutation matrix and length of index vector do not match. \n")
+  if ((method!="pearson")&(method!="spearman")){
+    if (is.null(yperm)==FALSE){
+      if (length(yin)!=dim(yperm)[2]){
+        stop("Dimensions of permutation matrix and length of index vector do not match. \n")
+      }
+      
+      y <- unique(yperm[1,])  
+      if ((length(y)!=2)|(min(y)!=0)|(max(y)!=1)){
+        stop("Labels in permutation matrix must be 0 and 1. \n")
+      }
+    }
+  }
+
+  if ((method!="pearson")&(method!="spearman")){
+  ### translate index vector yin into binary vector with 1 as case and 0 as control samples.
+    y <- sort(unique(yin),na.last=TRUE)
+    
+    if (length(y)!=2){
+      stop("Samples must belong to TWO classes. \n")
     }
     
-    y <- unique(yperm[1,])  
-    if ((length(y)!=2)|(min(y)!=0)|(max(y)!=1)){
-      stop("Labels in permutation matrix must be 0 and 1. \n")
+    y1 <- which(yin==y[1])
+    y2 <- which(yin==y[2])
+    yin[y1] <- 0
+    yin[y2] <- 1
+    
+    if (paired==TRUE){
+      if (sum(yin)!=sum(1-yin)){
+        stop("This is a PAIRED twosample test. \n")
+      }
     }
   }
   
-  ### translate index vector yin into binary vector with 1 as case and 0 as control samples.
-  y <- sort(unique(yin),na.last=TRUE)
-
-  if (length(y)!=2){
-    stop("Samples must belong to TWO classes. \n")
-  }
-
-  y1 <- which(yin==y[1])
-  y2 <- which(yin==y[2])
-  yin[y1] <- 0
-  yin[y2] <- 1
-
-  if (paired==TRUE){
-    if (sum(yin)!=sum(1-yin)){
-      stop("This is a PAIRED twosample test. \n")
+  ### prepare matrix of permuted index labels.
+  if ((method!="pearson")&(method!="spearman")){
+    if (is.null(yperm)){
+      yperm <- twilight.combi(yin,pin=paired,bin=balance)
+      if ((!is.null(yperm))&(verbose)){
+        cat("Complete enumeration possible. \n")
+      }
+    }
+    if ((is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
+    if ((is.null(yperm))&(paired==FALSE)){
+      yperm <- twilight.permute.unpair(yin,B,balance)
+    }
+    if ((is.null(yperm))&(paired==TRUE)){
+      yperm <- twilight.permute.pair(yin,B,balance)
     }
   }
-
-  ### prepare matrix of permuted index labels.
-  if (is.null(yperm)){
-    yperm <- twilight.combi(yin,pin=paired,bin=balance)
-    if ((is.null(yperm)==FALSE)&(verbose)){cat("Complete enumeration possible. \n")}
+  if (method=="spearman"){
+    yin <- rank(yin)
+    xin <- t(apply(xin,1,rank))
+  }  
+  if ((method=="pearson")|(method=="spearman")){
+    yperm <- twilight.permute.unpair(yin,B,bal=FALSE)
   }
-  if ((is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
-  if ((is.null(yperm))&(paired==FALSE)){yperm <- twilight.permute.unpair(yin,B,balance)}
-  if ((is.null(yperm))&(paired==TRUE)){yperm <- twilight.permute.pair(yin,B,balance)}
-
+  
   B <- dim(yperm)[1]
 
   ### compute observed test statistics.
@@ -155,11 +176,26 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
   }
   
   if (is.null(s0)){s0 <- 0}
-  stat.obs <- switch(method,
-                     t = funk(yin,xin,1,yin,s0),
-                     z = funk(yin,xin,2,yin,s0),
-                    fc = funk(yin,xin,3,yin,s0))
+  if ((method!="pearson")&(method!="spearman")){
+    stime <- system.time(stat.obs <- switch(method,
+                                            t = funk(yin,xin,1,yin,s0),
+                                            z = funk(yin,xin,2,yin,s0),
+                                            fc = funk(yin,xin,3,yin,s0)),gcFirst=TRUE)
+  }
+  if ((method=="pearson")|(method=="spearman")){
+    funk <- function(a,b){
+      .C("corsingle",
+         as.double(a),
+         as.double(t(b)),
+         as.integer(nrow(b)),
+         as.integer(ncol(b)),
+         e=double(nrow(b)),PACKAGE="twilight")$e
+    }
+    
+    stime <- system.time(stat.obs <- funk(yin,xin),gcFirst=TRUE)
+  }
 
+  
 
   ### compute twosided test p-values from permutations.  
   ### sort permutation scores and calculate expected scores as described in:
@@ -213,24 +249,46 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
     }
   }
   
-  if (verbose){cat("Compute expected scores and p-values. \n")}
-  stat.exp <- switch(method,
-                     t = funk(yperm,xin,1,stat.obs,yin,s0),
-                     z = funk(yperm,xin,2,stat.obs,yin,s0),
-                     fc = funk(yperm,xin,3,stat.obs,yin,s0))
+  if (verbose){cat(paste("Compute expected scores and p-values. This will take approx.",round(max(stime[1:3])*nrow(yperm)),"seconds. \n"))}
 
+  if ((method!="pearson")&(method!="spearman")){
+    stat.exp <- switch(method,
+                       t = funk(yperm,xin,1,stat.obs,yin,s0),
+                       z = funk(yperm,xin,2,stat.obs,yin,s0),
+                       fc = funk(yperm,xin,3,stat.obs,yin,s0))
+  }
+  if ((method=="pearson")|(method=="spearman")){
+    funk <- function(a,b,c){
+      x <- .C("corperm",
+              as.double(t(a)),
+              as.integer(nrow(a)),
+              as.double(t(b)),
+              as.integer(nrow(b)),
+              as.integer(ncol(b)),
+              as.double(c),
+              e=double(nrow(b)),
+              f=double(nrow(b)),PACKAGE="twilight"
+              )
+      res <- list(exp=x$e,pval=x$f)
+      return(res)
+    }
+
+    stat.exp <- funk(yperm,xin,stat.obs)    
+  }
 
   pval     <- stat.exp$pval
   stat.exp <- stat.exp$exp
   stat.exp <- stat.exp[rank(stat.obs)]
   
-  ### sort all values according to the p-values.
-  ix <- order(pval)
+  ### sort all values according to test scores.
+  ix <- order(abs(stat.obs),decreasing=TRUE)
   stat.obs <- stat.obs[ix]
   stat.exp <- stat.exp[ix]
   pval     <- pval[ix]
   rows     <- rownames(xin)[ix]
-
+  index    <- 1:length(stat.obs)
+  index    <- index[ix]
+  
   if (is.null(rownames(xin))){
     rows <- ix
   }
@@ -300,15 +358,38 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
 
   ### compute confidence bounds
   ci.sel  <- sample(1:B,min(1000,B))
-  ci.line <- switch(method,
-                    t = funk(yperm[ci.sel,],xin,1,stat.exp,yin),
-                    z = funk(yperm[ci.sel,],xin,2,stat.exp,yin),
-                    fc = funk(yperm[ci.sel,],xin,3,stat.exp,yin))
-
+  if ((method!="pearson")&(method!="spearman")){
+    ci.line <- switch(method,
+                      t = funk(yperm[ci.sel,],xin,1,stat.exp,yin),
+                      z = funk(yperm[ci.sel,],xin,2,stat.exp,yin),
+                      fc = funk(yperm[ci.sel,],xin,3,stat.exp,yin))
+  }
+  if ((method=="pearson")|(method=="spearman")){
+    funk <- function(a,b,c){
+      .C("corci",
+         as.double(t(a)),
+         as.integer(nrow(a)),
+         as.double(t(b)),
+         as.integer(nrow(b)),
+         as.integer(ncol(b)),
+         as.double(c),
+         e=double(nrow(a)),PACKAGE="twilight"
+         )$e
+    }
+    
+    ci.line <- funk(yperm[ci.sel,],xin,stat.exp)
+  }
   ci.line <- quantile(ci.line,quant.ci)
 
   ### mark genes with differences exceeding the confidence lines.
   cand <- as.numeric( abs(stat.obs-stat.exp)>ci.line )
+
+  if ((method!="pearson")&(method!="spearman")){
+    call <- paste("Test: ",method,". Paired: ",paired,". Number of permutations: ",B,". Balanced: ",balance,".",sep="")
+  }
+  if ((method=="pearson")|(method=="spearman")){
+    call <- paste("Test: ",method,". Number of permutations: ",B,".",sep="")
+  }
   
   res <- list(result=data.frame(
                 observed=stat.obs,
@@ -320,6 +401,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
                 mean.fdr=rep(NaN,m),
                 lower.fdr=rep(NaN,m),
                 upper.fdr=rep(NaN,m),
+                index=index,
                 row.names=rows),
               ci.line=ci.line,
               quant.ci=quant.ci,
@@ -328,7 +410,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=10000,yperm=NULL,ba
               boot.pi0=NaN,
               boot.ci=NaN,
               effect=NaN,
-              call=paste("Test: ",method,". Paired: ",paired,". Number of permutations: ",B,". Balanced: ",balance,".",sep=""))
+              call=call)
   class(res) <- "twilight"
   
   return(res)

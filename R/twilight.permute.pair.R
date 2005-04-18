@@ -18,7 +18,8 @@ twilight.permute.pair <- function(v,m,bal=TRUE){
 
   if (bal==TRUE){
     M <- matrix(NA,m,length(v))
-    for (i in 1:m){
+    M[1,] <- v
+    for (i in 2:m){
       n <- ceiling(length(v)/4)
       r <- runif(n)
       r <- round(r)

@@ -12,11 +12,20 @@ int compare2(const void *x, const void *y)
   return ((*a>*b)-(*a<*b));
 }
 
+/* Sort in decreasing order */
+int comparedecr(const void *x, const void *y)
+{
+  double *a, *b;
+  a=(double*)x;
+  b=(double*)y;
+  return ((*a<*b)-(*a>*b));
+}
+
 
 void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *s0, double *e, double *f)
 {
   double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort, *stat;
-  int i, j, k, *test;
+  int i, j, k, *test, j0, j1, j2, jj;
     
   if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -108,23 +117,57 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
       }
     }
 
-    /* Compute p-values by comparing stat and sobs */
-    for (j=0; j<*ngene; j++){
-      if ( (fabs(stat[j])>=fabs(sobs[j])) | (fabs(sobs[j])-fabs(stat[j])<10e-10) ){
-	f[j]+=1;
-      }
-    }
-
     qsort((void*)stat,*ngene,sizeof(double),compare2);
     for (j=0; j<*ngene; j++){
       e[j]+=stat[j];
     }
 
+    for (j=0; j<*ngene; j++){
+      stat[j]=fabs(stat[j]);
+    }
+    qsort((void*)stat,*ngene,sizeof(double),comparedecr);
+
+    /* Compute p-values by comparing stat and sobs */
+    /* Find rank of sobs in stat by dividing intervals into halfs (bin search) */
+    for (j=0; j<*ngene; j++){
+      jj=0;
+      j0=0;
+      j2=(*ngene)-1;
+      j1=j0+ceil((j2-j0)/2);
+
+        while ((j0!=j1)&&(j1!=j2)){
+	  if (fabs(sobs[j])<stat[j1]){
+	    j0=j1;
+	    j1=j0+ceil((j2-j0)/2);
+	  }
+	  if (fabs(sobs[j])>stat[j1]){
+	    j2=j1;
+	    j1=j0+floor((j2-j0)/2);
+	  }
+	  if (fabs(sobs[j])==stat[j1]){
+	    j2=j1;
+	  }
+	}
+	if (fabs(sobs[j])>stat[j1]){
+	  jj=j0;
+	}
+	if (fabs(sobs[j])<stat[j1]){
+	  jj=j2;
+	}
+	if (fabs(sobs[j])==stat[j1]){	  
+	  jj=j1+1;
+	}
+	if (fabs(sobs[j])==stat[(*ngene)-1]){	  
+	  jj=(*ngene);
+	}
+		
+	f[j]+=jj;
+    }   
   }
 
   for (j=0; j<*ngene; j++){ 
     e[j]=e[j]/(*nperm);
-    f[j]=f[j]/(*nperm); 
+    f[j]=f[j]/((*nperm)*(*ngene));
   }
   
   free(ex1);
@@ -145,7 +188,7 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
 {
   double *r, *s, *ssort, *ex2, *stat;
   double *diff;
-  int i, j, k;
+  int i, j, k, j0, j1, j2, jj;
 
   if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -223,24 +266,57 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
       }
     }
 
-
-    /* Compute p-values by comparing stat and sobs */
-    for (j=0; j<*ngene; j++){
-      if ( (fabs(stat[j])>=fabs(sobs[j])) | (fabs(sobs[j])-fabs(stat[j])<10e-10) ){
-	f[j]+=1;
-      }
-    }
-    
     qsort((void*)stat,*ngene,sizeof(double),compare2);
     for (j=0; j<*ngene; j++){
       e[j]+=stat[j];
     }
-    
-  }
 
+    for (j=0; j<*ngene; j++){
+      stat[j]=fabs(stat[j]);
+    }
+    qsort((void*)stat,*ngene,sizeof(double),comparedecr);
+
+    /* Compute p-values by comparing stat and sobs */
+    /* Find rank of sobs in stat by dividing intervals into halfs (bin search) */
+    for (j=0; j<*ngene; j++){
+      jj=0;
+      j0=0;
+      j2=(*ngene)-1;
+      j1=j0+ceil((j2-j0)/2);
+
+        while ((j0!=j1)&&(j1!=j2)){
+	  if (fabs(sobs[j])<stat[j1]){
+	    j0=j1;
+	    j1=j0+ceil((j2-j0)/2);
+	  }
+	  if (fabs(sobs[j])>stat[j1]){
+	    j2=j1;
+	    j1=j0+floor((j2-j0)/2);
+	  }
+	  if (fabs(sobs[j])==stat[j1]){
+	    j2=j1;
+	  }
+	}
+	if (fabs(sobs[j])>stat[j1]){
+	  jj=j0;
+	}
+	if (fabs(sobs[j])<stat[j1]){
+	  jj=j2;
+	}
+	if (fabs(sobs[j])==stat[j1]){	  
+	  jj=j1+1;
+	}
+	if (fabs(sobs[j])==stat[(*ngene)-1]){	  
+	  jj=(*ngene);
+	}
+		
+	f[j]+=jj;
+    }   
+  }
+  
   for (j=0; j<*ngene; j++){ 
     e[j]=e[j]/(*nperm);
-    f[j]=f[j]/(*nperm); 
+    f[j]=f[j]/((*nperm)*(*ngene));
   }
 
   free(diff);

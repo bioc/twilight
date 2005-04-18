@@ -50,6 +50,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
     pval  <- xin
     rows  <- rownames(xin)
     score <- NULL
+    index <- 1:length(pval)
     if (is.null(rownames(xin))){
       rows <- 1:length(pval)
     }
@@ -57,6 +58,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
       ix   <- order(pval)
       pval <- pval[ix]
       rows <- rows[ix]
+      index <- index[ix]
     }
   }
 
@@ -348,6 +350,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
                   mean.fdr=mean.H0,
                   lower.fdr=lower.H0,
                   upper.fdr=upper.H0,
+                  index=index,
                   row.names=rows),
                 ci.line=NaN,
                 quant.ci=NaN,
