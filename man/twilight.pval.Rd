@@ -1,6 +1,6 @@
 \name{twilight.pval}
 \alias{twilight.pval}
-\title{ A function to compute p-values from expression sets. }
+\title{ A function to compute p-values from expression sets }
 \description{
 The functions implements twosample t, Z and fold change equivalent tests, paired or unpaired, and correlation coefficients. Based on permutations, expected test statistics as given in Tusher et al. (2001) and empirical \eqn{p}-values are computed. Additional output are \eqn{q}-values computed as given in Storey and Tibshirani (2003). The resulting object is of class \code{twilight} and can be passed to functions \code{twilight} or \code{plot.twilight}.
 }
@@ -9,7 +9,7 @@ twilight.pval(xin, yin, method = "fc", paired = FALSE, B = 1000, yperm = NULL, b
 }
 \arguments{
   \item{xin}{ Either an expression set (\code{exprSet}) or a data matrix with rows corresponding to features and columns corresponding to samples. }
-  \item{yin}{ A numerical vector containing class labels. The higher label denotes the case, the lower label the control samples to test case vs. control. }
+  \item{yin}{ A numerical vector containing class labels. The higher label denotes the case, the lower label the control samples to test case vs. control. For correlation scores, \code{yin} can be any numerical vector of length equal to the number of samples. }
   \item{method}{ Character string: \code{"fc"} for fold change equivalent test (that is log ratio test), \code{"t"} for t test, and \code{"z"} for Z test. With \code{"pearson"} or \code{"spearman"}, the test statistic is either Pearson's correlation coefficient or Spearman's rank correlation coefficient.}
   \item{paired}{ Logical value. Depends on whether the samples are paired. Ignored if \code{method="pearson"} or \code{method="spearman"}.}
   \item{B}{ Numerical value specifying the number of permutations. }
@@ -31,25 +31,29 @@ Returns a \code{twilight} object consisting of a \code{data.frame} named \code{r
   \item{qvalue}{\eqn{q}-values computed as described in Storey and Tibshirani (2003).}
   \item{index}{Index of the original ordering.}
 Values are sorted by absolute \code{observed} scores.
-
+}
+\note{
 Additional output consists of
-  \item{ci.line}{Quantile corresponding to \code{quant.ci}, passed for plotting.}
-  \item{pi0}{Estimated prior probability.}
-  \item{call}{Character string of function arguments.}
-  \item{quant.ci}{Passes \code{quant.ci} for plotting.}
+
+\tabular{ll}{
+  \code{ci.line} \tab Quantile corresponding to \code{quant.ci}, passed for plotting. \cr
+  \code{pi0} \tab Estimated prior probability. \cr
+  \code{call} \tab Character string of function arguments. \cr
+  \code{quant.ci} \tab Passes \code{quant.ci} for plotting. \cr
+}
 
 The remaining slots are left free for function \code{twilight}.
 }
 \references{
-Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, Coller H, Loh ML, Downing JR, Caligiuri MA, Bloomfield CD and Lander ES (1999): Molecular Classification of Cancer: Class Discovery and Class Prediction by Gene Expression Monitoring, Science, vol. 286, pp. 531-537.
+Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, Coller H, Loh ML, Downing JR, Caligiuri MA, Bloomfield CD and Lander ES (1999): Molecular Classification of Cancer: Class Discovery and Class Prediction by Gene Expression Monitoring, \emph{Science} \bold{286}, 531--537.
 
-Huber W, von Heydebreck A, Sültmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, Bioinformatics, vol. 18, suppl. 1, pp. S96-S104.
+Huber W, von Heydebreck A, Sültmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, \emph{Bioinformatics} \bold{18}, suppl. 1, S96--S104.
 
-Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
+Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
 
-Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, PNAS 100(16), pp. 9440-9445.
+Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, \emph{PNAS} \bold{100(16)}, 9440--9445.
 
-Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, PNAS 98(9), pp. 5116-5121.
+Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
 }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}} }

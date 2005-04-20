@@ -24,7 +24,7 @@
 
   
 
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1}%'
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1.0}%'
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -125,7 +125,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 80 seconds. 
+Compute expected scores and p-values. This will take approx. 120 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -241,7 +241,7 @@ Column \Robject{result\$index} contains the original gene ordering of the input 
 }
 \bigskip       
 
-From version 1.1 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
+From version 1.1.0 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
 
 Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of correlation scores based on \Rfunarg{B} random permutations of \Rfunarg{yin}. All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
 
@@ -253,7 +253,7 @@ Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Onl
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 60 seconds. 
+Compute expected scores and p-values. This will take approx. 120 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -268,7 +268,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6883784 
+0.6899612 
 
  Function call:
  Test: spearman. Number of permutations: 1000. 
@@ -282,27 +282,27 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                   observed  expected candidate       pvalue
-M84526_at        1.0000000 0.4221174         1 1.402721e-07
-X95735_at        0.7518490 0.3965877         1 2.805443e-07
-M83667_rna1_s_at 0.7416554 0.3838850         1 4.208164e-07
-X52056_at        0.7362531 0.3741694         1 5.610885e-07
-X62654_rna1_at   0.7274744 0.3668445         1 7.013606e-07
-X62320_at        0.7260274 0.3610996         1 8.416328e-07
-X61587_at        0.7236478 0.3556568         1 9.819049e-07
-HG3494-HT3688_at 0.7194353 0.3511736         1 1.122177e-06
-L09209_s_at      0.7188565 0.3470000         1 1.262449e-06
-M27891_at        0.7095633 0.3436175         1 1.402721e-06
+M84526_at        1.0000000 0.4218048         1 1.402721e-07
+X95735_at        0.7518490 0.3971649         1 2.805443e-07
+M83667_rna1_s_at 0.7416554 0.3830048         1 4.208164e-07
+X52056_at        0.7362531 0.3736205         1 5.610885e-07
+X62654_rna1_at   0.7274744 0.3663006         1 7.013606e-07
+X62320_at        0.7260274 0.3603383         1 8.416328e-07
+X61587_at        0.7236478 0.3551547         1 9.819049e-07
+HG3494-HT3688_at 0.7194353 0.3506197         1 1.122177e-06
+L09209_s_at      0.7188565 0.3465546         1 1.262449e-06
+M27891_at        0.7095633 0.3430968         1 1.402721e-06
                        qvalue
-M84526_at        0.0006883784
-X95735_at        0.0006883784
-M83667_rna1_s_at 0.0006883784
-X52056_at        0.0006883784
-X62654_rna1_at   0.0006883784
-X62320_at        0.0006883784
-X61587_at        0.0006883784
-HG3494-HT3688_at 0.0006883784
-L09209_s_at      0.0006883784
-M27891_at        0.0006883784
+M84526_at        0.0006899612
+X95735_at        0.0006899612
+M83667_rna1_s_at 0.0006899612
+X52056_at        0.0006899612
+X62654_rna1_at   0.0006899612
+X62320_at        0.0006899612
+X61587_at        0.0006899612
+HG3494-HT3688_at 0.0006899612
+L09209_s_at      0.0006899612
+M27891_at        0.0006899612
 \end{Soutput}
 \end{Schunk}
 
@@ -550,12 +550,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    0    0    1    1    1    1    0    0
-[3,]    0    1    1    0    1    0    0    1
-[4,]    1    1    0    0    0    0    1    1
-[5,]    0    1    1    0    1    0    0    1
-[6,]    0    1    1    0    1    0    0    1
-[7,]    0    1    1    0    1    0    0    1
+[2,]    1    0    0    1    0    1    1    0
+[3,]    0    0    1    1    1    1    0    0
+[4,]    1    0    0    1    0    1    1    0
+[5,]    1    0    0    1    0    1    1    0
+[6,]    1    0    0    1    0    1    1    0
+[7,]    1    0    0    1    0    1    1    0
 \end{Soutput}
 \end{Schunk}
 
@@ -578,7 +578,7 @@ This work was done within the context of the Berlin Center for Genome Based Bioi
 \chapter{Differences to earlier versions}
 
 
-\section{Changes in version 1.1}
+\section{Changes in version 1.1.0}
 
 The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
 

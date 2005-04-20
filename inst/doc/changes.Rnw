@@ -25,7 +25,7 @@
 \begin{document}
 \maketitle
 
-\section{Changes in version 1.1}
+\section{Changes in version 1.1.0}
 
 The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
 

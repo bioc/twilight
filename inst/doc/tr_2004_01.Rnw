@@ -24,7 +24,7 @@
 
   
 
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1}%'
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1.0}%'
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -183,7 +183,7 @@ Column \Robject{result\$index} contains the original gene ordering of the input 
 }
 \bigskip       
 
-From version 1.1 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
+From version 1.1.0 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
 
 Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of correlation scores based on \Rfunarg{B} random permutations of \Rfunarg{yin}. All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
 
@@ -377,7 +377,7 @@ This work was done within the context of the Berlin Center for Genome Based Bioi
 \chapter{Differences to earlier versions}
 
 
-\section{Changes in version 1.1}
+\section{Changes in version 1.1.0}
 
 The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
 

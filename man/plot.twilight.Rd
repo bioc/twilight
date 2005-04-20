@@ -1,6 +1,6 @@
 \name{plot.twilight}
 \alias{plot.twilight}
-\title{A plot function for twilight objects.}
+\title{A plot function for twilight objects}
 \description{Interface to plotting of \code{twilight} objects. Produces one of five possible plots.}
 \usage{plot.twilight(x, which = "fdr", grayscale = FALSE, legend = TRUE, ...)}
 \arguments{
@@ -25,9 +25,9 @@ Option \code{which="table"} tabulates histogram \code{"effectsize"}.
 }
 \value{No value is returned except for "table".}
 \references{
-Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, IEEE TCBB 1(3), pp. 98-108.
+Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
 
-Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, PNAS 98(9), pp. 5116-5121.
+Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
  }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight.pval}}, \code{\link{twilight}} }

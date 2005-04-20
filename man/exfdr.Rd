@@ -1,7 +1,7 @@
 \name{exfdr}
 \alias{exfdr}
 \docType{data}
-\title{ Example of twilight result. }
+\title{ Example of twilight result }
 \description{
 Application of function \code{twilight} on twilight object \code{data(expval)}.
 
