@@ -4,6 +4,7 @@ plot.twilight           A plot function for twilight objects
 print.twilight          A print function for twilight objects
 twilight                Estimation of local false discovery rate
 twilight.combi          All permutations of a binary vector
+twilight.filtering      A function for permutation filtering
 twilight.permute.pair   A permutation matrix of paired class labels
 twilight.permute.unpair
                         A permutation matrix of unpaired class labels

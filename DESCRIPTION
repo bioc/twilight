@@ -17,8 +17,8 @@ Description: In a typical microarray setting with gene expression data
         search to estimate local false discovery rates and effect size
         distributions.
 Maintainer: Stefanie Scheid <stefanie.scheid@molgen.mpg.de>
-Depends: R (>= 2.0.0), splines (>= 2.0.0), stats (>= 2.0.0)
-Suggests: golubEsets (>= 1.0), vsn (>= 1.5.4)
+Depends: R (>= 2.1.0), splines (>= 2.2.0), stats (>= 2.2.0), e1071 (>= 1.5-11)
+Suggests: golubEsets (>= 1.0), vsn (>= 1.7.2)
 License: GPL version 2.0 or newer
 URL: http://compdiag.molgen.mpg.de/software/twilight.shtml
 

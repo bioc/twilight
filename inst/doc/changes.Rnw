@@ -1,4 +1,4 @@
-% -*- mode:R -*-
+% -*- mode:Latex -*-
 %\VignetteIndexEntry{Differences to earlier versions of twilight}
 
 \documentclass[11pt,a4paper,fleqn]{article}
@@ -24,6 +24,15 @@
 
 \begin{document}
 \maketitle
+
+\section{Changes in version 1.2.0}
+
+We added the argument \Rfunarg{filtering = FALSE} to function \Rfunction{twilight.pval} which (if set to \Rfunarg{TRUE}) invokes the filtering for class label permutations that produce uniform $p$-value distributions. The set of admissible permutations is found using function \Rfunarg{twilight.filtering} which is called internally in function \Rfunarg{twilight.pval}. However, it can also be used directly.
+
+We changed the local FDR estimation in function \Rfunction{twilight} slightly. Instead of estimating both densities $f_0$ and $f$ from the output of SEP, we rely on the uniform assumption such that $f_0(p)=1$ for all $p \in [0,1]$. Hence, the 10 runs of SEP lead to 10 estimates $\widehat{\pi_0}$. The average of these is taken as the final value which is mutliplied with the density estimate of the mixture density $f$.
+
+The mixture density estimation of $f$ also changed slightly. Still, the estimates are based on smoothed histogram counts. To improve the estimation for very small $p$-values, the histogram bins were changed from equidistant to quantile bins.
+
 
 \section{Changes in version 1.1.0}
 

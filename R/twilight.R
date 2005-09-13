@@ -85,7 +85,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
     }
   }
 
-  ### Compute the final estimates from histogram counts.
+  ### Compute the final estimate for pi0.
   funk.wrap <- function(a,b,c,d){
 
     ### Calling SEP. Returns binary vector (1=included,0=excluded).
@@ -100,44 +100,16 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
     }
 
     bin.vec <- funk.sep(a,b)
-
-    br.br <- c(0.01,0.02,0.04,0.05,0.1)
-    
-    for (i in 1:length(br.br)){
-
-      br <- seq(0,1,by=br.br[i])
-      
-      histmix <- hist(a,plot=FALSE,br=br)
-      hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
-      
-      x <- histmix$mids
-      y <- hist0$density/histmix$density
-
-      if (sum(y==0)==0 & sum(y==Inf)==0 & sum(is.nan(y))==0){break}
-    }
-      
-    smooth <- try(smooth.spline(x,y,df=7,w=1/x),silent=TRUE)
-
-    if (class(smooth)=="try-error"){
-      stop("Twilight cannot run properly.\n The number of features (genes, transcripts etc.) might be too small.\n Also, problems occur if the number of unique p-values is too small (e.g. in case of small sample sizes). Consider computing theoretical p-values using t.test or similar functions.")
-    }
-    
-    sep.pi0 <- sum(bin.vec)/length(bin.vec)
-    sep.H0  <- sep.pi0*predict(smooth,c)$y
-
-    sep.H0[which(sep.H0<0)] <- 0
-    sep.H0[which(sep.H0>1)] <- 1
-
-    res <- list(sep.pi0=sep.pi0,sep.H0=sep.H0)
+    sep.pi0 <- sum(bin.vec)/length(bin.vec)    
+    res     <- list(sep.pi0=sep.pi0)
     
     if (is.null(d)==FALSE){
       br         <- hist(d,plot=FALSE,br=100)$breaks
       sep.effect <- hist(d[as.logical(1-bin.vec)],plot=FALSE,br=br)   
-      res        <- list(sep.pi0=sep.pi0,sep.H0=sep.H0,sep.effect=sep.effect)
+      res        <- list(sep.pi0=sep.pi0,sep.effect=sep.effect)
     }
 
-    if (verbose){cat(".")}
-    
+    if (verbose){cat(".")}    
     return(res)
   }
   
@@ -185,14 +157,32 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
       if (i!=1){sep.effect$counts <- sep.effect$counts + sep.H0[[i]]$sep.effect$counts}
     }
 
-    sep.H0[[i]]$sep.pi0    <- NULL
-    sep.H0[[i]]$sep.effect <- NULL
   }
 
-  sep.H0 <- as.data.frame(sep.H0)
+  br.br <- c(0.01,0.02,0.04,0.05,0.1)    
+  for (i in 1:length(br.br)){
+
+    br <- quantile(pval,seq(0,1,by=br.br[i]))
+      
+    histmix <- hist(pval,plot=FALSE,br=br)
+      
+    x <- histmix$mids
+    y <- 1/histmix$density
+
+    if (sum(y==0)==0 & sum(y==Inf)==0 & sum(is.nan(y))==0){break}
+  }
+      
+  smooth <- try(smooth.spline(x,y,df=7,w=1/x),silent=TRUE)
+  
+  if (class(smooth)=="try-error"){
+    stop("Twilight cannot run properly.\n The number of features (genes, transcripts etc.) might be too small.\n Also, problems occur if the number of unique p-values is too small (e.g. in case of small sample sizes). Consider computing theoretical p-values using t.test or similar functions.")
+  }
 
   sep.pi0 <- mean(sep.pi0)
-  sep.H0  <- apply(sep.H0,1,mean)
+  sep.H0  <- sep.pi0*predict(smooth,pval)$y
+  
+  sep.H0[which(sep.H0<0)] <- 0
+  sep.H0[which(sep.H0>1)] <- 1
 
   if (is.null(score)==FALSE){
     ### mean histogram counts
@@ -227,13 +217,12 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
       
       for (i in 1:length(br.br)){
         
-        br <- seq(0,1,by=br.br[i])
+        br <- quantile(a,seq(0,1,by=br.br[i]))
         
         histmix <- hist(a,plot=FALSE,br=br)
-        hist0   <- hist(a[as.logical(bin.vec)],plot=FALSE,br=histmix$breaks)
         
         x <- histmix$mids
-        y <- hist0$density/histmix$density
+        y <- 1/histmix$density
         
         if (sum(y==0)==0 & sum(y==Inf)==0 & sum(is.nan(y))==0){break}
       }

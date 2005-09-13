@@ -15,9 +15,9 @@ Option \code{which="scores"} plots the expected versus the observed test statist
 
 Option \code{which="qvalues"} plots \eqn{q}-values versus the number of rejected hypotheses.
 
-Option \code{which="fdr"} plots \eqn{u}-values versus 1 - local false discovery rate, that is the conditional probability of being significant given the corresponding \eqn{u}-value, plus bootstrap estimates if computed. Bottom ticks are 1% quantiles of \eqn{u}-values.
+Option \code{which="fdr"} plots \eqn{p}-values versus 1 - local false discovery rate, that is the conditional probability of being significant given the corresponding \eqn{p}-value, plus bootstrap estimates if computed. Bottom ticks are 1\%-quantiles of \eqn{p}-values.
 
-Option \code{which="volcano"} results in the volcano plot, that is observed score versus 1 - local false discovery rate. Bottom ticks are 1% quantiles of scores.
+Option \code{which="volcano"} results in the volcano plot, that is observed score versus 1 - local false discovery rate. Bottom ticks are 1\%-quantiles of scores.
 
 Option \code{which="effectsize"} plots the observed fold change equivalent score distribution overlaid by the estimated effect size distribution, that is distribution of scores under the alternative. This plot is only available if function \code{twilight.pval} was applied with \code{method="fc"} as fold change equivalent scores are computed from log ratios.
 

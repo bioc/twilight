@@ -1,4 +1,4 @@
-% -*- mode:R -*-
+% -*- mode:Latex -*-
 %\VignetteIndexEntry{Estimation of local false discovery rate}
 %\VignetteDepends{splines,stats,golubEsets,vsn}
 %\VignetteKeywords{Gene expression analysis}
@@ -22,9 +22,9 @@
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 \newcommand{\Rfunarg}[1]{{\texttt{#1}}}
 
-  
 
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.1.0}%'
+%---------------------------------------------------------------------------------%  
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.0}
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -36,21 +36,33 @@
 \abstract{This is the vignette of the Bioconductor compliant package \Rpackage{twilight}. We describe our implementation of a stochastic search algorithm to estimate the local false discovery rate. In addition, the package provides functions to test for differential gene expression in the common two-condition setting.}
 \date{}
   
-
-
-\usepackage{/package/R/R-2.0.0/linux/lib/R/share/texmf/Sweave}
+%---------------------------------------------------------------------------------%  
+\usepackage{/package/R/R-2.1.0/linux/lib/R/share/texmf/Sweave}
 \begin{document}
 \maketitle
 
+
+
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
 \chapter{Introduction}
 
-In a typical microarray setting with gene expression data observed under two conditions, the local false discovery rate describes the probability that a gene is not differentially expressed between the two conditions given its corrresponding observed score or $p$-value level. The resulting curve of $p$-values versus local false discovery rate offers an insight into the \textbf{twilight zone} between clear differential and clear non-differential gene expression. The Bioconductor compliant package \Rpackage{twilight} contains two main functions: Function \Rfunction{twilight.pval} performs a two-condition test on differences in means for a given input matrix or expression set (\Rclass{exprSet}) and computes permutation based $p$-values. Function \Rfunction{twilight} performs the successive exclusion procedure described in Scheid and Spang (2004) \cite{scheid04} to estimate local false discovery rates and effect size distributions.
+In a typical microarray setting with gene expression data observed under two conditions, the local false discovery rate describes the probability that a gene is not differentially expressed between the two conditions given its corrresponding observed score or $p$-value level. The resulting curve of $p$-values versus local false discovery rate offers an insight into the \textbf{twilight zone} between clear differential and clear non-differential gene expression. The Bioconductor compliant package \Rpackage{twilight} contains two main functions: Function \Rfunction{twilight.pval} performs a two-condition test on differences in means for a given input matrix or expression set (\Rclass{exprSet}) and computes permutation based $p$-values. Function \Rfunction{twilight} performs the successive exclusion procedure described in Scheid and Spang (2004) \cite{scheid04} to estimate local false discovery rates and effect size distributions. The package is also described in a short application note \cite{scheid05}.
 
 
 
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
+\section*{Acknowledgements}
 
-\chapter{Implemented methods}
-\section{Function \texttt{twilight.pval}: Testing effect sizes}
+This work was done within the context of the Berlin Center for Genome Based Bioinformatics (BCB), part of the German National Genome Network (NGFN), and supported by BMBF grants 031U109C and 03U117 of the German Federal Ministry of Education.
+
+
+
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
+\chapter{Implemented functions}
+\section{\texttt{twilight.pval}: Testing effect sizes}\label{sec_testing}
 
 \fbox{
 \begin{minipage}{0.95\textwidth}
@@ -61,25 +73,27 @@ In a typical microarray setting with gene expression data observed under two con
        
 The input object \Rfunarg{xin} is either a pre-processed gene expression set of class \Rclass{exprSet} or any data matrix where rows correspond to genes and columns to samples. Each sample was taken under one of two distinct conditions, for example under treatment A or treatment B. The functions in package \Rpackage{twilight} are not limited to microarray data only but can be applied to any two-sample data matrix. However, it is necessary for both expression set or numerical matrix that values are on \textbf{additive scale} like log or arsinh scale. The function does not check or transform the data to additive scale. The input vector \Rfunarg{yin} contains condition labels of the samples. Vector \Rfunarg{yin} has to be numeric and dichotomous. Note that in terms of \textit{under}- and \textit{over}-expression, the samples of the higher labeled condition are compared to the samples of the lower labeled condition.
 
-We are given a pre-processed matrix for samples belonging to two distinct conditions A and B, and gene expression values on additive scale. For gene $i$ in the experiment ($i=1,\dots,N$), $\bar \alpha_i$ is the mean expression under condition A and $\bar \beta_i$ is the mean expression under condition B. To test the null hypothesis of no differential gene expression, function \Rfunction{twilight.pval} compares the mean expression levels $\bar \alpha_i$ and $\bar \beta_i$. The current version offers three test variants: The classical $t$-test uses score $T_i$ with
+We are given a preprocessed matrix for samples belonging to two distinct conditions A and B, and gene expression values on additive scale. For gene $i$ in the experiment ($i=1,\dots,N$), $\bar \alpha_i$ is the mean expression under condition A and $\bar \beta_i$ is the mean expression under condition B. To test the null hypothesis of no differential gene expression, function \Rfunction{twilight.pval} compares the mean expression levels $\bar \alpha_i$ and $\bar \beta_i$. The current version offers three test variants: The classical $t$-test uses score $T_i$ with
 \begin{equation}
   T_i=\frac{\bar \alpha_i - \bar \beta_i }{s_i},
 \end{equation}
-where $s_i$ denotes the root pooled variance. The $t$-test is called with \Rfunarg{method="t"}.
+where $s_i$ denotes the pooled standard deviation. The $t$-test is called with \Rfunarg{method="t"}.
 
 The $t$-test score can be misleadingly high if $s_i$ is very small. To overcome this problem, the $Z$-test enlarges the denominator by a fudge factor $s_0$ \cite{tusher01}, \cite{efron01}:
 \begin{equation}
   Z_i=\frac{\bar \alpha_i - \bar \beta_i}{s_i + s_0}.
 \end{equation}
-The $Z$-test is called with \Rfunarg{method="z"}. Fudge factor $s_0$ is set to \Rfunarg{s0=NULL} by default and is only evaluated if \Rfunarg{method="z"}. In that case, it is the median of all root pooled variances $s_1,\dots,s_N$. However, the fudge factor can be chosen manually. Note that if \Rfunarg{method="z"} is chosen with \Rfunarg{s0=0}, the test call is altered to \Rfunarg{method="t"}, the $t$-test as described above.
+The $Z$-test is called with \Rfunarg{method="z"}. Fudge factor $s_0$ is set to \Rfunarg{s0=NULL} by default and is only evaluated if \Rfunarg{method="z"}. In that case, it is the median of the pooled standard deviations $s_1,\dots,s_N$. However, the fudge factor can be chosen manually. Note that if \Rfunarg{method="z"} is chosen with \Rfunarg{s0=0}, the test call is altered to \Rfunarg{method="t"}, the $t$-test as described above.
 
 The third variant is based on log ratios only with score
 \begin{equation}
   F_i=\bar \alpha_i - \bar \beta_i.
 \end{equation}
-The distribution of scores $F_i$ under the alternative is called \textit{effect size distribution}. With expression values on log or arsinh scale, $\exp (|F_i|)$ is an estimator for the fold change. We call $\exp (|F_i|)$ the \textit{fold change equivalent score} \cite{scheid04}. Note that the package contains a function for plotting the effect size distribution which is only available if function \Rfunction{twilight.pval} was run with \Rfunarg{method="fc"}, the fold change test.
+The distribution of scores $F_i$ under the alternative is called \textit{effect size distribution}. With expression values on log or arsinh scale, $\exp (|F_i|)$ is an estimator for the fold change. We call $\exp (|F_i|)$ the \textit{fold change equivalent score} \cite{scheid04}. Note that the package contains a function for plotting the effect size distribution which is only available if function \Rfunction{twilight.pval} was run with \Rfunarg{method="fc"}, the fold change equivalent test.
 
-Function \Rfunction{twilight.pval} handles paired and unpaired data. In the unpaired case (\Rfunarg{paired=FALSE}), only one microarray was hybridized for each patient, like in a treatment and control group setting. In the paired case (\Rfunarg{paired=TRUE}), we observed expression values of the same patient under both conditions. The typical example are before and after treatment experiments, where each patient's expression was measured twice. The input arguments \Rfunarg{xin} and \Rfunarg{yin} do not need to be ordered in a specific manner. It is only necessary that samples within each group have the same order, such that the first samples of the two groups represent the first pair and so on.%'
+Function \Rfunction{twilight.pval} handles paired and unpaired data. In the unpaired case (\Rfunarg{paired=FALSE}), only one microarray was hybridized for each patient, like in a treatment and control group setting. In the paired case (\Rfunarg{paired=TRUE}), we observed expression values of the same patient under both conditions. The typical example are before and after treatment experiments, where each patient's expression was measured twice. %'
+       The input arguments \Rfunarg{xin} and \Rfunarg{yin} do not need to be ordered in a specific manner. It is only necessary that samples within each group have the same order, such that the first samples of the two groups represent the first pair and so on. However, the order of the samples in \Rfunarg{xin} has to equal the order in \Rfunarg{yin}.
+       
 As an example, we apply function \Rfunction{twilight.pval} on the leukemia data set of Golub et al.~(1999) \cite{golub99} as given in \Rfunction{library(golubEsets)}. For normalization, apply the variance-stabilizing method \Rfunction{vsn} in \Rfunction{library(vsn)} \cite{huber02}.
 \begin{Schunk}
 \begin{Sinput}
@@ -88,28 +102,30 @@ As an example, we apply function \Rfunction{twilight.pval} on the leukemia data 
 > id <- as.numeric(golubMerge$ALL.AML)
 \end{Sinput}
 \end{Schunk}
+
 There are 72 samples either expressing acute lymphoblastic leukemia (ALL) or acute myeloid leukemia (AML). As the AML patients are labeled with ``2'' and ALL with ``1'', we compare AML to ALL expression.
 \begin{Schunk}
 \begin{Sinput}
 > golubMerge$ALL.AML
 \end{Sinput}
 \begin{Soutput}
- [1] ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL
-[17] ALL ALL ALL ALL AML AML AML AML AML AML AML AML AML AML AML AML
-[33] AML AML ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL
-[49] ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL AML AML AML
-[65] AML AML AML AML AML AML AML AML
+ [1] ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL
+[18] ALL ALL ALL AML AML AML AML AML AML AML AML AML AML AML AML AML AML
+[35] ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL
+[52] ALL ALL ALL ALL ALL ALL ALL ALL ALL ALL AML AML AML AML AML AML AML
+[69] AML AML AML AML
 Levels: ALL AML
 \end{Soutput}
 \begin{Sinput}
 > id
 \end{Sinput}
 \begin{Soutput}
- [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
-[34] 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2
-[67] 2 2 2 2 2 2
+ [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+[36] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2
+[71] 2 2
 \end{Soutput}
 \end{Schunk}
+
 Additionally to computation of scores, empirical $p$-values are calculated. Argument \Rfunarg{B} specifies the number of permutations with default set to \Rfunarg{B=1000}. The distribution of scores under the null hypothesis is estimated by computing test scores from the same input matrix with randomly permuted class labels. These permutations are either balanced or unbalanced, with default \Rfunarg{balance=FALSE}. The permutation options are described in detail in section \ref{twilight.combi}. For computing empirical $p$-values, we count for each gene how many of \textit{all} absolute permutation scores exceed the absolute observed score, and divide by \Rfunarg{B}$\cdot$(number of genes).
 
 Permutation scores are also used to compute expected scores as described in Tusher et al.~(2001) \cite{tusher01}. In addition, we compute confidence bounds for the maximum absolute difference of each set of permutation scores to expected scores. The width of the confidence bound is chosen with \Rfunarg{quant.ci}. With default \Rfunarg{quant.ci=0.95}, the maximum absolute difference of permutation to expected scores exceeded the confidence bound in only 5\% of all permutations.
@@ -125,11 +141,12 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 120 seconds. 
+Compute expected scores and p-values. This will take approx. 100 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
 \end{Schunk}
+
 The function checks whether complete enumeration of all permutations is possible. Complete enumeration is performed as long as the number of permutations does not exceed 10\,000. The admissible sample sizes depend on whether the experiment was paired or unpaired and whether balanced or unbalanced permutations are used. Details are given in section \ref{twilight.combi}.
 The values in the accompanying data set \Robject{expval} were computed in the same manner as in the example above.
 \begin{Schunk}
@@ -145,12 +162,13 @@ The values in the accompanying data set \Robject{expval} were computed in the sa
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6198193 
+0.6183055 
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
 \end{Soutput}
 \end{Schunk}
+
 The output object of function \Rfunction{twilight.pval} is of class \Rclass{twilight} with several elements stored in a list.
 \begin{Schunk}
 \begin{Sinput}
@@ -167,6 +185,7 @@ The output object of function \Rfunction{twilight.pval} is of class \Rclass{twil
 [7] "boot.ci"  "effect"   "call"    
 \end{Soutput}
 \end{Schunk}
+
 The element \Robject{quant.ci} contains the corresponding input value which is passed to the plotting function. Element \Robject{ci.line} is used for plotting confidence bounds and contains the computed quantile of maximum absolute differences.  The output dataframe \Robject{result} contains a matrix with several columns.
 \begin{Schunk}
 \begin{Sinput}
@@ -177,30 +196,26 @@ The element \Robject{quant.ci} contains the corresponding input value which is p
  [6] "fdr"       "mean.fdr"  "lower.fdr" "upper.fdr" "index"    
 \end{Soutput}
 \end{Schunk}
+
 The dataframe stores observed and expected scores and corresponding empirical $p$-values. The genes are ordered by absolute observed test scores. Genes with observed score exceeding the confidence bounds are marked as ``1'' in the binary vector \Robject{result\$candidate}. The output object is passed to function \Rfunction{plot.twilight} to produce a plot as in Tusher et al.~(2001) \cite{tusher01} with additional confidence lines and genes marked as candidates, see Figure \ref{fig_scores}.
+{\small
 \begin{Schunk}
 \begin{Sinput}
 > expval$result[1:7, 1:5]
 \end{Sinput}
 \begin{Soutput}
-                observed   expected candidate       pvalue
-M84526_at       3.990578  1.1115133         1 1.402721e-07
-M27891_at       3.669657  0.9761424         1 2.805443e-07
-M89957_at      -3.153319 -1.0965293         1 4.208164e-07
-X82240_rna1_at -3.111376 -0.9599907         1 5.610885e-07
-U89922_s_at    -2.954233 -0.8874557         1 7.013606e-07
-M19507_at       2.925666  0.9013118         1 8.416328e-07
-M11722_at      -2.689999 -0.8352241         1 9.819049e-07
-                     qvalue
-M84526_at      0.0006198193
-M27891_at      0.0006198193
-M89957_at      0.0006198193
-X82240_rna1_at 0.0006198193
-U89922_s_at    0.0006198193
-M19507_at      0.0006198193
-M11722_at      0.0006198193
+                observed   expected candidate       pvalue       qvalue
+M84526_at       3.990578  1.1016438         1 1.402721e-07 0.0006183055
+M27891_at       3.669657  0.9677828         1 2.805443e-07 0.0006183055
+M89957_at      -3.153319 -1.1079169         1 4.208164e-07 0.0006183055
+X82240_rna1_at -3.111376 -0.9719905         1 5.610885e-07 0.0006183055
+U89922_s_at    -2.954233 -0.9038190         1 7.013606e-07 0.0006183055
+M19507_at       2.925666  0.8963811         1 8.416328e-07 0.0006183055
+M11722_at      -2.689999 -0.8496084         1 9.819049e-07 0.0006183055
 \end{Soutput}
 \end{Schunk}
+}
+       
 \begin{figure}[t]
 \begin{center}
 \includegraphics{tr_2004_01-010}
@@ -208,42 +223,44 @@ M11722_at      0.0006198193
 \end{center}
 \end{figure}
 
+
 In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0$ are computed as described in Remark B of Storey and Tibshirani (2003) \cite{storey03}. These are stored in \Robject{result\$qvalue} (see above) and \Robject{pi0}. The remaing output elements of \Robject{expval} are left free to be filled by function \Rfunction{twilight}. With \Rfunarg{"qvalues"}, Figure \ref{fig_qvalues} shows the plot of $q$-values against the corresponding number of rejected hypotheses.
 \begin{Schunk}
 \begin{Sinput}
 > expval$pi0
 \end{Sinput}
 \begin{Soutput}
-[1] 0.6198193
+[1] 0.6183055
 \end{Soutput}
 \end{Schunk}
 
 \begin{figure}[t]       
 \begin{center}
 \includegraphics{tr_2004_01-012}
-\caption{Stairplot of $q$-values against the resulting size of list of significant genes. A list containing all genes with $q \leq q_0$ has an estimated global false discovery rate of $q_0$. The plotting call is \texttt{plot(expval,which="qvalues")}.}\label{fig_qvalues}
+\caption{Stairplot of $q$-values against the resulting size of the list of significant genes. A list containing all genes with $q \leq q_0$ has an estimated global false discovery rate of $q_0$. The plotting call is \texttt{plot(expval,which="qvalues")}.}\label{fig_qvalues}
 \end{center}
 \end{figure}
 
 Column \Robject{result\$index} contains the original gene ordering of the input object. With these numbers, resorting of the \Robject{result} table is possible without knowing the original order of the row names.
 
 
-
-
-
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
 \clearpage
-\section{Function \texttt{twilight.pval}: Testing correlation}
+\section{\texttt{twilight.pval}: Testing correlation}\label{sec_correlation}
 
 \fbox{
 \begin{minipage}{0.95\textwidth}
-\Rfunction{twilight.pval(xin, yin, method="fc", B=1000, quant.ci=0.95, verbose=TRUE)}
+\Rfunction{twilight.pval(xin, yin, method="fc", B=1000, yperm=NULL, quant.ci=0.95, verbose=TRUE)}
 \end{minipage}
 }
 \bigskip       
 
 From version 1.1.0 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
 
-Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of correlation scores based on \Rfunarg{B} random permutations of \Rfunarg{yin}. All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
+Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of $p$-values based on \Rfunarg{B} random permutations of \Rfunarg{yin}. A matrix of user-specified permutations can be passed on using argument \Rfunarg{yperm}. Here, each row has to contain a permutation of \Rfunarg{yin}. Note that the values in \Rfunarg{yperm} have to be changed to ranks beforehand if Spearman correlation is to be computed.
+
+All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -253,7 +270,7 @@ Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Onl
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 120 seconds. 
+Compute expected scores and p-values. This will take approx. 70 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -268,44 +285,36 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6899612 
+0.6921548 
 
  Function call:
  Test: spearman. Number of permutations: 1000. 
 \end{Soutput}
 \end{Schunk}
+
 Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted as the overall percentage of genes not correlated to the clinical parameter under the null hypothesis.
 
+{\small
 \begin{Schunk}
 \begin{Sinput}
 > corr$result[1:10, 1:5]
 \end{Sinput}
 \begin{Soutput}
-                  observed  expected candidate       pvalue
-M84526_at        1.0000000 0.4218048         1 1.402721e-07
-X95735_at        0.7518490 0.3971649         1 2.805443e-07
-M83667_rna1_s_at 0.7416554 0.3830048         1 4.208164e-07
-X52056_at        0.7362531 0.3736205         1 5.610885e-07
-X62654_rna1_at   0.7274744 0.3663006         1 7.013606e-07
-X62320_at        0.7260274 0.3603383         1 8.416328e-07
-X61587_at        0.7236478 0.3551547         1 9.819049e-07
-HG3494-HT3688_at 0.7194353 0.3506197         1 1.122177e-06
-L09209_s_at      0.7188565 0.3465546         1 1.262449e-06
-M27891_at        0.7095633 0.3430968         1 1.402721e-06
-                       qvalue
-M84526_at        0.0006899612
-X95735_at        0.0006899612
-M83667_rna1_s_at 0.0006899612
-X52056_at        0.0006899612
-X62654_rna1_at   0.0006899612
-X62320_at        0.0006899612
-X61587_at        0.0006899612
-HG3494-HT3688_at 0.0006899612
-L09209_s_at      0.0006899612
-M27891_at        0.0006899612
+                  observed  expected candidate       pvalue       qvalue
+M84526_at        1.0000000 0.4249485         1 1.402721e-07 0.0006921548
+X95735_at        0.7518490 0.3978840         1 2.805443e-07 0.0006921548
+M83667_rna1_s_at 0.7416554 0.3839822         1 4.208164e-07 0.0006921548
+X52056_at        0.7362531 0.3739472         1 5.610885e-07 0.0006921548
+X62654_rna1_at   0.7274744 0.3665945         1 7.013606e-07 0.0006921548
+X62320_at        0.7260274 0.3606295         1 8.416328e-07 0.0006921548
+X61587_at        0.7236478 0.3555246         1 9.819049e-07 0.0006921548
+HG3494-HT3688_at 0.7194353 0.3512592         1 1.122177e-06 0.0006921548
+L09209_s_at      0.7188565 0.3472450         1 1.262449e-06 0.0006921548
+M27891_at        0.7095633 0.3437119         1 1.402721e-06 0.0006921548
 \end{Soutput}
 \end{Schunk}
-
+}
+ 
 \begin{figure}[t]
 \begin{center}
 \includegraphics{tr_2004_01-015}
@@ -315,9 +324,89 @@ M27891_at        0.0006899612
 
 
 
-
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
 \clearpage
-\section{Function \Rfunction{twilight}}
+\section{\texttt{twilight.filtering}: Filtering permutations}\label{sec_filtering}
+
+\fbox{
+\begin{minipage}{0.95\textwidth}
+\Rfunction{twilight.pval(..., filtering = FALSE)}\\[0.3cm]
+\Rfunction{twilight.filtering(xin, yin, method = "fc", paired = FALSE, s0 = 0, verbose = TRUE, num.perm = 1000, num.take = 50)}
+\end{minipage}
+}
+\bigskip       
+
+From version 1.2.0 on, we included an permutation filtering algorithm. In a permutation based test approach, each permutation of the given class labels is thought to reflect the complete null model. However, in applications to real biological data, we often observe that certain permutations produce score distributions that still have larger margins than expected. Therefore, we treat each permutation as the original labeling, transform the permutation scores to pooled $p$-values and test the resulting distribution for uniformity. In an iterative search, we filter for a set of permutations whose $p$-value distributions fit well to a uniform distribution.
+
+The filtering is added as an optional argument in function \Rfunction{twilight.pval}. Although large parts of the algorithm are written in C, the filtering is still time-consuming. Therefore, the default within \Rfunction{twilight.pval} is set to \Rfunarg{FALSE}. If \Rfunarg{filtering=TRUE}, the filtering is called internally with all the test parameters as given by the user. The only exception is the balancing parameter: The filtering is done on unbalanced permutations however \Rfunarg{balance} is specified. Balancing is just a simplier way to select a set of permutations that are not too close to the given labeling. However, this will not remove other sources of deviation from a complete null distribution as the filtering does.
+
+Calling the filtering within \Rfunction{twilight.pval} is very convenient. If one wants to further examine the filtered permutations, function \Rfunarg{twilight.filtering} can be called directly. Most input arguments equal those of function \Rfunarg{twilight.pval}, see Sections \ref{sec_testing} and \ref{sec_correlation} for details on the different methods and formats. Only the fugde factor \Rfunarg{s0} differs. It takes effect only if \Rfunarg{method="z"} and is computed as the median pooled standard deviation if \Rfunarg{s0=0}.
+
+The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important. The first one is the number of wanted permutations. Within \Rfunction{twilight.pval}, it is set to \Rfunarg{B}. The argument \Rfunarg{num.take} specifies the number of valid permutations that are kept in each step of the iteration. Within each step, this number increases by \Rfunarg{num.take}. Hence, \Rfunarg{num.take} might be chosen such that \Rfunarg{num.take} is a divisor of \Rfunarg{num.perm}. Within \Rfunction{twilight.pval}, \Rfunarg{num.take} is set to the minimum of 50 and \Rfunarg{num.perm}/20.       
+
+The output of function \Rfunction{twilight.filtering} is a list with two elements. The first element, \Rfunarg{yperm}, is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
+
+The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}.
+       
+The second output element is the numerical value \Rfunarg{test}. For each filtered permutation, the Hamming distance to the original labeling \Rfunarg{yin} is computed. The resulting distribution of Hamming distances is tested for randomness using a $\chi^2$-test against the expected frequencies of Hamming distances resulting from all possible permutations of \Rfunarg{yin}. The resulting $\chi^2$ $p$-value is stored in \Rfunarg{test}. A significant $p$-value gives evidence that the filtering did \textit{not} leave a random subset of possible permutations. However, an effective run of \Rfunction{twilight.filtering} results in a \textit{non}-significant $\chi^2$ $p$-value \Rfunarg{test}. Within \Rfunction{twilight.pval}, the result of the $\chi^2$ test is reported in the output element \Rfunarg{call} if \Rfunarg{filtering=TRUE}.
+
+As an illustration, we proceed with a quick example of permutation filtering. We perform the filtering on log ratio scores and only filter for 50 permutations in steps of 10.
+
+\begin{Schunk}
+\begin{Sinput}
+> a <- twilight.filtering(golubNorm, id, method = "fc", num.perm = 50, 
++     num.take = 10)
+\end{Sinput}
+\begin{Soutput}
+Filtering: Wait for 5 to 15 dots .....done
+\end{Soutput}
+\begin{Sinput}
+> dim(a$yperm)
+\end{Sinput}
+\begin{Soutput}
+[1] 50 72
+\end{Soutput}
+\begin{Sinput}
+> a$test
+\end{Sinput}
+\begin{Soutput}
+[1] 0.3610339
+\end{Soutput}
+\end{Schunk}
+
+The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. The resulting histogram is shown in Figure \ref{fig_histo}.
+
+\begin{Schunk}
+\begin{Sinput}
+> b <- twilight.pval(golubNorm, a$yperm[1, ], method = "fc", 
++     yperm = a$yperm)
+\end{Sinput}
+\begin{Soutput}
+Compute vector of observed statistics. 
+Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute q-values. 
+Compute values for confidence lines. 
+\end{Soutput}
+\begin{Sinput}
+> hist(b$result$pvalue, col = "gray", br = 20)
+\end{Sinput}
+\end{Schunk}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics{tr_2004_01-018}
+\caption{Histogram of $p$-values of one filtered permutation. The $p$-values are computed from pooling the scores of the set of filtered permutations. The resulting distribution appears to be uniform.}\label{fig_histo}
+\end{center}
+\end{figure}
+
+
+
+
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%         
+\clearpage
+\section{\Rfunction{twilight}: Estimating the local FDR}
 
 \fbox{
 \begin{minipage}{0.95\textwidth}
@@ -330,16 +419,17 @@ Local false discovery rates (fdr) are estimated from a simple mixture model give
 \begin{equation}
 f(t) = \pi_0 \, f_0(t) + (1-\pi_0) \, f_1(t) \quad \Rightarrow \quad \mbox{fdr}(t)=\pi_0 \, \frac{f_0(t)}{f(t)},
 \end{equation}
-where $\pi_0 \in [0,1]$ is the overall percentage of non-induced genes. Terms $f_0$ and $f_1$ are score densities under no induction and under induction respectively. Assume that there exists a transformation $W$ such that $U=W(T)$ is uniformly distributed in $[0,1]$ for all genes not differentially expressed. In a multiple testing scenario these $u$-values are $p$-values corresponding to the set of observed scores. However, we do not regard the local false discovery rate as a multiple error rate but as an exploratory tool to describe a microarray experiment over the whole range of significance, thus speaking of $u$-values instead of $p$-values.
+where $\pi_0 \in [0,1]$ is the overall percentage of non-induced genes. Terms $f_0$ and $f_1$ are score densities under no induction and under induction respectively. Assume that there exists a transformation $W$ such that $U=W(T)$ is uniformly distributed in $[0,1]$ for all genes not differentially expressed. In a multiple testing scenario these $u$-values are $p$-values corresponding to the set of observed scores. However, we do not regard the local false discovery rate as a multiple error rate but as an exploratory tool to describe a microarray experiment over the whole range of significance.
 
-Mapping scores to $u$-values allows to assume $f_0(u)$ to be the uniform density instead of specifying the null density $f_0(t)$ with respect to a chosen scoring method. The implemented successive exclusion procedure (SEP) splits any vector of $u$-values into a uniformly distributed null part and an alternative part. The uniform part represents genes that are not differentially expressed. Based on histogram counts of the null and the alternative part, we estimate local false discovery rates. These denote the conditional probability of being non-induced given we observe a certain $u$-value level. The proportion of the uniform part to the total number of genes in the experiment is a natural estimator for percentage $\pi_0$. The successive exclusion procedure is described in detail in Scheid and Spang (2004) \cite{scheid04}. The functionality of \Rfunction{twilight} is not limited to microarray experiments. In principle, any vector of $u$-values can be passed to \Rfunction{twilight} as long as the assumption of uniformity under the null hypothesis is valid.
+Mapping scores to $p$-values allows to assume $f_0(p)$ to be the uniform density instead of specifying the null density $f_0(t)$ with respect to a chosen scoring method. The implemented successive exclusion procedure (SEP) splits any vector of $p$-values into a uniformly distributed null part and an alternative part. The uniform part represents genes that are not differentially expressed. The proportion of the uniform part to the total number of genes in the experiment is a natural estimator for percentage $\pi_0$. We apply a smoothed density estimate based on the histogram counts of the observed mixture to estimate $f(p)$. Assuming uniformity leads to $f_0(p)=1$ for all $p \in [0,1]$. Hence, the ratio of the estimates $\widehat{\pi_0}$ and $\hat f(p)$ estimates the local false discovery rate for a certain $p$-value level.
+       
+The successive exclusion procedure is described in detail in Scheid and Spang (2004) \cite{scheid04}. The functionality of \Rfunction{twilight} is not limited to microarray experiments. In principle, any vector of $p$-values can be passed to \Rfunction{twilight} as long as the assumption of uniformity under the null hypothesis is valid.
 
+The objective function in \Rfunction{twilight} includes a penalty term that is controlled by the regularization parameter $\lambda \geq 0$. The regularization ensures that we find a separation such that the uniform part contains as many $p$-values as possible. As percentage $\pi_0$ is often underestimated, the inclusion of a penalty term results in a more ``conservative'' estimate that is usually less biased. If not specified (\Rfunarg{lambda=NULL}), function \Rfunction{twilight.getlambda} finds a suitable $\lambda$.
 
-The objective function in \Rfunction{twilight} includes a penalty term that is controlled by regularization parameter $\lambda \geq 0$. The regularization ensures that we find a separation such that the uniform part contains as many $u$-values as possible. As percentage $\pi_0$ is often underestimated, the inclusion of a penalty term results in a more ``conservative'' estimate that is usually less biased. If not specified (\Rfunarg{lambda=NULL}), function \Rfunction{twilight.getlambda} finds a suitable $\lambda$.
+The estimates for probability $\pi_0$ and the local false discovery rate are averaged over 10 runs of SEP. In addition, bootstrapping can be performed to give bootstrap estimates and bootstrap percentile confidence intervals on both $\pi_0$ and the local false discovery rate. The number of bootstrap samples is set by argument \Rfunarg{B}, and the width of the bootstrap confidence interval is set by argument \Rfunarg{boot.ci}.
 
-The estimates for probability $\pi_0$ and local false discovery rate are averaged over 10 runs of SEP. In addition, bootstrapping can be performed to give bootstrap estimates and bootstrap percentile confidence intervals on both $\pi_0$ and local false discovery rate. The number of bootstrap samples is set by argument \Rfunarg{B}, and the width of the bootstrap confidence interval is set by argument \Rfunarg{boot.ci}.
-
-Function \Rfunction{twilight} takes \Rclass{twilight} objects or any vector of $u$-values as input and returns a \Rclass{twilight} object. If the input is of class \Rclass{twilight}, the function works on the set of empirical $p$-values and fills in the remaining output elements. Note that the estimate for $\pi_0$ is replaced, and $q$-values are recalculated with the new estimate $\pi_0$.
+Function \Rfunction{twilight} takes \Rclass{twilight} objects or any vector of $p$-values as input and returns a \Rclass{twilight} object. If the input is of class \Rclass{twilight}, the function works on the set of empirical $p$-values and fills in the remaining output elements. Note that the estimate for $\pi_0$ is replaced, and $q$-values are recalculated with the new estimate $\pi_0$.
 As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confidence intervals: \Rfunction{twilight(xin=expval, B=1000, boot.ci=0.95)}, as was done for data set \Robject{exfdr}.
 \begin{Schunk}
 \begin{Sinput}
@@ -357,11 +447,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
  Bootstrap estimate of percentage of non-induced
  genes with lower and upper 95% CI:
        pi0 lower.pi0 upper.pi0
- 0.6282096 0.5981204 0.6575992
+ 0.6284421  0.597966  0.660822
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
- Function twilight used lambda = 0.03 
+ Function twilight used lambda = 0.04 
 \end{Soutput}
 \end{Schunk}
 \begin{Schunk}
@@ -369,36 +459,36 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
 > exfdr$result[1:5, 6:9]
 \end{Sinput}
 \begin{Soutput}
-                      fdr  mean.fdr  lower.fdr upper.fdr
-M84526_at      0.08605050 0.1024667 0.08325147 0.1342973
-M27891_at      0.08605105 0.1024672 0.08325201 0.1342977
-M89957_at      0.08605159 0.1024677 0.08325255 0.1342982
-X82240_rna1_at 0.08605214 0.1024682 0.08325308 0.1342986
-U89922_s_at    0.08605268 0.1024687 0.08325362 0.1342990
+                      fdr   mean.fdr   lower.fdr  upper.fdr
+M84526_at      0.01097114 0.01102306 0.007740231 0.01445051
+M27891_at      0.01097223 0.01102416 0.007741342 0.01445161
+M89957_at      0.01097333 0.01102526 0.007742453 0.01445272
+X82240_rna1_at 0.01097442 0.01102637 0.007743564 0.01445382
+U89922_s_at    0.01097551 0.01102747 0.007744675 0.01445492
 \end{Soutput}
 \end{Schunk}
-The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $u$-values against the corresponding conditional probabilities of being induced given the $u$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
+
+The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $p$-values against the corresponding conditional probabilities of being induced given the $p$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-018}
-\caption{Curve of estimated local false discovery over $u$-values. The red lines denote the bootstrap mean (solid line) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $u$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
+\includegraphics{tr_2004_01-021}
+\caption{Curve of estimated local false discovery over $p$-values. The red lines denote the bootstrap mean (solid line) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $p$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
 \end{center}
 \end{figure}
 
-
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-019}
+\includegraphics{tr_2004_01-022}
 \caption{Volcano plot of observed test scores versus local false discovery rate. The bottom ticks are 1\% quantiles of observed scores. The plotting call is \texttt{plot(exfdr,which="volcano")}.}\label{fig_volcano}
 \end{center}
 \end{figure}
 
-Output element \Robject{effect} contains histogram information about the effect size distribution, that is log ratio under the alternative. One run of the successive exclusion procedure results in a split of the input $u$-value vector into a null and an alternative part. We estimate the effect size distribution from the distribution of log ratio scores corresponding to $u$-values in the alternative part. Again, this estimate is averaged over 10 runs of the procedure. Argument \Rfunarg{which="effectsize"} produces the histogram of all observed log ratios overlaid with the averaged histogram of log ratios in the alternative, see Figure \ref{fig_effectsize}. The x-axis is changed to fold change equivalent scores or rather to increase in effect size. Given an observed log ratio $F$, the increase in effect size is $(\exp (|F|)-1) \cdot \mbox{sign} (F) \cdot 100\%$. A value of 0\% corresponds to no change (fold change of 1), a value of 50\% to fold change 1.5 and so on. A value of -100\% corresponds to a 2-fold down-regulation, that is fold change of 0.5.
+Output element \Robject{effect} contains histogram information about the effect size distribution, that is log ratio under the alternative. One run of the successive exclusion procedure results in a split of the input $p$-value vector into a null and an alternative part. We estimate the effect size distribution from the distribution of log ratio scores corresponding to $p$-values in the alternative part. Again, this estimate is averaged over 10 runs of the procedure. Argument \Rfunarg{which="effectsize"} produces the histogram of all observed log ratios overlaid with the averaged histogram of log ratios in the alternative, see Figure \ref{fig_effectsize}. The x-axis is changed to fold change equivalent scores or rather to increase in effect size. Given an observed log ratio $F$, the increase in effect size is $(\exp (|F|)-1) \cdot \mbox{sign} (F) \cdot 100\%$. A value of 0\% corresponds to no change (fold change of 1), a value of 50\% to fold change 1.5 and so on. A value of -100\% corresponds to a 2-fold down-regulation, that is fold change of 0.5.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tr_2004_01-020}
+\includegraphics{tr_2004_01-023}
 \caption{Observed effect size distribution (gray histogram) overlaid with the estimated effect size distribution under the null hypothesis (black histogram). The plotting call is \texttt{plot(exfdr,which="effectsize",legend=T)}.}\label{fig_effectsize}
 \end{center}
 \end{figure}
@@ -411,27 +501,25 @@ The last plotting argument \Rfunarg{which="table"} tabulates the histogram infor
 \end{Sinput}
 \begin{Soutput}
        LogRatio Mixture Alternative
--2234%    -3.15       2         2.0
+-2234%    -3.15       2         1.9
 -2012%    -3.05       0         0.0
--1811%    -2.95       1         0.6
+-1811%    -2.95       1         0.8
 -1629%    -2.85       0         0.0
 -1464%    -2.75       0         0.0
 -1315%    -2.65       1         1.0
 -1181%    -2.55       0         0.0
--1059%    -2.45       1         0.9
+-1059%    -2.45       1         1.0
 \end{Soutput}
 \end{Schunk}
 
-       
-The input argument \Rfunarg{clus} of function \Rfunction{twilight} is used to perform parallel computation within \Rfunction{twilight}. Parallelizing saves computation time which is especially useful if the number of bootstrap samples \Rfunarg{B} is large. With default \Rfunarg{clus=NULL}, no parallelizing is done. If specified, \Rfunarg{clus} is passed as input argument to \Rfunction{makeCluster} in \Rfunction{library(snow)}. Please make sure that \Rfunction{makeCluster(clus)} works properly in your environment.
+The input argument \Rfunarg{clus} of function \Rfunction{twilight} is used to perform parallel computation within \Rfunction{twilight}. Parallelization saves computation time which is especially useful if the number of bootstrap samples \Rfunarg{B} is large. With default \Rfunarg{clus=NULL}, no parallelization is done. If specified, \Rfunarg{clus} is passed as input argument to \Rfunction{makeCluster} in \Rfunction{library(snow)}. Please make sure that \Rfunction{makeCluster(clus)} works properly in your environment.
 
 
 
-
-
-
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
 \clearpage
-\section{Function \Rfunction{twilight.combi}}\label{twilight.combi}
+\section{\Rfunction{twilight.combi}: Enumerating permutations of binary vectors}\label{twilight.combi}
 
 \fbox{
 \begin{minipage}{0.95\textwidth}
@@ -455,6 +543,7 @@ m = \frac{5!}{2! \cdot 3!} = 10.
 [1] 0 0 1 1 1
 \end{Soutput}
 \end{Schunk}
+
 \begin{Schunk}
 \begin{Sinput}
 > twilight.combi(x, pin = FALSE, bin = FALSE)
@@ -473,6 +562,7 @@ m = \frac{5!}{2! \cdot 3!} = 10.
 [10,]    1    1    1    0    0
 \end{Soutput}
 \end{Schunk}
+
 Each row contains one permutation. The first row contains the input vector. In balanced permutations, we omit those rows where both original zeros have been shifted to the last three columns. The number of balanced rows is
 \begin{equation}
 m = {2 \choose 1} \cdot \frac{3!}{1! \cdot 2!} = 6.
@@ -507,6 +597,7 @@ m = \frac{1}{2} \cdot 2^4 = 2^3 = 8.
 [1] 0 0 0 0 1 1 1 1
 \end{Soutput}
 \end{Schunk}
+
 \begin{Schunk}
 \begin{Sinput}
 > twilight.combi(y, pin = TRUE, bin = FALSE)
@@ -550,34 +641,31 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    1    0    0    1    0    1    1    0
-[3,]    0    0    1    1    1    1    0    0
-[4,]    1    0    0    1    0    1    1    0
-[5,]    1    0    0    1    0    1    1    0
-[6,]    1    0    0    1    0    1    1    0
-[7,]    1    0    0    1    0    1    1    0
+[2,]    1    1    0    0    0    0    1    1
+[3,]    0    1    1    0    1    0    0    1
+[4,]    0    1    1    0    1    0    0    1
+[5,]    0    0    1    1    1    1    0    0
+[6,]    0    1    1    0    1    0    0    1
+[7,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
 
 
 
 
-
-
-\section*{Acknowledgements}
-
-This work was done within the context of the Berlin Center for Genome Based Bioinformatics (BCB), part of the German National Genome Network (NGFN), and supported by BMBF grants 031U109C and 03U117 of the German Federal Ministry of Education.
-
-
-
-
-
-
-
-
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
+\section{Changes in version 1.2.0}
 
+We added the argument \Rfunarg{filtering = FALSE} to function \Rfunction{twilight.pval} which (if set to \Rfunarg{TRUE}) invokes the filtering for class label permutations that produce uniform $p$-value distributions. The set of admissible permutations is found using function \Rfunarg{twilight.filtering} which is called internally in function \Rfunarg{twilight.pval}. However, it can also be used directly.
+
+We changed the local FDR estimation in function \Rfunction{twilight} slightly. Instead of estimating both densities $f_0$ and $f$ from the output of SEP, we rely on the uniform assumption such that $f_0(p)=1$ for all $p \in [0,1]$. Hence, the 10 runs of SEP lead to 10 estimates $\widehat{\pi_0}$. The average of these is taken as the final value which is mutliplied with the density estimate of the mixture density $f$.
+
+The mixture density estimation of $f$ also changed slightly. Still, the estimates are based on smoothed histogram counts. To improve the estimation for very small $p$-values, the histogram bins were changed from equidistant to quantile bins.
+       
+       
 \section{Changes in version 1.1.0}
 
 The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
@@ -602,18 +690,8 @@ The \Rfunarg{which} argument of the plot command changed from \Rfunction{plot1} 
 
        
 
-
-
-
-       
-
-
-
-
-
-
-
-       
+%---------------------------------------------------------------------------------%  
+%---------------------------------------------------------------------------------%         
 \begin{thebibliography}{1}
 
 \bibitem{efron01}
@@ -628,6 +706,9 @@ T.R. Golub, D.K. Slonim, P. Tamayo, C. Huard, M. Gaasenbeek, J.P. Mesirov, H. Co
 \bibitem{scheid04}
 S. Scheid and R. Spang, "A stochastic downhill search algorithm for estimating the local false discovery rate", \emph{IEEE Transactions on Computational Biology and Bioinformatics}, vol. 1, no. 3, pp. 98-108, 2004.
 
+\bibitem{scheid05}
+S. Scheid and R. Spang, "twilight; a Bioconductor package for estimating the local false discovery rate", \emph{Bioinformatics}, vol. 21, no. 12, pp. 2921-2922, 2005.
+       
 \bibitem{storey03}
 J.D. Storey and R. Tibshirani, ``Statistical significance for genomewide studies'', \textit{Proc. Natl. Acad. Sci.}, vol. 100, no. 16, pp. 9440-9445, 2003.
 

@@ -11,8 +11,8 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
 ###
 ### "qvalues": q-values vs. number of rejected hypotheses.
 ###
-### "fdr": u-values vs. 1 - local false discovery rate.
-###          Bottom ticks are 1% quantiles of u-values.
+### "fdr": p-values vs. 1 - local false discovery rate.
+###          Bottom ticks are 1% quantiles of p-values.
 ###          If computed, with bootstrap estimate and bootstrap confidence interval.
 ###
 ### "volcano": Volcano plot: Observed scores vs. local false discovery rate.
@@ -82,7 +82,7 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
     q.tick <- quantile(yin$result$pvalue,seq(0,1,by=0.01))
 
     if (kol==TRUE){
-      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="u-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="p-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
       lines(c(-10,10),c(0,0),col=gray(0.5))
       if (is.nan(yin$result$mean.fdr[1])==FALSE){
         lines(yin$result$pvalue,1-yin$result$lower.fdr,col=gray(0.5),lty=2)
@@ -97,7 +97,7 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
     }
 
     if (kol==FALSE){
-      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="u-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="p-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
       lines(c(-10,10),c(0,0),col=gray(0.5))
       if (is.nan(yin$result$mean.fdr[1])==FALSE){
         lines(yin$result$pvalue,1-yin$result$lower.fdr,col="red",lty=2)

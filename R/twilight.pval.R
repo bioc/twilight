@@ -1,4 +1,4 @@
-twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,balance=FALSE,quant.ci=0.95,s0=NULL,verbose=TRUE){ 
+twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,balance=FALSE,quant.ci=0.95,s0=NULL,verbose=TRUE,filtering=FALSE){ 
 ### Function computes test statistics for paired or unpaired twosided
 ### t-test, Z-test or Fold change test.
 ###
@@ -26,6 +26,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 ### "s0":       Fudge factor for Z test. If s0=NULL, s0 is set to median of
 ###             root pooled variances in test statistic.
 ### "verbose":  TRUE or FALSE.
+### "filtering":TRUE or FALSE. Invokes filtering for permutations producing a complete null.
 ###
 ### OUTPUT
 ###
@@ -107,29 +108,60 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
       }
     }
   }
-  
-  ### prepare matrix of permuted index labels.
-  if ((method!="pearson")&(method!="spearman")){
-    if (is.null(yperm)){
-      yperm <- twilight.combi(yin,pin=paired,bin=balance)
-      if ((!is.null(yperm))&(verbose)){
-        cat("Complete enumeration possible. \n")
-      }
-    }
-    if ((is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
-    if ((is.null(yperm))&(paired==FALSE)){
-      yperm <- twilight.permute.unpair(yin,B,balance)
-    }
-    if ((is.null(yperm))&(paired==TRUE)){
-      yperm <- twilight.permute.pair(yin,B,balance)
-    }
-  }
+
+  ### transform to ranks for Spearman coefficient.
   if (method=="spearman"){
     yin <- rank(yin)
     xin <- t(apply(xin,1,rank))
   }  
-  if ((method=="pearson")|(method=="spearman")){
-    yperm <- twilight.permute.unpair(yin,B,bal=FALSE)
+
+  
+  ### Z test with s0=0 is a t test.
+  if (is.null(s0)==FALSE){
+    if((s0==0)&(method=="z")){method <- "t"}
+  }
+  
+  if (is.null(s0)){s0 <- 0}
+
+  
+  ### prepare matrix of permuted index labels without filtering.
+  if ((!filtering)&is.null(yperm)){
+    if ((method!="pearson")&(method!="spearman")){
+      yperm <- twilight.combi(yin,pin=paired,bin=balance)
+      if ((!is.null(yperm))&(verbose)){cat("Complete enumeration possible. \n")}
+      if (( is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
+      
+      if ((is.null(yperm))&(paired==FALSE)){
+        yperm <- twilight.permute.unpair(yin,B,balance)
+      }
+      if ((is.null(yperm))&(paired==TRUE)){
+        yperm <- twilight.permute.pair(yin,B,balance)
+      }
+    }
+    if ((method=="pearson")|(method=="spearman")){
+      yperm <- twilight.permute.unpair(yin,B,bal=FALSE)
+    }
+  }
+
+  
+  ### prepare matrix of permuted index labels with filtering.
+  if ((filtering)&is.null(yperm)){
+    if (balance){cat("Note that the filtering is done on UNbalanced permutations although you have chosen 'balance=TRUE'. \n")}
+    balance <- FALSE
+    
+    num.perm <- B
+    num.take <- min(50,ceiling(num.perm/20))
+    
+    yperm <- switch(method,
+                    t = twilight.filtering(xin,yin,method="t",paired,s0,verbose,num.perm,num.take),
+                    z = twilight.filtering(xin,yin,method="z",paired,s0,verbose,num.perm,num.take),
+                    fc = twilight.filtering(xin,yin,method="fc",paired,s0,verbose,num.perm,num.take),
+                    pearson = twilight.filtering(xin,yin,method="pearson",paired,s0,verbose,num.perm,num.take),
+                    spearman = twilight.filtering(xin,yin,method="spearman",paired,s0,verbose,num.perm,num.take),
+                    gcFirst=TRUE)
+
+    chi2test <- yperm$test
+    yperm <- yperm$yperm
   }
   
   B <- dim(yperm)[1]
@@ -170,12 +202,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   
   if (verbose){cat("Compute vector of observed statistics. \n")}
 
-  ### Z test with s0=0 is a t test.
-  if (is.null(s0)==FALSE){
-    if((s0==0)&(method=="z")){method <- "t"}
-  }
-  
-  if (is.null(s0)){s0 <- 0}
+
   if ((method!="pearson")&(method!="spearman")){
     stime <- system.time(stat.obs <- switch(method,
                                             t = funk(yin,xin,1,yin,s0),
@@ -389,6 +416,9 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   }
   if ((method=="pearson")|(method=="spearman")){
     call <- paste("Test: ",method,". Number of permutations: ",B,".",sep="")
+  }
+  if (filtering){
+    call <- paste(call,"Permutation filtering was performed. The Hamming distances of the filtered permutations to the original labeling fit to the expected distribution with a p-value of",round(chi2test,4))
   }
   
   res <- list(result=data.frame(

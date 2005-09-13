@@ -10,22 +10,22 @@ double empirical(double *a, int na)
 {
 
   int i;
-  int j=na;
   double *b;
   double e;
 
   if ((b=malloc(sizeof(double)*1))==0) {printf("Error, could not allocate memory");}
 
-  e=fabs(a[na-1]-1);
+  e=0;
 
-  for (i=na-2; i>0; i--){
+  for (i=1; i<na; i++){
 
-    if (a[i]!=a[i+1]){
-      j=i+1;
-      b[0]=fabs( a[i] - ( (double)j / ((double)na) ) );
-
+    if (a[i]!=a[i-1]){
+      b[0]=fabs( a[i] - ( (double) i/ ((double) na) ) );
+      if (b[0]>e){e=b[0];}
+      b[0]=fabs( a[i] - ( ((double) i+1)/ ((double) na) ) );
       if (b[0]>e){e=b[0];}
     }
+
   }
 
   free(b);

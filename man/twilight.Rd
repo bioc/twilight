@@ -8,7 +8,7 @@ The function performs the successive exclusion procedure (SEP) as described in S
 twilight(xin, lambda = NULL, B = 0, boot.ci = 0.95, clus = NULL, verbose = TRUE)
 }
 \arguments{
-  \item{xin}{ Numerical vector of \eqn{u}-values, \eqn{p}-values or a \code{twilight} object. }
+  \item{xin}{ Numerical vector of \eqn{p}-values or a \code{twilight} object. }
   \item{lambda}{ Numerical value denoting the penalty factor. If not specified, the function searchs for an appropriate regularization parameter. }
   \item{B}{ Numerical value specifying the number of bootstrap samples. If not specified, no bootstrap estimates are calculated. }
   \item{boot.ci}{ Numerical value denoting the probability value for bootstrap confidence intervals of local false discovery rate and prior pi0. }
