@@ -26,6 +26,11 @@
 \begin{document}
 \maketitle
 
+\section{Changes in version 1.2.1}
+
+Bug fixed on the calculation of Hamming distances.
+
+
 \section{Changes in version 1.2.0}
 
 We added the argument \Rfunarg{filtering = FALSE} to function \Rfunction{twilight.pval} which (if set to \Rfunarg{TRUE}) invokes the filtering for class label permutations that produce uniform $p$-value distributions. The set of admissible permutations is found using function \Rfunarg{twilight.filtering} which is called internally in function \Rfunarg{twilight.pval}. However, it can also be used directly.

@@ -181,13 +181,19 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
 
   ### Observed table of Hamming distances
   hamming.obs <- function(a,x,paired=TRUE){
+    hamming.dist <- function(w,v){ # contributed by F. Markowetz
+      u <- table(w,v)
+      u <- u[1,2]+u[2,1]
+      return(u)
+    }
+
     if (!paired){
       ham <- seq(0,min(sum(x),sum(1-x)))*2
     }
     if (paired){
       ham <- seq(0,floor(sum(x)/2))*2
     }
-    d <- apply(a,1,hamming.distance,y=x)
+    d <- apply(a,1,hamming.dist,v=x)
     d <- table(d)
     y <- numeric(length(ham))
     names(y) <- ham

@@ -24,7 +24,7 @@
 
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.0}
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.1}
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -141,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 100 seconds. 
+Compute expected scores and p-values. This will take approx. 190 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -270,7 +270,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 70 seconds. 
+Compute expected scores and p-values. This will take approx. 130 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -285,7 +285,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6921548 
+0.6886816 
 
  Function call:
  Test: spearman. Number of permutations: 1000. 
@@ -301,16 +301,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                   observed  expected candidate       pvalue       qvalue
-M84526_at        1.0000000 0.4249485         1 1.402721e-07 0.0006921548
-X95735_at        0.7518490 0.3978840         1 2.805443e-07 0.0006921548
-M83667_rna1_s_at 0.7416554 0.3839822         1 4.208164e-07 0.0006921548
-X52056_at        0.7362531 0.3739472         1 5.610885e-07 0.0006921548
-X62654_rna1_at   0.7274744 0.3665945         1 7.013606e-07 0.0006921548
-X62320_at        0.7260274 0.3606295         1 8.416328e-07 0.0006921548
-X61587_at        0.7236478 0.3555246         1 9.819049e-07 0.0006921548
-HG3494-HT3688_at 0.7194353 0.3512592         1 1.122177e-06 0.0006921548
-L09209_s_at      0.7188565 0.3472450         1 1.262449e-06 0.0006921548
-M27891_at        0.7095633 0.3437119         1 1.402721e-06 0.0006921548
+M84526_at        1.0000000 0.4234265         1 1.402721e-07 0.0006886816
+X95735_at        0.7518490 0.3977850         1 2.805443e-07 0.0006886816
+M83667_rna1_s_at 0.7416554 0.3834508         1 4.208164e-07 0.0006886816
+X52056_at        0.7362531 0.3742797         1 5.610885e-07 0.0006886816
+X62654_rna1_at   0.7274744 0.3666487         1 7.013606e-07 0.0006886816
+X62320_at        0.7260274 0.3604044         1 8.416328e-07 0.0006886816
+X61587_at        0.7236478 0.3548557         1 9.819049e-07 0.0006886816
+HG3494-HT3688_at 0.7194353 0.3503575         1 1.122177e-06 0.0006886816
+L09209_s_at      0.7188565 0.3462246         1 1.262449e-06 0.0006886816
+M27891_at        0.7095633 0.3428574         1 1.402721e-06 0.0006886816
 \end{Soutput}
 \end{Schunk}
 }
@@ -371,7 +371,7 @@ Filtering: Wait for 5 to 15 dots .....done
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.3610339
+[1] 0.6658854
 \end{Soutput}
 \end{Schunk}
 
@@ -384,7 +384,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 6 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -641,12 +641,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    1    1    0    0    0    0    1    1
-[3,]    0    1    1    0    1    0    0    1
-[4,]    0    1    1    0    1    0    0    1
-[5,]    0    0    1    1    1    1    0    0
-[6,]    0    1    1    0    1    0    0    1
-[7,]    0    1    1    0    1    0    0    1
+[2,]    0    0    1    1    1    1    0    0
+[3,]    1    1    0    0    0    0    1    1
+[4,]    0    0    1    1    1    1    0    0
+[5,]    1    1    0    0    0    0    1    1
+[6,]    1    1    0    0    0    0    1    1
+[7,]    1    0    0    1    0    1    1    0
 \end{Soutput}
 \end{Schunk}
 
@@ -656,6 +656,11 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+\section{Changes in version 1.2.1}
+
+Bug fixed on the calculation of Hamming distances.
+
 
 \section{Changes in version 1.2.0}
 

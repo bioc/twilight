@@ -24,7 +24,7 @@
 
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.0}
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.1}
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -48,7 +48,6 @@ library(splines)
 library(stats)
 library(golubEsets)
 library(vsn)
-library(e1071)
 oldopt <- options(digits=3)
 on.exit( {options(oldopt)} )
 options(width=75)
@@ -426,6 +425,11 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+\section{Changes in version 1.2.1}
+
+Bug fixed on the calculation of Hamming distances.
+
 
 \section{Changes in version 1.2.0}
 
