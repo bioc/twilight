@@ -21,4 +21,4 @@ Depends: R (>= 2.1.0), splines (>= 2.2.0), stats (>= 2.2.0)
 Suggests: golubEsets (>= 1.0), vsn (>= 1.7.2)
 License: GPL version 2.0 or newer
 URL: http://compdiag.molgen.mpg.de/software/twilight.shtml
-
+biocViews: Microarray,Statistics,DifferentialExpression,MultipleComparisons
