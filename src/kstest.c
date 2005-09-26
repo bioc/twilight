@@ -1,112 +1,11 @@
 
 #include <R.h>
 #include <Rinternals.h>
+#include <R_ext/Utils.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#define SWAP(a,b) itemp=(a);(a)=(b);(b)=itemp;
-#define M 7
-#define NSTACK 50
-#define NR_END 1
-#define FREE_ARG char*
 
-/* taken from the Numerical Recipes */
-
-
-int *ivector(long nl, long nh)
-/* allocate an int vector with subscript range v[nl..nh] */
-{
-	int *v;
-
-	v=(int *)malloc((size_t) ((nh-nl+1+NR_END)*sizeof(int)));
-	/*if (!v) nrerror("allocation failure in ivector()");*/
-	return v-nl+NR_END;
-}
-
-void free_ivector(v,nl,nh)
-int *v;
-long nh,nl;
-/* free an int vector allocated with ivector() */
-{
-	free((FREE_ARG) (v+nl-NR_END));
-}
-
-
-/* computes index table for arr[1...n] (caution: not indexed as arr[0...n-1]) */
-int* indexx(int n, double *arr)
-{
-  int i, indxt, ir=n, itemp, j, k, l=1;
-  int jstack=0, *istack;
-  float a;
-  int *indx;
-
-  if ((indx=malloc(sizeof(int)*n))==0) {printf("Error, could not allocate memory");}
-
-  istack=ivector(1,NSTACK);
-
-  for (j=1; j<=n; j++) indx[j]=j;
-
-  for (;;){
-    if (ir-l < M){
-      for (j=l+1; j<=ir; j++){
-	indxt=indx[j];
-	a=arr[indxt];
-	for (i=j-1; i>=l; i--){
-	  if (arr[indx[i]] <= a) break;
-	  indx[i+1]=indx[i];
-	}
-	indx[i+1]=indxt;
-      }
-      if (jstack == 0) break;
-      ir=istack[jstack--];
-      l=istack[jstack--];
-    } else {
-      k=(l+ir) >> 1;
-      SWAP(indx[k],indx[l+1]);
-      if (arr[indx[l]] > arr[indx[ir]]){
-	SWAP(indx[l],indx[ir])
-      }
-      if (arr[indx[l+1]] > arr[indx[ir]]){
-	SWAP(indx[l+1],indx[ir])      
-      }
-      if (arr[indx[l]] > arr[indx[l+1]]){
-	SWAP(indx[l],indx[l+1])
-      }
-      i=l+1;
-      j=ir;
-      indxt=indx[l+1];
-      a=arr[indxt];
-      for (;;){
-	do i++; while (arr[indx[i]] < a);
-	do j--; while (arr[indx[j]] > a);
-	if (j < i) break;
-	SWAP(indx[i],indx[j])
-      }
-      indx[l+1]=indx[j];
-      indx[j]=indxt;
-      jstack += 2;
-      if (ir-i+1 >= j-l){
-	istack[jstack]=ir;
-	istack[jstack-1]=i;
-	ir=j-1;
-      } else {
-	istack[jstack]=j-1;
-	istack[jstack-1]=l;
-	l=i;
-      }      
-    }
-  }
-  free_ivector(istack,1,NSTACK);
-
-  return indx;
-
-  /* indx will be freed in kolmogoroff with free(indx) */
-}
-
-
-
-
-/* das ist von mir */
 
 int compare11(const void *x, const void *y)
 {
@@ -117,6 +16,23 @@ int compare11(const void *x, const void *y)
 }
 
 
+/* returns indeces of *a in "first" mode */
+int* indexx(int n, double *a)
+{  
+  int *indx;
+  int i;
+
+  if ((indx=malloc(sizeof(int)*n))==0) {printf("Error, could not allocate memory");}
+
+  for (i=0; i<n; i++){
+    indx[i]=i;
+  }
+  
+  rsort_with_index((double*)a,(int*)indx,(int)n);
+
+  return indx;
+  /* indx will be freed in kolmogoroff with free(indx) */
+}
 
 
 /* Returns maximum absolute difference of empirical and uniform distribution */
@@ -141,10 +57,10 @@ double* kolmogoroff(double *a, int nrowa, int ncola)
   if ((pval=malloc(sizeof(double)*n))==0) {printf("Error, could not allocate memory");}
   if ((eout=malloc(sizeof(double)*ncola))==0) {printf("Error, could not allocate memory");}
 
-  indx=indexx(n,a-1);
+  indx=indexx(n,a);
 
-  for (i=1; i<=n; i++){
-    pval[indx[i]-1]=(double)(n-i+1)/((double)n);   /* returns pooled p-value */
+  for (i=0; i<n; i++){
+    pval[indx[i]]=(double)(i+1)/((double)n);   /* returns pooled p-value */
   }
 
   for (k=0; k<ncola; k++){

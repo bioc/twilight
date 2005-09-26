@@ -24,7 +24,7 @@
 
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.1}
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.2}
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -425,6 +425,13 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+
+\section{Changes in version 1.2.2}
+
+Slight changes in the C code which do not effect the results.
+
+
 
 \section{Changes in version 1.2.1}
 
