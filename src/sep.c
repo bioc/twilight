@@ -55,7 +55,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 
   objfunc[0]=empirical(xin,*nxin);
 
-  for (k=1; k<10000;)
+  for (k=1; k<100000;)
     {
       randnum=(int)( ((double) *nxin)*rand()/(RAND_MAX+1.0) );
       

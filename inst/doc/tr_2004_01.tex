@@ -130,7 +130,7 @@ Additionally to computation of scores, empirical $p$-values are calculated. Argu
 
 Permutation scores are also used to compute expected scores as described in Tusher et al.~(2001) \cite{tusher01}. In addition, we compute confidence bounds for the maximum absolute difference of each set of permutation scores to expected scores. The width of the confidence bound is chosen with \Rfunarg{quant.ci}. With default \Rfunarg{quant.ci=0.95}, the maximum absolute difference of permutation to expected scores exceeded the confidence bound in only 5\% of all permutations.
 
-Using the optional argument \Rfunarg{yperm}, a user-specified permutation matrix can be passed to the function. In that case, \Rfunarg{yperm} has to be a \textit{binary} matrix where each row is one vector of permuted class labels. The label "1" in \Rfunarg{yperm} corresponds to the higher labeled original class. If the permutation matrix is specified, no other permutation is done and argument \Rfunarg{B} will be ignored. Besides \Rfunction{set.seed}, argument \Rfunarg{yperm} can be used to reproduce results by fixing the matrix of random permutations.
+Using the optional argument \Rfunarg{yperm}, a user-specified permutation matrix can be passed to the function. In that case, \Rfunarg{yperm} has to be a \textit{binary} matrix where each row is one vector of permuted class labels. The label "1" in \Rfunarg{yperm} corresponds to the higher labeled original class. If the permutation matrix is specified, no other permutation is done and argument \Rfunarg{B} will be ignored. Besides \Rfunction{set.seed}, argument \Rfunarg{yperm} can be used to reproduce results by fixing the matrix of random permutations. Please note that the first row of \Rfunarg{yperm} must be the input vector \Rfunarg{yin}. Otherwise, the $p$-value calculation will be incorrect.
 
 Continuing the example above, we perform a fold change test on the expression data in \Robject{golubNorm} which was transformed to arsinh scale by normalization with \Rfunction{vsn}.
 \begin{Schunk}
@@ -141,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 80 seconds. 
+Compute expected scores and p-values. This will take approx. 180 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -162,7 +162,7 @@ The values in the accompanying data set \Robject{expval} were computed in the sa
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6183055 
+0.6197128 
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
@@ -205,13 +205,13 @@ The dataframe stores observed and expected scores and corresponding empirical $p
 \end{Sinput}
 \begin{Soutput}
                 observed   expected candidate       pvalue       qvalue
-M84526_at       3.990578  1.1016438         1 1.402721e-07 0.0006183055
-M27891_at       3.669657  0.9677828         1 2.805443e-07 0.0006183055
-M89957_at      -3.153319 -1.1079169         1 4.208164e-07 0.0006183055
-X82240_rna1_at -3.111376 -0.9719905         1 5.610885e-07 0.0006183055
-U89922_s_at    -2.954233 -0.9038190         1 7.013606e-07 0.0006183055
-M19507_at       2.925666  0.8963811         1 8.416328e-07 0.0006183055
-M11722_at      -2.689999 -0.8496084         1 9.819049e-07 0.0006183055
+M84526_at       3.990578  1.1088376         1 1.402721e-07 0.0006197128
+M27891_at       3.669657  0.9690305         1 2.805443e-07 0.0006197128
+M89957_at      -3.153319 -1.1027192         1 4.208164e-07 0.0006197128
+X82240_rna1_at -3.111376 -0.9680745         1 5.610885e-07 0.0006197128
+U89922_s_at    -2.954233 -0.8948820         1 7.013606e-07 0.0006197128
+M19507_at       2.925666  0.8960149         1 8.416328e-07 0.0006197128
+M11722_at      -2.689999 -0.8422853         1 9.819049e-07 0.0006197128
 \end{Soutput}
 \end{Schunk}
 }
@@ -230,7 +230,7 @@ In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0
 > expval$pi0
 \end{Sinput}
 \begin{Soutput}
-[1] 0.6183055
+[1] 0.6197128
 \end{Soutput}
 \end{Schunk}
 
@@ -258,7 +258,7 @@ Column \Robject{result\$index} contains the original gene ordering of the input 
 
 From version 1.1.0 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
 
-Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of $p$-values based on \Rfunarg{B} random permutations of \Rfunarg{yin}. A matrix of user-specified permutations can be passed on using argument \Rfunarg{yperm}. Here, each row has to contain a permutation of \Rfunarg{yin}. Note that the values in \Rfunarg{yperm} have to be changed to ranks beforehand if Spearman correlation is to be computed.
+Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of $p$-values based on \Rfunarg{B} random permutations of \Rfunarg{yin}. A matrix of user-specified permutations can be passed on using argument \Rfunarg{yperm}. Here, each row has to contain a permutation of \Rfunarg{yin}. Note that the values in \Rfunarg{yperm} have to be changed to ranks beforehand if Spearman correlation is to be computed. Please note that the first row of \Rfunarg{yperm} must be the input vector \Rfunarg{yin} (probably changed into ranks). Otherwise, the $p$-value calculation will be incorrect.
 
 All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
 
@@ -270,7 +270,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 90 seconds. 
+Compute expected scores and p-values. This will take approx. 130 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -285,7 +285,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6901892 
+0.6888808 
 
  Function call:
  Test: spearman. Number of permutations: 1000. 
@@ -301,16 +301,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                   observed  expected candidate       pvalue       qvalue
-M84526_at        1.0000000 0.4227276         1 1.402721e-07 0.0006901892
-X95735_at        0.7518490 0.3975628         1 2.805443e-07 0.0006901892
-M83667_rna1_s_at 0.7416554 0.3837335         1 4.208164e-07 0.0006901892
-X52056_at        0.7362531 0.3740640         1 5.610885e-07 0.0006901892
-X62654_rna1_at   0.7274744 0.3665516         1 7.013606e-07 0.0006901892
-X62320_at        0.7260274 0.3604858         1 8.416328e-07 0.0006901892
-X61587_at        0.7236478 0.3552888         1 9.819049e-07 0.0006901892
-HG3494-HT3688_at 0.7194353 0.3511690         1 1.122177e-06 0.0006901892
-L09209_s_at      0.7188565 0.3473936         1 1.262449e-06 0.0006901892
-M27891_at        0.7095633 0.3436196         1 1.402721e-06 0.0006901892
+M84526_at        1.0000000 0.4238922         1 1.402721e-07 0.0006888808
+X95735_at        0.7518490 0.3965458         1 2.805443e-07 0.0006888808
+M83667_rna1_s_at 0.7416554 0.3836389         1 4.208164e-07 0.0006888808
+X52056_at        0.7362531 0.3738178         1 5.610885e-07 0.0006888808
+X62654_rna1_at   0.7274744 0.3659933         1 7.013606e-07 0.0006888808
+X62320_at        0.7260274 0.3600124         1 8.416328e-07 0.0006888808
+X61587_at        0.7236478 0.3549750         1 9.819049e-07 0.0006888808
+HG3494-HT3688_at 0.7194353 0.3504686         1 1.122177e-06 0.0006888808
+L09209_s_at      0.7188565 0.3464921         1 1.262449e-06 0.0006888808
+M27891_at        0.7095633 0.3429095         1 1.402721e-06 0.0006888808
 \end{Soutput}
 \end{Schunk}
 }
@@ -347,7 +347,7 @@ The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important.
 
 The output of function \Rfunction{twilight.filtering} is a list with two elements. The first element, \Rfunarg{yperm}, is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
 
-The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}.
+The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of \Rfunarg{yperm} always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
        
 The second output element is the numerical value \Rfunarg{test}. For each filtered permutation, the Hamming distance to the original labeling \Rfunarg{yin} is computed. The resulting distribution of Hamming distances is tested for randomness using a $\chi^2$-test against the expected frequencies of Hamming distances resulting from all possible permutations of \Rfunarg{yin}. The resulting $\chi^2$ $p$-value is stored in \Rfunarg{test}. A significant $p$-value gives evidence that the filtering did \textit{not} leave a random subset of possible permutations. However, an effective run of \Rfunction{twilight.filtering} results in a \textit{non}-significant $\chi^2$ $p$-value \Rfunarg{test}. Within \Rfunction{twilight.pval}, the result of the $\chi^2$ test is reported in the output element \Rfunarg{call} if \Rfunarg{filtering=TRUE}.
 
@@ -365,26 +365,27 @@ Filtering: Wait for 5 to 15 dots .....done
 > dim(a$yperm)
 \end{Sinput}
 \begin{Soutput}
-[1] 50 72
+[1] 51 72
 \end{Soutput}
 \begin{Sinput}
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.4989753
+[1] 0.0793079
 \end{Soutput}
 \end{Schunk}
 
-The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. The resulting histogram is shown in Figure \ref{fig_histo}.
+The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. As the first row of \Rfunarg{yperm} has to contain the labeling for which the $p$-values will be computed, we have to remove the current first row which is the original labeling \Rfunarg{yin}. Thus, we compute $p$-values for the first ``random'' permutation. The resulting histogram is shown in Figure \ref{fig_histo}.
 
 \begin{Schunk}
 \begin{Sinput}
+> a$yperm <- a$yperm[-1, ]
 > b <- twilight.pval(golubNorm, a$yperm[1, ], method = "fc", 
 +     yperm = a$yperm)
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 3 seconds. 
+Compute expected scores and p-values. This will take approx. 4 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -447,11 +448,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
  Bootstrap estimate of percentage of non-induced
  genes with lower and upper 95% CI:
        pi0 lower.pi0 upper.pi0
- 0.6284421  0.597966  0.660822
+ 0.6275649 0.5953114  0.656193
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
- Function twilight used lambda = 0.04 
+ Function twilight used lambda = 0.035 
 \end{Soutput}
 \end{Schunk}
 \begin{Schunk}
@@ -460,11 +461,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
 \end{Sinput}
 \begin{Soutput}
                       fdr   mean.fdr   lower.fdr  upper.fdr
-M84526_at      0.01097114 0.01102306 0.007740231 0.01445051
-M27891_at      0.01097223 0.01102416 0.007741342 0.01445161
-M89957_at      0.01097333 0.01102526 0.007742453 0.01445272
-X82240_rna1_at 0.01097442 0.01102637 0.007743564 0.01445382
-U89922_s_at    0.01097551 0.01102747 0.007744675 0.01445492
+M84526_at      0.01016839 0.01023125 0.006804447 0.01359302
+M27891_at      0.01016949 0.01023236 0.006805623 0.01359414
+M89957_at      0.01017059 0.01023347 0.006806799 0.01359526
+X82240_rna1_at 0.01017169 0.01023457 0.006807976 0.01359638
+U89922_s_at    0.01017279 0.01023568 0.006809152 0.01359750
 \end{Soutput}
 \end{Schunk}
 
@@ -501,14 +502,14 @@ The last plotting argument \Rfunarg{which="table"} tabulates the histogram infor
 \end{Sinput}
 \begin{Soutput}
        LogRatio Mixture Alternative
--2234%    -3.15       2         1.9
+-2234%    -3.15       2         2.0
 -2012%    -3.05       0         0.0
 -1811%    -2.95       1         0.8
 -1629%    -2.85       0         0.0
 -1464%    -2.75       0         0.0
 -1315%    -2.65       1         1.0
 -1181%    -2.55       0         0.0
--1059%    -2.45       1         1.0
+-1059%    -2.45       1         0.8
 \end{Soutput}
 \end{Schunk}
 
@@ -642,11 +643,11 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
 [2,]    0    0    1    1    1    1    0    0
-[3,]    1    1    0    0    0    0    1    1
-[4,]    1    1    0    0    0    0    1    1
-[5,]    1    1    0    0    0    0    1    1
-[6,]    1    1    0    0    0    0    1    1
-[7,]    1    0    0    1    0    1    1    0
+[3,]    0    1    1    0    1    0    0    1
+[4,]    0    1    1    0    1    0    0    1
+[5,]    1    0    0    1    0    1    1    0
+[6,]    1    0    0    1    0    1    1    0
+[7,]    1    1    0    0    0    0    1    1
 \end{Soutput}
 \end{Schunk}
 
@@ -660,8 +661,7 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 
 \section{Changes in version 1.2.2}
 
-Slight changes in the C code which do not effect the results.
-
+Changes in the C code which do not effect the results.
 
 
 \section{Changes in version 1.2.1}

@@ -1,6 +1,7 @@
-
+                      
 #include <R.h>
 #include <Rinternals.h>
+#include <R_ext/Utils.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -10,15 +11,6 @@ int compare7(const void *x, const void *y)
   a=(double*)x;
   b=(double*)y;
   return ((*a>*b)-(*a<*b));
-}
-
-/* Sort in decreasing order */
-int comparedecr7(const void *x, const void *y)
-{
-  double *a, *b;
-  a=(double*)x;
-  b=(double*)y;
-  return ((*a<*b)-(*a>*b));
 }
 
 
@@ -58,10 +50,10 @@ void corsingle(double *vector, double *matrix, int *ngene, int *nsample, double 
 
 
 
-void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsample, double *sobs, double *e, double *f)
+void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsample, double *e, double *f)
 {
-  double *ex0, *ex1, *ex20, *ex21, *exboth, *stat;
-  int i, j, k, j0, j1, j2, jj;
+  double *ex0, *ex1, *ex20, *ex21, *exboth, *stat, *dstat;
+  int i, j, k, *indx;
 
   if ((ex0=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -69,6 +61,9 @@ void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsamp
   if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((exboth=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
+  if ((dstat=calloc((*nperm)*(*ngene),sizeof(double)))==0) {printf("Error, could not allocate memory");}
+
 
   for (k=0; k<*nperm; k++){
 
@@ -100,53 +95,30 @@ void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsamp
       stat[j]=(exboth[j]-ex0[0]*ex1[j]/(*nsample))/sqrt((ex20[0]-ex0[0]*ex0[0]/(*nsample))*(ex21[j]-ex1[j]*ex1[j]/(*nsample)));
     }
     
+    for (j=0; j<*ngene; j++){
+      dstat[j+(*ngene)*k]=fabs(stat[j]);
+    }
+
     qsort((void*)stat,*ngene,sizeof(double),compare7);
     for (j=0; j<*ngene; j++){
       e[j]+=stat[j];
     }
-
-    for (j=0; j<*ngene; j++){
-      stat[j]=fabs(stat[j]);
-    }
-    qsort((void*)stat,*ngene,sizeof(double),comparedecr7);
-
-    /* Compute p-values by comparing stat and sobs */
-    /* Find rank of sobs in stat by dividing intervals into halfs (bin search) */
-    for (j=0; j<*ngene; j++){
-      jj=0;
-      j0=0;
-      j2=(*ngene)-1;
-      j1=j0+ceil((j2-j0)/2);
-
-        while ((j0!=j1)&&(j1!=j2)){
-	  if (fabs(sobs[j])<stat[j1]){
-	    j0=j1;
-	    j1=j0+ceil((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])>stat[j1]){
-	    j2=j1;
-	    j1=j0+floor((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])==stat[j1]){
-	    j2=j1;
-	  }
-	}
-	if (fabs(sobs[j])>stat[j1]){
-	  jj=j0;
-	}
-	if (fabs(sobs[j])<stat[j1]){
-	  jj=j2;
-	}
-	if (fabs(sobs[j])==stat[j1]){	  
-	  jj=j1+1;
-	}
-	if (fabs(sobs[j])==stat[(*ngene)-1]){	  
-	  jj=(*ngene);
-	}
-		
-	f[j]+=jj;
-    }   
   }
+
+
+  /* Compute p-values */    
+  for (j=0; j<(*nperm)*(*ngene); j++){
+    indx[j]=j;
+  }
+
+  rsort_with_index((double*)dstat,(int*)indx,(int)(*nperm)*(*ngene));
+  
+  /* First ngene values correspond to the original labeling */
+  for (j=0; j<(*nperm)*(*ngene); j++){      		
+    if (indx[j]<*ngene){
+      f[indx[j]] = (*nperm)*(*ngene)-j;
+    }
+  }   
 
   for (j=0; j<*ngene; j++){ 
     e[j]=e[j]/(*nperm);
@@ -159,6 +131,8 @@ void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsamp
   free(ex21);
   free(exboth);
   free(stat);
+  free(dstat);
+  free(indx);
 }
 
 
@@ -214,9 +188,9 @@ void corci(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsample
       stat[j]=fabs(stat[j]);
     }
 
-    qsort((void*)stat,*ngene,sizeof(double),comparedecr7);
+    qsort((void*)stat,*ngene,sizeof(double),compare7);
 
-    e[k]=stat[0];     
+    e[k]=stat[*ngene-1];     
   }
 
     

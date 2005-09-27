@@ -1,6 +1,7 @@
 
 #include <R.h>
 #include <Rinternals.h>
+#include <R_ext/Utils.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -12,20 +13,11 @@ int compare2(const void *x, const void *y)
   return ((*a>*b)-(*a<*b));
 }
 
-/* Sort in decreasing order */
-int comparedecr(const void *x, const void *y)
-{
-  double *a, *b;
-  a=(double*)x;
-  b=(double*)y;
-  return ((*a<*b)-(*a>*b));
-}
 
-
-void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *s0, double *e, double *f)
+void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *f)
 {
-  double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort, *stat;
-  int i, j, k, *test, j0, j1, j2, jj;
+  double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort, *stat, *dstat;
+  int i, j, k, *test, *indx;
     
   if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -36,6 +28,9 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
   if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((test=calloc(1,sizeof(int)))==0) {printf("Error, could not allocate memory");}
+  if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
+  if ((dstat=calloc((*nperm)*(*ngene),sizeof(double)))==0) {printf("Error, could not allocate memory");}
+
 
 
   for (k=0; k<*nperm; k++){
@@ -117,53 +112,31 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
       }
     }
 
+    for (j=0; j<*ngene; j++){
+      dstat[j+(*ngene)*k]=fabs(stat[j]);
+    }
+
     qsort((void*)stat,*ngene,sizeof(double),compare2);
     for (j=0; j<*ngene; j++){
       e[j]+=stat[j];
     }
 
-    for (j=0; j<*ngene; j++){
-      stat[j]=fabs(stat[j]);
-    }
-    qsort((void*)stat,*ngene,sizeof(double),comparedecr);
-
-    /* Compute p-values by comparing stat and sobs */
-    /* Find rank of sobs in stat by dividing intervals into halfs (bin search) */
-    for (j=0; j<*ngene; j++){
-      jj=0;
-      j0=0;
-      j2=(*ngene)-1;
-      j1=j0+ceil((j2-j0)/2);
-
-        while ((j0!=j1)&&(j1!=j2)){
-	  if (fabs(sobs[j])<stat[j1]){
-	    j0=j1;
-	    j1=j0+ceil((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])>stat[j1]){
-	    j2=j1;
-	    j1=j0+floor((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])==stat[j1]){
-	    j2=j1;
-	  }
-	}
-	if (fabs(sobs[j])>stat[j1]){
-	  jj=j0;
-	}
-	if (fabs(sobs[j])<stat[j1]){
-	  jj=j2;
-	}
-	if (fabs(sobs[j])==stat[j1]){	  
-	  jj=j1+1;
-	}
-	if (fabs(sobs[j])==stat[(*ngene)-1]){	  
-	  jj=(*ngene);
-	}
-		
-	f[j]+=jj;
-    }   
   }
+
+
+  /* Compute p-values */    
+  for (j=0; j<(*nperm)*(*ngene); j++){
+    indx[j]=j;
+  }
+
+  rsort_with_index((double*)dstat,(int*)indx,(int)(*nperm)*(*ngene));
+  
+  /* First ngene values correspond to the original labeling */
+  for (j=0; j<(*nperm)*(*ngene); j++){      		
+    if (indx[j]<*ngene){
+      f[indx[j]] = (*nperm)*(*ngene)-j;
+    }
+  }   
 
   for (j=0; j<*ngene; j++){ 
     e[j]=e[j]/(*nperm);
@@ -179,16 +152,18 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
   free(ssort);
   free(stat);
   free(test);
+  free(dstat);
+  free(indx);
 }
 
 
 
 
-void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *s0, double *e, double *f)
+void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *f)
 {
-  double *r, *s, *ssort, *ex2, *stat;
+  double *r, *s, *ssort, *ex2, *stat, *dstat;
   double *diff;
-  int i, j, k, j0, j1, j2, jj;
+  int i, j, k, *indx;
 
   if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -196,6 +171,9 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
+  if ((dstat=calloc((*nperm)*(*ngene),sizeof(double)))==0) {printf("Error, could not allocate memory");}
+
 
   for (k=0; k<*nperm; k++){
 
@@ -266,53 +244,30 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
       }
     }
 
+    for (j=0; j<*ngene; j++){
+      dstat[j+(*ngene)*k]=fabs(stat[j]);
+    }
+
     qsort((void*)stat,*ngene,sizeof(double),compare2);
     for (j=0; j<*ngene; j++){
       e[j]+=stat[j];
     }
-
-    for (j=0; j<*ngene; j++){
-      stat[j]=fabs(stat[j]);
-    }
-    qsort((void*)stat,*ngene,sizeof(double),comparedecr);
-
-    /* Compute p-values by comparing stat and sobs */
-    /* Find rank of sobs in stat by dividing intervals into halfs (bin search) */
-    for (j=0; j<*ngene; j++){
-      jj=0;
-      j0=0;
-      j2=(*ngene)-1;
-      j1=j0+ceil((j2-j0)/2);
-
-        while ((j0!=j1)&&(j1!=j2)){
-	  if (fabs(sobs[j])<stat[j1]){
-	    j0=j1;
-	    j1=j0+ceil((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])>stat[j1]){
-	    j2=j1;
-	    j1=j0+floor((j2-j0)/2);
-	  }
-	  if (fabs(sobs[j])==stat[j1]){
-	    j2=j1;
-	  }
-	}
-	if (fabs(sobs[j])>stat[j1]){
-	  jj=j0;
-	}
-	if (fabs(sobs[j])<stat[j1]){
-	  jj=j2;
-	}
-	if (fabs(sobs[j])==stat[j1]){	  
-	  jj=j1+1;
-	}
-	if (fabs(sobs[j])==stat[(*ngene)-1]){	  
-	  jj=(*ngene);
-	}
-		
-	f[j]+=jj;
-    }   
   }
+
+
+  /* Compute p-values */    
+  for (j=0; j<(*nperm)*(*ngene); j++){
+    indx[j]=j;
+  }
+
+  rsort_with_index((double*)dstat,(int*)indx,(int)(*nperm)*(*ngene));
+  
+  /* First ngene values correspond to the original labeling */
+  for (j=0; j<(*nperm)*(*ngene); j++){      		
+    if (indx[j]<*ngene){
+      f[indx[j]] = (*nperm)*(*ngene)-j;
+    }
+  }   
   
   for (j=0; j<*ngene; j++){ 
     e[j]=e[j]/(*nperm);
@@ -325,5 +280,7 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   free(ssort);
   free(ex2);
   free(stat);
+  free(dstat);
+  free(indx);
 }
 

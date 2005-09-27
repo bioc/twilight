@@ -21,7 +21,7 @@ twilight.filtering(xin, yin, method = "fc", paired = FALSE, s0 = 0, verbose = TR
 See vignette.
 }
 \value{
- Returns a list with two elements: Matrix \code{yperm} with permuted input labels \code{yin} as rows, and a numerical value \code{test} giving the p-value of a goodness-of-fit chi2 test to evaluate whether the distribution of Hamming distances of the filtered permutations to the original labeling is still random. Please note that \code{yperm} is already translated into binary labels for two-sample testing or to ranks if Spearman's correlation was chosen. The resulting permutation matrix can be directly passed into function \code{twilight.pval}.
+ Returns a list with two elements: Matrix \code{yperm} with permuted input labels \code{yin} as rows, and a numerical value \code{test} giving the p-value of a goodness-of-fit chi2 test to evaluate whether the distribution of Hamming distances of the filtered permutations to the original labeling is still random. Please note that \code{yperm} is already translated into binary labels for two-sample testing or to ranks if Spearman's correlation was chosen. The resulting permutation matrix can be directly passed into function \code{twilight.pval}. Please note that the first row of \code{yperm} always contains the original input \code{yin} to be consistent with the other permutation functions in package \code{twilight}.
 }
 \references{ to come }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
@@ -45,6 +45,8 @@ a <- twilight.filtering(golubNorm,id,method="t",num.perm=50,num.take=10)
 dim(a$yperm)
 
 ### Let's see if the filtered permutations really produce uniform p-value distributions.
+### The first row is the original labeling, so we try the second permutation.
+a$yperm <- a$yperm[-1,]
 b <- twilight.pval(golubNorm,a$yperm[1,],method="t",yperm=a$yperm)
 hist(b$result$pvalue)
 }

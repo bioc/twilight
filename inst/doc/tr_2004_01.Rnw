@@ -122,7 +122,7 @@ Additionally to computation of scores, empirical $p$-values are calculated. Argu
 
 Permutation scores are also used to compute expected scores as described in Tusher et al.~(2001) \cite{tusher01}. In addition, we compute confidence bounds for the maximum absolute difference of each set of permutation scores to expected scores. The width of the confidence bound is chosen with \Rfunarg{quant.ci}. With default \Rfunarg{quant.ci=0.95}, the maximum absolute difference of permutation to expected scores exceeded the confidence bound in only 5\% of all permutations.
 
-Using the optional argument \Rfunarg{yperm}, a user-specified permutation matrix can be passed to the function. In that case, \Rfunarg{yperm} has to be a \textit{binary} matrix where each row is one vector of permuted class labels. The label "1" in \Rfunarg{yperm} corresponds to the higher labeled original class. If the permutation matrix is specified, no other permutation is done and argument \Rfunarg{B} will be ignored. Besides \Rfunction{set.seed}, argument \Rfunarg{yperm} can be used to reproduce results by fixing the matrix of random permutations.
+Using the optional argument \Rfunarg{yperm}, a user-specified permutation matrix can be passed to the function. In that case, \Rfunarg{yperm} has to be a \textit{binary} matrix where each row is one vector of permuted class labels. The label "1" in \Rfunarg{yperm} corresponds to the higher labeled original class. If the permutation matrix is specified, no other permutation is done and argument \Rfunarg{B} will be ignored. Besides \Rfunction{set.seed}, argument \Rfunarg{yperm} can be used to reproduce results by fixing the matrix of random permutations. Please note that the first row of \Rfunarg{yperm} must be the input vector \Rfunarg{yin}. Otherwise, the $p$-value calculation will be incorrect.
 
 Continuing the example above, we perform a fold change test on the expression data in \Robject{golubNorm} which was transformed to arsinh scale by normalization with \Rfunction{vsn}.
 <<>>=
@@ -196,7 +196,7 @@ Column \Robject{result\$index} contains the original gene ordering of the input 
 
 From version 1.1.0 on, function \Rfunction{twilight.pval} offers the computation of correlation scores instead of effect size scores. Now, vector \Rfunarg{yin} can be any clinical parameter consisting of numerical values and having length equal to the number of samples. With \Rfunarg{method="pearson"}, Pearson's coefficient of correlation to \Rfunarg{yin} is computed for every gene in \Rfunarg{xin}. With \Rfunarg{method="spearman"}, \Rfunarg{yin} and the rows of \Rfunarg{xin} are converted into ranks and Spearman's rank correlation is computed.
 
-Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of $p$-values based on \Rfunarg{B} random permutations of \Rfunarg{yin}. A matrix of user-specified permutations can be passed on using argument \Rfunarg{yperm}. Here, each row has to contain a permutation of \Rfunarg{yin}. Note that the values in \Rfunarg{yperm} have to be changed to ranks beforehand if Spearman correlation is to be computed.
+Note that most input arguments of \Rfunction{twilight.pval} will be ignored. Only \Rfunarg{B} takes effect and causes the computation of $p$-values based on \Rfunarg{B} random permutations of \Rfunarg{yin}. A matrix of user-specified permutations can be passed on using argument \Rfunarg{yperm}. Here, each row has to contain a permutation of \Rfunarg{yin}. Note that the values in \Rfunarg{yperm} have to be changed to ranks beforehand if Spearman correlation is to be computed. Please note that the first row of \Rfunarg{yperm} must be the input vector \Rfunarg{yin} (probably changed into ranks). Otherwise, the $p$-value calculation will be incorrect.
 
 All successive analyses like expected scores, $p$- and $q$-values are kept as before. As an illustration, we search for genes with high correlation to the highest scoring gene found in the effect size test. Figure \ref{fig_corr} displays the resulting scores.
 
@@ -248,7 +248,7 @@ The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important.
 
 The output of function \Rfunction{twilight.filtering} is a list with two elements. The first element, \Rfunarg{yperm}, is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
 
-The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}.
+The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of \Rfunarg{yperm} always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
        
 The second output element is the numerical value \Rfunarg{test}. For each filtered permutation, the Hamming distance to the original labeling \Rfunarg{yin} is computed. The resulting distribution of Hamming distances is tested for randomness using a $\chi^2$-test against the expected frequencies of Hamming distances resulting from all possible permutations of \Rfunarg{yin}. The resulting $\chi^2$ $p$-value is stored in \Rfunarg{test}. A significant $p$-value gives evidence that the filtering did \textit{not} leave a random subset of possible permutations. However, an effective run of \Rfunction{twilight.filtering} results in a \textit{non}-significant $\chi^2$ $p$-value \Rfunarg{test}. Within \Rfunction{twilight.pval}, the result of the $\chi^2$ test is reported in the output element \Rfunarg{call} if \Rfunarg{filtering=TRUE}.
 
@@ -260,9 +260,10 @@ dim(a$yperm)
 a$test
 @
 
-The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. The resulting histogram is shown in Figure \ref{fig_histo}.
+The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. As the first row of \Rfunarg{yperm} has to contain the labeling for which the $p$-values will be computed, we have to remove the current first row which is the original labeling \Rfunarg{yin}. Thus, we compute $p$-values for the first ``random'' permutation. The resulting histogram is shown in Figure \ref{fig_histo}.
 
 <<>>=
+a$yperm <- a$yperm[-1,]
 b <- twilight.pval(golubNorm,a$yperm[1,],method="fc",yperm=a$yperm)
 hist(b$result$pvalue,col="gray",br=20)
 @
@@ -429,8 +430,7 @@ twilight.permute.pair(y,7,bal=TRUE)
 
 \section{Changes in version 1.2.2}
 
-Slight changes in the C code which do not effect the results.
-
+Changes in the C code which do not effect the results.
 
 
 \section{Changes in version 1.2.1}

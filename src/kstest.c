@@ -25,6 +25,7 @@ int* indexx(int n, double *a)
   if ((indx=malloc(sizeof(int)*n))==0) {printf("Error, could not allocate memory");}
 
   for (i=0; i<n; i++){
+    a[i]=fabs(a[i]);
     indx[i]=i;
   }
   
@@ -60,7 +61,7 @@ double* kolmogoroff(double *a, int nrowa, int ncola)
   indx=indexx(n,a);
 
   for (i=0; i<n; i++){
-    pval[indx[i]]=(double)(i+1)/((double)n);   /* returns pooled p-value */
+    pval[indx[i]]=(double)(n-i)/((double)n);   /* returns pooled p-value */
   }
 
   for (k=0; k<ncola; k++){

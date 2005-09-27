@@ -232,7 +232,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   ### PNAS 98(9), pp. 5116-5121.
   ###
   if (paired==FALSE){
-    funk <- function(a,b,c,d,orig,s){
+    funk <- function(a,b,c,orig,s){
       x <- .C("unpairedperm",
               as.integer(t(a)),
               as.integer(nrow(a)),
@@ -242,7 +242,6 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
               as.integer(nrow(b)),
               as.integer(ncol(b)),
               as.integer(c),
-              as.double(d),
               as.integer(which(orig==1)-1),
               as.integer(which(orig==0)-1),
               as.double(s),
@@ -254,7 +253,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
     }
   }
   if (paired==TRUE){
-    funk <- function(a,b,c,d,orig,s){
+    funk <- function(a,b,c,orig,s){
       x <- .C("pairedperm",
               as.integer(t(a)),
               as.integer(nrow(a)),
@@ -264,7 +263,6 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
               as.integer(nrow(b)),
               as.integer(ncol(b)),
               as.integer(c),
-              as.double(d),
               as.integer(which(orig==1)-1),
               as.integer(which(orig==0)-1),
               as.double(s),
@@ -280,19 +278,18 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   if ((method!="pearson")&(method!="spearman")){
     stat.exp <- switch(method,
-                       t = funk(yperm,xin,1,stat.obs,yin,s0),
-                       z = funk(yperm,xin,2,stat.obs,yin,s0),
-                       fc = funk(yperm,xin,3,stat.obs,yin,s0))
+                       t = funk(yperm,xin,1,yin,s0),
+                       z = funk(yperm,xin,2,yin,s0),
+                       fc = funk(yperm,xin,3,yin,s0))
   }
   if ((method=="pearson")|(method=="spearman")){
-    funk <- function(a,b,c){
+    funk <- function(a,b){
       x <- .C("corperm",
               as.double(t(a)),
               as.integer(nrow(a)),
               as.double(t(b)),
               as.integer(nrow(b)),
               as.integer(ncol(b)),
-              as.double(c),
               e=double(nrow(b)),
               f=double(nrow(b)),PACKAGE="twilight"
               )
@@ -300,7 +297,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
       return(res)
     }
 
-    stat.exp <- funk(yperm,xin,stat.obs)    
+    stat.exp <- funk(yperm,xin)    
   }
 
   pval     <- stat.exp$pval

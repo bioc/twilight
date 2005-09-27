@@ -27,7 +27,7 @@
 
 \section{Changes in version 1.2.2}
 
-Slight changes in the C code which do not effect the results.
+Changes in the C code which do not effect the results.
 
 
 \section{Changes in version 1.2.1}
