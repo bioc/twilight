@@ -56,14 +56,14 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 
   objfunc[0]=empirical(xin,*nxin);
   
-  if (objfunc[0]<=0.1)
+  if (objfunc[0]<=0.25)
     {
       funout[0]=objfunc[0];
     }
 
-  if (objfunc[0]>0.1)
+  if (objfunc[0]>0.25)
     {
-      while (objfunc[0]>0.1 && count<2*(*nxin))
+      while (objfunc[0]>0.25 && count<2*(*nxin))
 	{
 	  randnum=(int)( ((double) *nxin)*rand()/(RAND_MAX+1.0) );
 	  
