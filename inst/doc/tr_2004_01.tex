@@ -141,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 180 seconds. 
+Compute expected scores and p-values. This will take approx. 90 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -270,7 +270,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 130 seconds. 
+Compute expected scores and p-values. This will take approx. 70 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -284,8 +284,8 @@ Compute values for confidence lines.
      p- and q-values
 
  Estimated percentage of non-induced genes:
-      pi0 
-0.6888808 
+     pi0 
+0.687565 
 
  Function call:
  Test: spearman. Number of permutations: 1000. 
@@ -300,17 +300,17 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 > corr$result[1:10, 1:5]
 \end{Sinput}
 \begin{Soutput}
-                  observed  expected candidate       pvalue       qvalue
-M84526_at        1.0000000 0.4238922         1 1.402721e-07 0.0006888808
-X95735_at        0.7518490 0.3965458         1 2.805443e-07 0.0006888808
-M83667_rna1_s_at 0.7416554 0.3836389         1 4.208164e-07 0.0006888808
-X52056_at        0.7362531 0.3738178         1 5.610885e-07 0.0006888808
-X62654_rna1_at   0.7274744 0.3659933         1 7.013606e-07 0.0006888808
-X62320_at        0.7260274 0.3600124         1 8.416328e-07 0.0006888808
-X61587_at        0.7236478 0.3549750         1 9.819049e-07 0.0006888808
-HG3494-HT3688_at 0.7194353 0.3504686         1 1.122177e-06 0.0006888808
-L09209_s_at      0.7188565 0.3464921         1 1.262449e-06 0.0006888808
-M27891_at        0.7095633 0.3429095         1 1.402721e-06 0.0006888808
+                  observed  expected candidate       pvalue      qvalue
+M84526_at        1.0000000 0.4234405         1 1.402721e-07 0.000687565
+X95735_at        0.7518490 0.3969831         1 2.805443e-07 0.000687565
+M83667_rna1_s_at 0.7416554 0.3834023         1 4.208164e-07 0.000687565
+X52056_at        0.7362531 0.3736115         1 5.610885e-07 0.000687565
+X62654_rna1_at   0.7274744 0.3665581         1 7.013606e-07 0.000687565
+X62320_at        0.7260274 0.3606774         1 8.416328e-07 0.000687565
+X61587_at        0.7236478 0.3555006         1 9.819049e-07 0.000687565
+HG3494-HT3688_at 0.7194353 0.3507645         1 1.122177e-06 0.000687565
+L09209_s_at      0.7188565 0.3468423         1 1.262449e-06 0.000687565
+M27891_at        0.7095633 0.3432827         1 1.402721e-06 0.000687565
 \end{Soutput}
 \end{Schunk}
 }
@@ -371,7 +371,7 @@ Filtering: Wait for 5 to 15 dots .....done
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.0793079
+[1] 0.08883766
 \end{Soutput}
 \end{Schunk}
 
@@ -385,7 +385,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 3 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -642,11 +642,11 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    0    0    1    1    1    1    0    0
+[2,]    1    1    0    0    0    0    1    1
 [3,]    0    1    1    0    1    0    0    1
-[4,]    0    1    1    0    1    0    0    1
-[5,]    1    0    0    1    0    1    1    0
-[6,]    1    0    0    1    0    1    1    0
+[4,]    1    0    0    1    0    1    1    0
+[5,]    0    0    1    1    1    1    0    0
+[6,]    0    1    1    0    1    0    0    1
 [7,]    1    1    0    0    0    0    1    1
 \end{Soutput}
 \end{Schunk}
@@ -657,6 +657,11 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+
+\section{Changes in version 1.2.3}
+
+We updated the bootstrapping procedure in \Rfunction{twilight.getlambda} to get a reliable value for the regularization parameter when $\pi_0$ is small and many genes are truly differentially expressed.
 
 
 \section{Changes in version 1.2.2}

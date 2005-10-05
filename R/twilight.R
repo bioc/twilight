@@ -77,12 +77,6 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
       cat("Find suitable regularization parameter. ")
     }
     lambda <- twilight.getlambda(pval,verbose)
-    if (is.nan(lambda)){
-      lambda <- 0
-      if (verbose){
-        cat("No suitable value was found. SEP will be run without penalization (lambda=0). \n")
-      }
-    }
   }
 
   ### Compute the final estimate for pi0.

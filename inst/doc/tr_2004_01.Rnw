@@ -428,6 +428,11 @@ twilight.permute.pair(y,7,bal=TRUE)
 \chapter{Differences to earlier versions}
 
 
+\section{Changes in version 1.2.3}
+
+We updated the bootstrapping procedure in \Rfunction{twilight.getlambda} to get a reliable value for the regularization parameter when $\pi_0$ is small and many genes are truly differentially expressed.
+
+
 \section{Changes in version 1.2.2}
 
 Changes in the C code which do not effect the results.
