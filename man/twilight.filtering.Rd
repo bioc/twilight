@@ -29,14 +29,14 @@ See vignette.
 \examples{
 ### Leukemia data set of Golub et al. (1999).
 library(golubEsets)
-data(golubMerge)
+data(golubTrain)
 
 ### Variance-stabilizing normalization of Huber et al. (2002).
 library(vsn)
-golubNorm <- vsn(exprs(golubMerge))
+golubNorm <- vsn(exprs(golubTrain))
 
 ### A binary vector of class labels.
-id <- as.numeric(golubMerge$ALL.AML)
+id <- as.numeric(golubTrain$ALL.AML)
 
 ### Do an unpaired t-test.
 ### Let's have a quick example with 50 filtered permutations only.

@@ -233,14 +233,14 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
   }
   if (verbose){cat("done\n")}
 
-  ### first row contains original labeling
-  id.opt <- rbind(yin,id.opt)
+  ### first row contains original labeling but give back exactly B permutations.
+  id.opt <- rbind(yin,id.opt[-1,])
 
   ### do a goodness-of-fit chi^2-test to see if at least the distribution of Hamming distances of the filtered permutations to the original labeling is random.
   a <- hamming.exp(yin,paired=paired)
   b <- hamming.obs(id.opt,yin,paired=paired)
 
-  ### concatenate small entries at both ends of the distributions
+  ### concatenate small entries at both ends of the distributions.
   a <- round(a*sum(b))
 
   for (i in 1:2){

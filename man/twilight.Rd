@@ -48,10 +48,11 @@ Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimati
 Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, \emph{PNAS} \bold{100(16)}, 9440--9445.
 }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
-\seealso{ \code{\link{twilight.pval}}, \code{\link{plot.twilight}} }
+\seealso{ \code{\link{twilight.pval}}, \code{\link{plot.twilight}}, \code{\link{exfdr}} }
 
 \examples{
 data(exfdr) # twilight object created by twilight with B=1000 bootstraps
+exfdr
 plot(exfdr,which="fdr")
 }
 \keyword{ nonparametric }

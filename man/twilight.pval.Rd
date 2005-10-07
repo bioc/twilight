@@ -46,10 +46,6 @@ Additional output consists of
 The remaining slots are left free for function \code{twilight}.
 }
 \references{
-Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, Coller H, Loh ML, Downing JR, Caligiuri MA, Bloomfield CD and Lander ES (1999): Molecular Classification of Cancer: Class Discovery and Class Prediction by Gene Expression Monitoring, \emph{Science} \bold{286}, 531--537.
-
-Huber W, von Heydebreck A, Sültmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, \emph{Bioinformatics} \bold{18}, suppl. 1, S96--S104.
-
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
 
 Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, \emph{PNAS} \bold{100(16)}, 9440--9445.
@@ -57,22 +53,12 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
 }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
-\seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}} }
+\seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}}, \code{\link{expval}} }
 
 \examples{
-### Leukemia data set of Golub et al. (1999)
-library(golubEsets)
-data(golubMerge)
-
-### Variance-stabilizing normalization of Huber et al. (2002)
-library(vsn)
-golubNorm <- vsn(exprs(golubMerge))
-
-### A vector of class labels.
-id <- as.numeric(golubMerge$ALL.AML)
-
-a <- twilight.pval(golubNorm,id)
-plot(a,which="scores")
-plot(a,which="qvalues")
+data(expval)  # twilight object created by twilight.pval on Golub data set
+expval
+plot(expval,which="scores")
+plot(expval,which="qvalues")
 }
 \keyword{ nonparametric }
