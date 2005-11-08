@@ -36,7 +36,8 @@ twilight.getlambda <- function(xin,verbose=TRUE){
   if (verbose){
     cat("Wait for some dots. \n")
   }
-  
+
+  res <- NULL
   for (j in 2:length(lam)){
     
     obj.fun <- apply(boot.p,2,funk,lam[j])    
