@@ -136,7 +136,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 	{
 	  objfunc[0]=objfunc[1];
 	  count=0;
-	  funout[0]=empirical(yin,nyin);
+	  funout[0]=objfunc[0] - (*lambda)*(*nxin - (double)nyin)*log(*nxin - (double)nyin)/(*nxin);
 	}
       else
 	{

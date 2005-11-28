@@ -430,6 +430,10 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
+\section{Changes in version 1.5.1 and 1.5.2}
+
+Minor cosmetic changes. The jump in version numbers is due to Bioconductor's version bumping regime for packages in the release and in the developmental repository.
+
 
 \section{Changes in version 1.2.3}
 
