@@ -1,6 +1,6 @@
-plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
+plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 ### Plotting function for objects of class "twilight".
-### Produces three plots:
+### Produces these plots:
 ###
 ### "scores": Expected vs. observed test statistics with
 ###          confidence lines. Points exceeding the confidence lines
@@ -25,34 +25,53 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
 ### "grayscale": TRUE or FALSE. FALSE produces colored plots.
 ### "legend":    TRUE or FALSE. Produces legends in "scores", "fdr" and "effectsize".
 
+
+  funk0 <- function(yin,kol,leg,...){
+    if (is.nan(yin$result$fdr[1])){
+      par(mfrow=c(1,2),mar=c(4,4,2,2)+0.1)
+      funk1(x,kol,leg,...)
+      funk2(x,...)      
+    }
+    else {
+      par(mfrow=c(2,2),mar=c(4,4,2,2)+0.1)
+      funk1(x,kol,leg,...)
+      funk2(x,...)      
+      funk3(x,kol,leg,...)
+      funk4(x,...)
+    }
+  }
+
+
+  
   funk1 <- function(yin,kol,leg,...){
     if (is.nan(yin$result$observed[1])){
       stop("The input object must contain observed and expected test scores.\n Choose 'qvalues' or 'fdr' instead.\n")
     }
 
-    maxi <- 2*max(abs(yin$result$observed))
-    vert <- 3/4*(min(yin$result$observed)-yin$ci.line)
-    hori <- median(yin$result$expected)
-    
+    maxi <- 2*abs(yin$result$observed[1])
+    y <- abs(yin$result$observed[1])
+        
     if (kol==TRUE){
-      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",...)
+      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",type="n",xlim=c(-y,y),ylim=c(-y,y),...)
       lines(c(-maxi,maxi),c(-maxi,maxi))
+      points(yin$result$expected[as.logical(!yin$result$candidate)],yin$result$observed[as.logical(!yin$result$candidate)])
       points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col=gray(0.5))
       lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col=gray(0.5))
       lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col=gray(0.5))      
       if (leg==TRUE){
-        legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col=gray(0.5),yjust=0.5,xjust=0.5,cex=0.8)
+        legend(0,-y*0.8,legend=paste(as.character(100*yin$quant.ci),"% CI",sep=""),lty=1,bty="n",col=gray(0.5))
       }
     }
     
     if (kol==FALSE){
-      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",...)
+      plot(yin$result$expected,yin$result$observed,xlab="Expected score",ylab="Observed score",type="n",xlim=c(-y,y),ylim=c(-y,y),...)
       lines(c(-maxi,maxi),c(-maxi,maxi),lwd=2)
+      points(yin$result$expected[as.logical(!yin$result$candidate)],yin$result$observed[as.logical(!yin$result$candidate)])
       points(yin$result$expected[as.logical(yin$result$candidate)],yin$result$observed[as.logical(yin$result$candidate)],col="red")
       lines(c(-maxi,maxi),c(-maxi-yin$ci.line,maxi-yin$ci.line),col="red")
       lines(c(-maxi,maxi),c(-maxi+yin$ci.line,maxi+yin$ci.line),col="red")      
       if (leg==TRUE){
-        legend(hori,vert,legend=paste(as.character(100*yin$quant.ci),"% confidence bound",sep=""),lty=1,bty="n",col="red",yjust=0.5,xjust=0.5,cex=0.8)
+        legend(0,-y*0.8,legend=paste(as.character(100*yin$quant.ci),"% CI",sep=""),lty=1,bty="n",col="red")
       }
     }
   }
@@ -65,7 +84,7 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
     y        <- unique(yin$result$qvalue)
     hist.num <- hist(yin$result$qvalue,br=c(-1,y),plot=FALSE)$counts
 
-    plot(c(0,y),cumsum(c(0,hist.num)),t="s",xlab="q-value",ylab="No. of rejected hypotheses",...)
+    plot(c(0,y),cumsum(c(0,hist.num)),t="s",xlab="Q-value",ylab="No. of significant outcomes",...)
     lines(c(-10,10),c(0,0),col=gray(0.5))
   }
 
@@ -80,34 +99,35 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
     }
 
     q.tick <- quantile(yin$result$pvalue,seq(0,1,by=0.01))
-
+    x <- round(seq(1,nrow(yin$result),length=100))
+    
     if (kol==TRUE){
-      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="p-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      plot(yin$result$pvalue[x],1-yin$result$fdr[x],t="n",xlab="P-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
       lines(c(-10,10),c(0,0),col=gray(0.5))
       if (is.nan(yin$result$mean.fdr[1])==FALSE){
-        lines(yin$result$pvalue,1-yin$result$lower.fdr,col=gray(0.5),lty=2)
-        lines(yin$result$pvalue,1-yin$result$upper.fdr,col=gray(0.5),lty=2)
-        lines(yin$result$pvalue,1-yin$result$mean.fdr,col=gray(0.5))
+        lines(yin$result$pvalue[x],1-yin$result$lower.fdr[x],col=gray(0.5),lty=2)
+        lines(yin$result$pvalue[x],1-yin$result$upper.fdr[x],col=gray(0.5),lty=2)
+        lines(yin$result$pvalue[x],1-yin$result$mean.fdr[x],col=gray(0.5))
         if (leg==TRUE){
-          legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black",gray(0.5),gray(0.5)),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+          legend(0.6,1,legend=c(expression("1-"~~widehat(fdr)),"Mean",paste(as.character(100*yin$boot.ci),"% CI",sep="")),lty=c(1,1,2),bty="n",col=c("black",gray(0.5),gray(0.5)),lwd=c(2,1,1))
         }
       }
-      lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
+      lines(yin$result$pvalue[x],1-yin$result$fdr[x],lwd=2)
       rug(q.tick)
     }
 
     if (kol==FALSE){
-      plot(yin$result$pvalue,1-yin$result$fdr,t="n",xlab="p-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
+      plot(yin$result$pvalue[x],1-yin$result$fdr[x],t="n",xlab="P-value",ylab=expression("1-"~~widehat(fdr)),ylim=c(0,1),...)
       lines(c(-10,10),c(0,0),col=gray(0.5))
       if (is.nan(yin$result$mean.fdr[1])==FALSE){
-        lines(yin$result$pvalue,1-yin$result$lower.fdr,col="red",lty=2)
-        lines(yin$result$pvalue,1-yin$result$upper.fdr,col="red",lty=2)
-        lines(yin$result$pvalue,1-yin$result$mean.fdr,col="red")
+        lines(yin$result$pvalue[x],1-yin$result$lower.fdr[x],col="red",lty=2)
+        lines(yin$result$pvalue[x],1-yin$result$upper.fdr[x],col="red",lty=2)
+        lines(yin$result$pvalue[x],1-yin$result$mean.fdr[x],col="red")
         if (leg==TRUE){
-          legend(0.9,1,legend=c(expression("1-"~~widehat(fdr)),"Bootstrap estimate",paste(as.character(100*yin$boot.ci),"% bootstrap CI",sep="")),lty=c(1,1,2),bty="n",col=c("black","red","red"),lwd=c(2,1,1),y.intersp=2,xjust=1,cex=0.8)
+          legend(0.6,1,legend=c(expression("1-"~~widehat(fdr)),"Mean",paste(as.character(100*yin$boot.ci),"% CI",sep="")),lty=c(1,1,2),bty="n",col=c("black","red","red"),lwd=c(2,1,1))
         }
       }
-      lines(yin$result$pvalue,1-yin$result$fdr,lwd=2)
+      lines(yin$result$pvalue[x],1-yin$result$fdr[x],lwd=2)
       rug(q.tick)
     }
   }
@@ -157,7 +177,7 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
     plot(yin$effect,col="black",add=TRUE)
 
     if (leg==TRUE){
-      legend(mean(x.tick[5:6]),max(all$counts),legend=c("Mixture","Alternative"),lty=c(1,1),bty="n",col=c(gray(0.7),"black"),lwd=c(2,2),y.intersp=2,cex=0.8)
+      legend(mean(x.tick[5:6]),max(all$counts),legend=c("Mixture","Alternative"),lty=c(1,1),bty="n",col=c(gray(0.7),"black"),lwd=c(2,2),y.intersp=2)
     }
       
     axis(1,at=x.tick,labels=x.lab)
@@ -193,16 +213,16 @@ plot.twilight <- function(x, which="fdr", grayscale=FALSE, legend=TRUE, ...){
   
 
 
-
-
+  if (is.null(which)){funk0(x,grayscale,legend,...)}
+  else {
+    switch(which,
+           scores = funk1(x,grayscale,legend,...),
+           qvalues = funk2(x,...),
+           fdr = funk3(x,grayscale,legend,...),
+           volcano = funk4(x,...),
+           effectsize = funk5(x,legend,...),
+           table = funk6(x)
+           )
+  }
   
-  switch(which,
-         scores = funk1(x,grayscale,legend,...),
-         qvalues = funk2(x,...),
-         fdr = funk3(x,grayscale,legend,...),
-         volcano = funk4(x,...),
-         effectsize = funk5(x,legend,...),
-         table = funk6(x)
-         )
- 
 }

@@ -1,6 +1,6 @@
 \name{twilight}
 \alias{twilight}
-\title{ Estimation of local false discovery rate }
+\title{ Estimation of the local false discovery rate }
 \description{
 The function performs the successive exclusion procedure (SEP) as described in Scheid and Spang (2004).
 }
@@ -16,7 +16,7 @@ twilight(xin, lambda = NULL, B = 0, boot.ci = 0.95, clus = NULL, verbose = TRUE)
   \item{verbose}{ Logical value for message printing. }
 }
 \details{
-See vignette.
+In short, the successive exclusion procedure divides the set of p-values into two parts. The first part is chosen such that it resembles a uniform distribution while containing as many p-values as possible. This set of p-values represents the set of p-values derived from non-induced genes. The height of the uninform distribution is a natural estimate for the mixture parameter pi0. The p-value not contained in the uniform part serve as representatives of p-values derived from induced genes. Their distribution is the basis of the final estimate of the local false discovery rate.
 }
 \value{
 Returns a \code{twilight} object consisting of a \code{data.frame} named \code{result} with variables
@@ -53,6 +53,6 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 \examples{
 data(exfdr) # twilight object created by twilight with B=1000 bootstraps
 exfdr
-plot(exfdr,which="fdr")
+plot(exfdr)
 }
 \keyword{ nonparametric }

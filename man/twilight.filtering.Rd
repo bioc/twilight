@@ -27,6 +27,7 @@ See vignette.
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight.pval}} }
 \examples{
+\dontrun{
 ### Leukemia data set of Golub et al. (1999).
 library(golubEsets)
 data(golubTrain)
@@ -49,5 +50,6 @@ dim(a$yperm)
 a$yperm <- a$yperm[-1,]
 b <- twilight.pval(golubNorm,a$yperm[1,],method="t",yperm=a$yperm)
 hist(b$result$pvalue)
+}
 }
 \keyword{ datagen }

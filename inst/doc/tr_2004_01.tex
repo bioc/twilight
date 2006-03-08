@@ -24,7 +24,7 @@
 
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.2.3}
+\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.6.1}
 \author{Stefanie Scheid\footnote{Corresponding author: 
         \texttt{stefanie.scheid@molgen.mpg.de}}
         and Rainer Spang \bigskip \\
@@ -138,13 +138,13 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 8 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
 \end{Schunk}
 
-The function checks whether complete enumeration of all permutations is possible. Complete enumeration is performed as long as the number of permutations does not exceed 10\,000. The admissible sample sizes depend on whether the experiment was paired or unpaired and whether balanced or unbalanced permutations are used. Details are given in section \ref{twilight.combi}.
+The function checks whether complete enumeration of all permutations is possible. Complete enumeration is performed as long as the number of permutations does not exceed the value set by \Rfunarg{B}. Thus, if you want to turn off the compulsive enumeration and use all possible permutations, you need to select a small \Rfunarg{B} or simply keep the default \Rfunarg{B=1000}. Details on the enumeration functions are given in section \ref{twilight.combi}.
 The values in the accompanying data set \Robject{expval} were computed in the same manner as in the example above but with the complete data set \Rfunction{data(golubMerge)} in \Rfunction{library(golubEsets)} and 1000 permutations.
 \begin{Schunk}
 \begin{Sinput}
@@ -270,7 +270,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 7 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -285,7 +285,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6317425 
+0.6356179 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -301,16 +301,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5701740         1 1.402721e-06 0.006317425
-J03801_f_at       0.7822519  0.5379101         1 2.805443e-06 0.006317425
-D88422_at         0.7772185  0.5216326         1 4.208164e-06 0.006317425
-M19045_f_at       0.7713098  0.5094255         1 5.610885e-06 0.006317425
-Z15115_at        -0.7557720 -0.5700777         1 7.013606e-06 0.006317425
-M83667_rna1_s_at  0.7544589  0.4988292         1 8.416328e-06 0.006317425
-M63138_at         0.7533647  0.4908699         1 9.819049e-06 0.006317425
-X64072_s_at       0.7485502  0.4862348         1 1.122177e-05 0.006317425
-M33195_at         0.7457052  0.4801444         1 1.262449e-05 0.006317425
-U22376_cds2_s_at -0.7387023 -0.5378225         1 1.402721e-05 0.006317425
+M27891_at         1.0000000  0.5740322         1 1.402721e-06 0.006356179
+J03801_f_at       0.7822519  0.5387548         1 2.805443e-06 0.006356179
+D88422_at         0.7772185  0.5238122         1 4.208164e-06 0.006356179
+M19045_f_at       0.7713098  0.5116993         1 5.610885e-06 0.006356179
+Z15115_at        -0.7557720 -0.5701827         1 7.013606e-06 0.006356179
+M83667_rna1_s_at  0.7544589  0.5024051         1 8.416328e-06 0.006356179
+M63138_at         0.7533647  0.4950979         1 9.819049e-06 0.006356179
+X64072_s_at       0.7485502  0.4887055         1 1.122177e-05 0.006356179
+M33195_at         0.7457052  0.4841142         1 1.262449e-05 0.006356179
+U22376_cds2_s_at -0.7387023 -0.5380151         1 1.402721e-05 0.006356179
 \end{Soutput}
 \end{Schunk}
 }
@@ -371,7 +371,7 @@ Filtering: Wait for 5 to 15 dots .....done
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.3536293
+[1] 0.004396652
 \end{Soutput}
 \end{Schunk}
 
@@ -385,7 +385,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 2 seconds. 
+Compute expected scores and p-values. This will take approx. 4 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -642,12 +642,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    1    1    0    0    0    0    1    1
+[2,]    1    0    0    1    0    1    1    0
 [3,]    1    0    0    1    0    1    1    0
-[4,]    0    1    1    0    1    0    0    1
-[5,]    0    0    1    1    1    1    0    0
-[6,]    1    0    0    1    0    1    1    0
-[7,]    0    0    1    1    1    1    0    0
+[4,]    1    1    0    0    0    0    1    1
+[5,]    1    1    0    0    0    0    1    1
+[6,]    1    1    0    0    0    0    1    1
+[7,]    1    1    0    0    0    0    1    1
 \end{Soutput}
 \end{Schunk}
 
@@ -657,6 +657,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+\section{Changes in version 1.6.1}
+
+It is now possible to directly compute observed test statistics via function \Rfunction{twilight.teststat}. Additional minor cosmetic changes in the plot function. 
+
+Within \Rfunction{twilight.pval}, the complete enumeration depends now on the value of argument \Rfunarg{B}. If complete enumeration would lead to a larger number of permutations than \Rfunarg{B}, it is not done but \Rfunarg{B} random permutations are taken instead.
 
 \section{Changes in version 1.5.1 and 1.5.2}
 

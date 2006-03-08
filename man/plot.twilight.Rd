@@ -2,7 +2,7 @@
 \alias{plot.twilight}
 \title{A plot function for twilight objects}
 \description{Interface to plotting of \code{twilight} objects. Produces one of five possible plots.}
-\usage{plot.twilight(x, which = "fdr", grayscale = FALSE, legend = TRUE, ...)}
+\usage{plot.twilight(x, which = NULL, grayscale = FALSE, legend = TRUE, ...)}
 \arguments{
   \item{x}{ An object of class twilight. }
   \item{which}{ A character string specifying the plot to be made. }
@@ -33,6 +33,6 @@ Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays 
 \seealso{ \code{\link{twilight.pval}}, \code{\link{twilight}} }
 \examples{
 data(exfdr) # contains a twilight object created by twilight
-plot(exfdr,which="fdr")
+plot(exfdr)
 }
 \keyword{ hplot }

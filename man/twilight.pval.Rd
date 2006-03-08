@@ -21,7 +21,7 @@ twilight.pval(xin, yin, method = "fc", paired = FALSE, B = 1000, yperm = NULL, b
   \item{filtering}{ Logical value for filtering for permutations of class labels that produce a set of complete null scores. Invokes function \code{twilight.filtering}. If \code{yperm} is specified, no filtering will be done. Note that the filtering is done on unbalanced permutations even if \code{balance=TRUE}. }
 }
 \details{
-See vignette.
+Please see vignette for detailed information.
 }
 \value{
 Returns a \code{twilight} object consisting of a \code{data.frame} named \code{result} with variables
@@ -53,12 +53,11 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
 }
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
-\seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}}, \code{\link{expval}} }
+\seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}}, \code{\link{expval}}, \code{\link{twilight.teststat}} }
 
 \examples{
 data(expval)  # twilight object created by twilight.pval on Golub data set
 expval
-plot(expval,which="scores")
-plot(expval,which="qvalues")
+plot(expval)
 }
 \keyword{ nonparametric }

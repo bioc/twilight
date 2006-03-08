@@ -55,11 +55,11 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   xin <- twilight.getmatrix(xin)
 
   ### check dimensions
-  if (is.matrix(xin)==FALSE){
+  if (!is.matrix(xin)){
     stop("First input must be a matrix. \n")
   }
 
-  if (is.vector(yin)==FALSE){
+  if (!is.vector(yin)){
     stop("Second input must be a vector. \n")
   }
 
@@ -77,7 +77,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   }
 
   if ((method!="pearson")&(method!="spearman")){
-    if (is.null(yperm)==FALSE){
+    if (!is.null(yperm)){
       if (length(yin)!=dim(yperm)[2]){
         stop("Dimensions of permutation matrix and length of index vector do not match. \n")
       }
@@ -102,9 +102,9 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
     yin[y1] <- 0
     yin[y2] <- 1
     
-    if (paired==TRUE){
+    if (paired){
       if (sum(yin)!=sum(1-yin)){
-        stop("This is a PAIRED twosample test. \n")
+        stop("This is a PAIRED twosample test. The sizes of the two classes must be equal. \n")
       }
     }
   }
@@ -117,7 +117,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   
   ### Z test with s0=0 is a t test.
-  if (is.null(s0)==FALSE){
+  if (!is.null(s0)){
     if((s0==0)&(method=="z")){method <- "t"}
   }
   
@@ -128,13 +128,18 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   if ((!filtering)&is.null(yperm)){
     if ((method!="pearson")&(method!="spearman")){
       yperm <- twilight.combi(yin,pin=paired,bin=balance)
+
+      if (!is.null(yperm)){
+        if (nrow(yperm)>B){yperm <- NULL} ### turns off compulsive complete enumeration if a small B was chosen.
+      }
+      
       if ((!is.null(yperm))&(verbose)){cat("Complete enumeration possible. \n")}
       if (( is.null(yperm))&(verbose)){cat("No complete enumeration. Prepare permutation matrix. \n")}
       
-      if ((is.null(yperm))&(paired==FALSE)){
+      if ((is.null(yperm))&(!paired)){
         yperm <- twilight.permute.unpair(yin,B,balance)
       }
-      if ((is.null(yperm))&(paired==TRUE)){
+      if ((is.null(yperm))&(paired)){
         yperm <- twilight.permute.pair(yin,B,balance)
       }
     }
@@ -167,37 +172,19 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   B <- dim(yperm)[1]
 
   ### compute observed test statistics.
-  if (paired==FALSE){
-    funk <- function(a,b,c,d,s){
-      .C("unpaired",
-         as.integer(a),
-         as.integer(sum(a)),
-         as.integer(sum(1-a)),
-         as.double(t(b)),
-         as.integer(nrow(b)),
-         as.integer(ncol(b)),
-         as.integer(c),
-         as.integer(which(d==1)-1),
-         as.integer(which(d==0)-1),
-         as.double(s),
-         e=double(nrow(b)),PACKAGE="twilight")$e
-    }
-  }
-  if (paired==TRUE){
-    funk <- function(a,b,c,d,s){
-      .C("paired",
-         as.integer(a),
-         as.integer(sum(a)),
-         as.integer(sum(1-a)),
-         as.double(t(b)),
-         as.integer(nrow(b)),
-         as.integer(ncol(b)),
-         as.integer(c),
-         as.integer(which(d==1)-1),
-         as.integer(which(d==0)-1),
-         as.double(s),
-         e=double(nrow(b)),PACKAGE="twilight")$e
-    }
+  funk <- function(a, b, c, d, s) {
+    .C(ifelse(paired,"paired","unpaired"), 
+       as.integer(a),
+       as.integer(sum(a)),
+       as.integer(sum(1-a)),       
+       as.double(t(b)),
+       as.integer(nrow(b)),
+       as.integer(ncol(b)),
+       as.integer(c), 
+       as.integer(which(d==1)-1),
+       as.integer(which(d==0)-1),
+       as.double(s),
+       e = double(nrow(b)), PACKAGE = "twilight")$e
   }
   
   if (verbose){cat("Compute vector of observed statistics. \n")}
@@ -231,47 +218,24 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   ### analysis of mircroarrays applied to the ionizing response,
   ### PNAS 98(9), pp. 5116-5121.
   ###
-  if (paired==FALSE){
-    funk <- function(a,b,c,orig,s){
-      x <- .C("unpairedperm",
-              as.integer(t(a)),
-              as.integer(nrow(a)),
-              as.integer(sum(a[1,])),
-              as.integer(sum(1-a[1,])),
-              as.double(t(b)),
-              as.integer(nrow(b)),
-              as.integer(ncol(b)),
-              as.integer(c),
-              as.integer(which(orig==1)-1),
-              as.integer(which(orig==0)-1),
-              as.double(s),
-              e=double(nrow(b)),
-              f=double(nrow(b)),PACKAGE="twilight"
-              )
-      res <- list(exp=x$e,pval=x$f)
-      return(res)
-    }
-  }
-  if (paired==TRUE){
-    funk <- function(a,b,c,orig,s){
-      x <- .C("pairedperm",
-              as.integer(t(a)),
-              as.integer(nrow(a)),
-              as.integer(sum(a[1,])),
-              as.integer(sum(1-a[1,])),
-              as.double(t(b)),
-              as.integer(nrow(b)),
-              as.integer(ncol(b)),
-              as.integer(c),
-              as.integer(which(orig==1)-1),
-              as.integer(which(orig==0)-1),
-              as.double(s),
-              e=double(nrow(b)),
-              f=double(nrow(b)),PACKAGE="twilight"
-              )
-      res <- list(exp=x$e,pval=x$f)
-      return(res)
-    }
+  funk <- function(a,b,c,orig,s){
+    x <- .C(ifelse(paired,"pairedperm","unpairedperm"),
+            as.integer(t(a)),
+            as.integer(nrow(a)),
+            as.integer(sum(a[1,])),
+            as.integer(sum(1-a[1,])),
+            as.double(t(b)),
+            as.integer(nrow(b)),
+            as.integer(ncol(b)),
+            as.integer(c),
+            as.integer(which(orig==1)-1),
+            as.integer(which(orig==0)-1),
+            as.double(s),
+            e=double(nrow(b)),
+            f=double(nrow(b)),PACKAGE="twilight"
+            )
+    res <- list(exp=x$e,pval=x$f)
+    return(res)
   }
   
   if (verbose){cat(paste("Compute expected scores and p-values. This will take approx.",round(max(stime[1:3])*nrow(yperm)),"seconds. \n"))}
@@ -343,41 +307,21 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   ### compute permutation based confidence lines for plot1.
   if (verbose){cat("Compute values for confidence lines. \n")}
-  if (paired==FALSE){
-    funk <- function(a,b,c,d,orig){
-      x <- .C("unpairedci",
-              as.integer(t(a)),
-              as.integer(nrow(a)),
-              as.integer(sum(a[1,])),
-              as.integer(sum(1-a[1,])),
-              as.double(t(b)),
-              as.integer(nrow(b)),
-              as.integer(ncol(b)),
-              as.integer(c),
-              as.double(d),
-              as.integer(which(orig==1)-1),
-              as.integer(which(orig==0)-1),
-              e=double(nrow(a)),PACKAGE="twilight"
-              )$e
-    }
-  }
-  if (paired==TRUE){
-    funk <- function(a,b,c,d,orig){
-      x <- .C("pairedci",
-              as.integer(t(a)),
-              as.integer(nrow(a)),
-              as.integer(sum(a[1,])),
-              as.integer(sum(1-a[1,])),
-              as.double(t(b)),
-              as.integer(nrow(b)),
-              as.integer(ncol(b)),
-              as.integer(c),
-              as.double(d),
-              as.integer(which(orig==1)-1),
-              as.integer(which(orig==0)-1),
-              e=double(nrow(a)),PACKAGE="twilight"
-              )$e
-    }
+  funk <- function(a,b,c,d,orig){
+    x <- .C(ifelse(paired,"pairedci","unpairedci"),
+            as.integer(t(a)),
+            as.integer(nrow(a)),
+            as.integer(sum(a[1,])),
+            as.integer(sum(1-a[1,])),
+            as.double(t(b)),
+            as.integer(nrow(b)),
+            as.integer(ncol(b)),
+            as.integer(c),
+            as.double(d),
+            as.integer(which(orig==1)-1),
+            as.integer(which(orig==0)-1),
+            e=double(nrow(a)),PACKAGE="twilight"
+            )$e
   }
 
   ### compute confidence bounds

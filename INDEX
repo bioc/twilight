@@ -2,7 +2,7 @@ exfdr                   Example of twilight result
 expval                  Example of twilight.pval result
 plot.twilight           A plot function for twilight objects
 print.twilight          A print function for twilight objects
-twilight                Estimation of local false discovery rate
+twilight                Estimation of the local false discovery rate
 twilight.combi          All permutations of a binary vector
 twilight.filtering      A function for permutation filtering
 twilight.permute.pair   A permutation matrix of paired class labels
@@ -10,3 +10,5 @@ twilight.permute.unpair
                         A permutation matrix of unpaired class labels
 twilight.pval           A function to compute p-values from expression
                         sets
+twilight.teststat       Interface to the test statistics provided
+                        within 'twilight'.
