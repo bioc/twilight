@@ -1,5 +1,5 @@
 % -*- mode:Latex -*-
-%\VignetteIndexEntry{Estimation of local false discovery rate}
+%\VignetteIndexEntry{Estimation of Local False Discovery Rates}
 %\VignetteDepends{splines,stats,golubEsets,vsn}
 %\VignetteKeywords{Gene expression analysis}
 %\VignettePackage{twilight}
@@ -11,9 +11,9 @@
 \usepackage[bf]{caption}
 \setlength{\captionmargin}{30pt}
 \fboxsep=2mm
-%\parindent0mm
-%\parskip1ex
 
+\parindent0mm
+\parskip1ex
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
@@ -22,18 +22,21 @@
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 \newcommand{\Rfunarg}[1]{{\texttt{#1}}}
 
+\renewcommand{\textfraction}{0}
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of local false discovery rate \bigskip \\ User's guide to the Bioconductor package \Rpackage{twilight} 1.6.1}
-\author{Stefanie Scheid\footnote{Corresponding author: 
-        \texttt{stefanie.scheid@molgen.mpg.de}}
-        and Rainer Spang \bigskip \\
-        \small Max Planck Institute for Molecular Genetics\\ 
-         Computational Diagnostics\\ Department for Computation Molecular Biology \\
-         Ihnestr. 63-73, D-14195 Berlin, Germany}
+\title{Estimation of Local False Discovery Rates \bigskip \\ User's Guide to the Bioconductor Package \Rpackage{twilight} 1.6.1}
+
+\author{Stefanie Scheid and Rainer Spang \bigskip \\
+  \small email: \texttt{first.last@molgen.mpg.de}
+  }
+
 \reportnr{01}
+
 \year{2004}
+
 \abstract{This is the vignette of the Bioconductor compliant package \Rpackage{twilight}. We describe our implementation of a stochastic search algorithm to estimate the local false discovery rate. In addition, the package provides functions to test for differential gene expression in the common two-condition setting.}
+
 \date{}
   
 %---------------------------------------------------------------------------------%  
@@ -138,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 8 seconds. 
+Compute expected scores and p-values. This will take approx. 14 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -213,11 +216,13 @@ M11722_at      -2.689999 -0.8422853         1 9.819049e-07 0.0006197128
 \end{Schunk}
 }
        
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-010}
+\end{minipage}
 \caption{Expected versus observed test scores. Deviation from the diagonal line gives evidence for differential expression. The red lines mark the 95\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(expval,which="scores",grayscale=F,legend=F)}.}\label{fig_scores}
-\end{center}
 \end{figure}
 
 
@@ -231,11 +236,13 @@ In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0
 \end{Soutput}
 \end{Schunk}
 
-\begin{figure}[t]       
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-012}
+\end{minipage}
 \caption{Stairplot of $q$-values against the resulting size of the list of significant genes. A list containing all genes with $q \leq q_0$ has an estimated global false discovery rate of $q_0$. The plotting call is \texttt{plot(expval,which="qvalues")}.}\label{fig_qvalues}
-\end{center}
 \end{figure}
 
 Column \Robject{result\$index} contains the original gene ordering of the input object. With these numbers, resorting of the \Robject{result} table is possible without knowing the original order of the row names.
@@ -285,7 +292,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6356179 
+0.6378229 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -301,25 +308,27 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5740322         1 1.402721e-06 0.006356179
-J03801_f_at       0.7822519  0.5387548         1 2.805443e-06 0.006356179
-D88422_at         0.7772185  0.5238122         1 4.208164e-06 0.006356179
-M19045_f_at       0.7713098  0.5116993         1 5.610885e-06 0.006356179
-Z15115_at        -0.7557720 -0.5701827         1 7.013606e-06 0.006356179
-M83667_rna1_s_at  0.7544589  0.5024051         1 8.416328e-06 0.006356179
-M63138_at         0.7533647  0.4950979         1 9.819049e-06 0.006356179
-X64072_s_at       0.7485502  0.4887055         1 1.122177e-05 0.006356179
-M33195_at         0.7457052  0.4841142         1 1.262449e-05 0.006356179
-U22376_cds2_s_at -0.7387023 -0.5380151         1 1.402721e-05 0.006356179
+M27891_at         1.0000000  0.5703928         1 1.402721e-06 0.006378229
+J03801_f_at       0.7822519  0.5403129         1 2.805443e-06 0.006378229
+D88422_at         0.7772185  0.5239238         1 4.208164e-06 0.006378229
+M19045_f_at       0.7713098  0.5083620         1 5.610885e-06 0.006378229
+Z15115_at        -0.7557720 -0.5704060         1 7.013606e-06 0.006378229
+M83667_rna1_s_at  0.7544589  0.4990852         1 8.416328e-06 0.006378229
+M63138_at         0.7533647  0.4908699         1 9.819049e-06 0.006378229
+X64072_s_at       0.7485502  0.4845475         1 1.122177e-05 0.006378229
+M33195_at         0.7457052  0.4796520         1 1.262449e-05 0.006378229
+U22376_cds2_s_at -0.7387023 -0.5409804         1 1.402721e-05 0.006378229
 \end{Soutput}
 \end{Schunk}
 }
  
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-015}
+\end{minipage}
 \caption{Expected versus observed Spearman correlation scores. Deviation from the diagonal line gives evidence for significant correlation. The red lines mark the 99\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(corr,which="scores",grayscale=F,legend=F)}.}\label{fig_corr}
-\end{center}
 \end{figure}
 
 
@@ -371,7 +380,7 @@ Filtering: Wait for 5 to 15 dots .....done
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.004396652
+[1] 0.1875492
 \end{Soutput}
 \end{Schunk}
 
@@ -385,7 +394,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 11 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -394,11 +403,13 @@ Compute values for confidence lines.
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-018}
+\end{minipage}
 \caption{Histogram of $p$-values of one filtered permutation. The $p$-values are computed from pooling the scores of the set of filtered permutations. The resulting distribution appears to be uniform.}\label{fig_histo}
-\end{center}
 \end{figure}
 
 
@@ -471,27 +482,33 @@ U89922_s_at    0.01017279 0.01023568 0.006809152 0.01359750
 
 The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $p$-values against the corresponding conditional probabilities of being induced given the $p$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
 
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-021}
+\end{minipage}
 \caption{Curve of estimated local false discovery over $p$-values. The red lines denote the bootstrap mean (solid line) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $p$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
-\end{center}
 \end{figure}
 
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-022}
+\end{minipage}
 \caption{Volcano plot of observed test scores versus local false discovery rate. The bottom ticks are 1\% quantiles of observed scores. The plotting call is \texttt{plot(exfdr,which="volcano")}.}\label{fig_volcano}
-\end{center}
 \end{figure}
 
 Output element \Robject{effect} contains histogram information about the effect size distribution, that is log ratio under the alternative. One run of the successive exclusion procedure results in a split of the input $p$-value vector into a null and an alternative part. We estimate the effect size distribution from the distribution of log ratio scores corresponding to $p$-values in the alternative part. Again, this estimate is averaged over 10 runs of the procedure. Argument \Rfunarg{which="effectsize"} produces the histogram of all observed log ratios overlaid with the averaged histogram of log ratios in the alternative, see Figure \ref{fig_effectsize}. The x-axis is changed to fold change equivalent scores or rather to increase in effect size. Given an observed log ratio $F$, the increase in effect size is $(\exp (|F|)-1) \cdot \mbox{sign} (F) \cdot 100\%$. A value of 0\% corresponds to no change (fold change of 1), a value of 50\% to fold change 1.5 and so on. A value of -100\% corresponds to a 2-fold down-regulation, that is fold change of 0.5.
 
-\begin{figure}[t]
-\begin{center}
+\begin{figure}[tp]
+\centering
+\begin{minipage}{0.8\textwidth}
+\centering
 \includegraphics{tr_2004_01-023}
+\end{minipage}
 \caption{Observed effect size distribution (gray histogram) overlaid with the estimated effect size distribution under the null hypothesis (black histogram). The plotting call is \texttt{plot(exfdr,which="effectsize",legend=T)}.}\label{fig_effectsize}
-\end{center}
 \end{figure}
 
 The last plotting argument \Rfunarg{which="table"} tabulates the histogram information in terms of fold change equivalent scores and log ratios.
@@ -642,12 +659,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    1    0    0    1    0    1    1    0
+[2,]    0    0    1    1    1    1    0    0
 [3,]    1    0    0    1    0    1    1    0
 [4,]    1    1    0    0    0    0    1    1
-[5,]    1    1    0    0    0    0    1    1
+[5,]    0    1    1    0    1    0    0    1
 [6,]    1    1    0    0    0    0    1    1
-[7,]    1    1    0    0    0    0    1    1
+[7,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
 
