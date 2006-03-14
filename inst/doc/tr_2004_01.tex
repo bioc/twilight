@@ -141,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 14 seconds. 
+Compute expected scores and p-values. This will take approx. 11 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -277,7 +277,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 7 seconds. 
+Compute expected scores and p-values. This will take approx. 10 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -292,7 +292,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6378229 
+0.6369826 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -308,16 +308,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5703928         1 1.402721e-06 0.006378229
-J03801_f_at       0.7822519  0.5403129         1 2.805443e-06 0.006378229
-D88422_at         0.7772185  0.5239238         1 4.208164e-06 0.006378229
-M19045_f_at       0.7713098  0.5083620         1 5.610885e-06 0.006378229
-Z15115_at        -0.7557720 -0.5704060         1 7.013606e-06 0.006378229
-M83667_rna1_s_at  0.7544589  0.4990852         1 8.416328e-06 0.006378229
-M63138_at         0.7533647  0.4908699         1 9.819049e-06 0.006378229
-X64072_s_at       0.7485502  0.4845475         1 1.122177e-05 0.006378229
-M33195_at         0.7457052  0.4796520         1 1.262449e-05 0.006378229
-U22376_cds2_s_at -0.7387023 -0.5409804         1 1.402721e-05 0.006378229
+M27891_at         1.0000000  0.5728504         1 1.402721e-06 0.006369826
+J03801_f_at       0.7822519  0.5388773         1 2.805443e-06 0.006369826
+D88422_at         0.7772185  0.5212802         1 4.208164e-06 0.006369826
+M19045_f_at       0.7713098  0.5093380         1 5.610885e-06 0.006369826
+Z15115_at        -0.7557720 -0.5660729         1 7.013606e-06 0.006369826
+M83667_rna1_s_at  0.7544589  0.5001466         1 8.416328e-06 0.006369826
+M63138_at         0.7533647  0.4922026         1 9.819049e-06 0.006369826
+X64072_s_at       0.7485502  0.4841843         1 1.122177e-05 0.006369826
+M33195_at         0.7457052  0.4788314         1 1.262449e-05 0.006369826
+U22376_cds2_s_at -0.7387023 -0.5384856         1 1.402721e-05 0.006369826
 \end{Soutput}
 \end{Schunk}
 }
@@ -380,7 +380,7 @@ Filtering: Wait for 5 to 15 dots .....done
 > a$test
 \end{Sinput}
 \begin{Soutput}
-[1] 0.1875492
+[1] 0.9073255
 \end{Soutput}
 \end{Schunk}
 
@@ -394,7 +394,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 11 seconds. 
+Compute expected scores and p-values. This will take approx. 5 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -659,12 +659,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    0    0    1    1    1    1    0    0
-[3,]    1    0    0    1    0    1    1    0
+[2,]    1    0    0    1    0    1    1    0
+[3,]    0    1    1    0    1    0    0    1
 [4,]    1    1    0    0    0    0    1    1
-[5,]    0    1    1    0    1    0    0    1
-[6,]    1    1    0    0    0    0    1    1
-[7,]    0    1    1    0    1    0    0    1
+[5,]    1    0    0    1    0    1    1    0
+[6,]    1    0    0    1    0    1    1    0
+[7,]    0    0    1    1    1    1    0    0
 \end{Soutput}
 \end{Schunk}
 
