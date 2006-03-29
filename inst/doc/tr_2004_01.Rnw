@@ -157,15 +157,20 @@ The dataframe stores observed and expected scores and corresponding empirical $p
 expval$result[1:7,1:5] #$
 @
 }
-       
+ 
+<<echo=FALSE,results=hide>>=
+png(filename="tr_2004_01-scores.png",width=600,height=450)
+plot(expval,which="scores",grayscale=F,legend=F)
+dev.off()
+png(filename="tr_2004_01-qvalues.png",width=600,height=450)
+plot(expval,which="qvalues")
+dev.off()
+@
+
+      
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-plot(expval,which="scores",grayscale=F,legend=F)
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-scores.png}
 \caption{Expected versus observed test scores. Deviation from the diagonal line gives evidence for differential expression. The red lines mark the 95\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(expval,which="scores",grayscale=F,legend=F)}.}\label{fig_scores}
 \end{figure}
 
@@ -177,12 +182,7 @@ expval$pi0 #$
 
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-plot(expval,which="qvalues")
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-qvalues.png}
 \caption{Stairplot of $q$-values against the resulting size of the list of significant genes. A list containing all genes with $q \leq q_0$ has an estimated global false discovery rate of $q_0$. The plotting call is \texttt{plot(expval,which="qvalues")}.}\label{fig_qvalues}
 \end{figure}
 
@@ -224,14 +224,16 @@ corr$result[1:10,1:5] #$
 @
 }
  
+
+<<echo=FALSE,results=hide>>=
+png(filename="tr_2004_01-corr.png",width=600,height=450)
+plot(corr,which="scores",grayscale=F,legend=F)
+dev.off()
+@
+
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-plot(corr,which="scores",grayscale=F,legend=F)
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-corr.png}
 \caption{Expected versus observed Spearman correlation scores. Deviation from the diagonal line gives evidence for significant correlation. The red lines mark the 99\% confidence interval on the absolute difference between oberved and expected scores. The plotting call is \texttt{plot(corr,which="scores",grayscale=F,legend=F)}.}\label{fig_corr}
 \end{figure}
 
@@ -280,14 +282,15 @@ b <- twilight.pval(golubNorm,a$yperm[1,],method="fc",yperm=a$yperm)
 hist(b$result$pvalue,col="gray",br=20)
 @
 
+<<echo=FALSE,results=hide>>=
+png(filename="tr_2004_01-hist.png",width=600,height=450)
+hist(b$result$pvalue,col="gray",br=20,main="",xlab="P-value")
+dev.off()
+@
+
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-hist(b$result$pvalue,col="gray",br=20)
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-hist.png}
 \caption{Histogram of $p$-values of one filtered permutation. The $p$-values are computed from pooling the scores of the set of filtered permutations. The resulting distribution appears to be uniform.}\label{fig_histo}
 \end{figure}
 
@@ -332,25 +335,27 @@ exfdr$result[1:5,6:9] #$
 
 The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $p$-values against the corresponding conditional probabilities of being induced given the $p$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
 
+<<echo=FALSE,results=hide>>=
+png(filename="tr_2004_01-fdr.png",width=600,height=450)
+plot(exfdr,which="fdr",grayscale=F,legend=T)
+dev.off()
+png(filename="tr_2004_01-volcano.png",width=600,height=450)
+plot(exfdr,which="volcano")
+dev.off()
+png(filename="tr_2004_01-effectsize.png",width=600,height=450)
+plot(exfdr,which="effectsize",legend=T)
+dev.off()
+@
+
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-plot(exfdr,which="fdr",grayscale=F,legend=T)
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-fdr.png}
 \caption{Curve of estimated local false discovery over $p$-values. The red lines denote the bootstrap mean (solid line) and the 95\% bootstrap confidence interval on the local false discovery rate (dashed lines). The bottom ticks are 1\% quantiles of $p$-values. The plotting call is  \texttt{plot(exfdr,which="fdr",grayscale=F,legend=T)}.}\label{fig_fdr}
 \end{figure}
 
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=6,height=4.5>>=
-plot(exfdr,which="volcano")
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-volcano.png}
 \caption{Volcano plot of observed test scores versus local false discovery rate. The bottom ticks are 1\% quantiles of observed scores. The plotting call is \texttt{plot(exfdr,which="volcano")}.}\label{fig_volcano}
 \end{figure}
 
@@ -358,12 +363,7 @@ Output element \Robject{effect} contains histogram information about the effect 
 
 \begin{figure}[tp]
 \centering
-\begin{minipage}{0.8\textwidth}
-\centering
-<<fig=TRUE,echo=FALSE,width=7,height=4.5>>=
-plot(exfdr,which="effectsize",legend=T)
-@
-\end{minipage}
+\includegraphics[width=0.7\textwidth]{tr_2004_01-effectsize.png}
 \caption{Observed effect size distribution (gray histogram) overlaid with the estimated effect size distribution under the null hypothesis (black histogram). The plotting call is \texttt{plot(exfdr,which="effectsize",legend=T)}.}\label{fig_effectsize}
 \end{figure}
 
