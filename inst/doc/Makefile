@@ -3,8 +3,6 @@ all:	vign
 vign:	tr_2004_01.tex
 	pdflatex tr_2004_01
 	pdflatex tr_2004_01
-	pdflatex changes.tex
-	pdflatex changes.tex
 	make clean
 
 pdf:	tr_2004_01.tex
