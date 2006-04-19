@@ -110,14 +110,14 @@ Function \Rfunction{twilight.pval} handles paired and unpaired data. In the unpa
        
 As an example, we apply function \Rfunction{twilight.pval} on the training set of the leukemia data of Golub et al.~(1999) \cite{golub99} as given in \Rfunction{library(golubEsets)}. For normalization, apply the variance-stabilizing method \Rfunction{vsn} in \Rfunction{library(vsn)} \cite{huber02}.
 <<results=hide>>=
-data(golubTrain)
-golubNorm <- vsn(exprs(golubTrain))
-id <- as.numeric(golubTrain$ALL.AML) #$
+data(Golub_Train)
+golubNorm <- vsn(exprs(Golub_Train))
+id <- as.numeric(Golub_Train$ALL.AML) #$
 @
 
 There are \Sexpr{length(id)} samples either expressing acute lymphoblastic leukemia (ALL) or acute myeloid leukemia (AML). As the AML patients are labeled with ``2'' and ALL with ``1'', we compare AML to ALL expression.
 <<>>=
-golubTrain$ALL.AML #$
+Golub_Train$ALL.AML #$
 id
 @
 
@@ -447,33 +447,39 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
-\section{Changes in version 1.6.1}
+\section*{Changes in version 1.6.2}
+
+Adapted to changes of data package \Rpackage{golubEsets}.
+
+
+\section*{Changes in version 1.6.1}
 
 It is now possible to directly compute observed test statistics via function \Rfunction{twilight.teststat}. Additional minor cosmetic changes in the plot function. 
 
 Within \Rfunction{twilight.pval}, the complete enumeration depends now on the value of argument \Rfunarg{B}. If complete enumeration would lead to a larger number of permutations than \Rfunarg{B}, it is not done but \Rfunarg{B} random permutations are taken instead.
 
-\section{Changes in version 1.5.1 and 1.5.2}
+
+\section*{Changes in version 1.5.1 and 1.5.2}
 
 Minor cosmetic changes. The jump in version numbers is due to Bioconductor's version bumping regime for packages in the release and in the developmental repository.
 
 
-\section{Changes in version 1.2.3}
+\section*{Changes in version 1.2.3}
 
 We updated the bootstrapping procedure in \Rfunction{twilight.getlambda} to get a reliable value for the regularization parameter when $\pi_0$ is small and many genes are truly differentially expressed.
 
 
-\section{Changes in version 1.2.2}
+\section*{Changes in version 1.2.2}
 
 Changes in the C code which do not effect the results.
 
 
-\section{Changes in version 1.2.1}
+\section*{Changes in version 1.2.1}
 
 Bug fixed on the calculation of Hamming distances.
 
 
-\section{Changes in version 1.2.0}
+\section*{Changes in version 1.2.0}
 
 We added the argument \Rfunarg{filtering = FALSE} to function \Rfunction{twilight.pval} which (if set to \Rfunarg{TRUE}) invokes the filtering for class label permutations that produce uniform $p$-value distributions. The set of admissible permutations is found using function \Rfunarg{twilight.filtering} which is called internally in function \Rfunarg{twilight.pval}. However, it can also be used directly.
 
@@ -482,7 +488,7 @@ We changed the local FDR estimation in function \Rfunction{twilight} slightly. I
 The mixture density estimation of $f$ also changed slightly. Still, the estimates are based on smoothed histogram counts. To improve the estimation for very small $p$-values, the histogram bins were changed from equidistant to quantile bins.
        
        
-\section{Changes in version 1.1.0}
+\section*{Changes in version 1.1.0}
 
 The computation of $p$-values in \Rfunction{twilight.pval} changed from gene-wise to pooled $p$-values. For the computation of a gene-wise $p$-value for gene $i$, only the permutation scores of gene $i$ are taken into account. For pooled $p$-values, all permutation scores of all genes are taken as null distribution. This change has several advantages: First, gene-wise $p$-values were not monotonically increasing with scores because each gene had its own null distribution. Thus, two genes with almost equal scores might get quite different $p$-values. Now, the null distribution is the same for all genes, that is the union set of all permutation scores. Second, pooled $p$-values are less granular than gene-wise $p$-values. Gene-wise $p$-values are computed from \Rfunarg{B} permutation scores whereas pooled $p$-values are computed from \Rfunarg{B} $\cdot$ (number of genes) scores.
 
@@ -495,12 +501,12 @@ The \Robject{result} table contains an additional \Robject{index} column with ge
 All output matrices of the permutation functions \Rfunction{twilight.combi}, \Rfunction{twilight.permute.pair} and \Rfunction{twilight.permute.unpair} have the original labeling vector as first row. This is also the case if balanced permutations are wanted, although the input vector is not balanced. Hence, the permutation matrix within \Rfunction{twilight.pval} now includes the original labeling even for balanced permutations implying that the smallest \textit{possible} $p$-value is 1/(number of permutations).
 
 
-\section{Changes in version 1.0.3}
+\section*{Changes in version 1.0.3}
 
 A \Rfunction{print.twilight} function was added which produces a short information about the contents stored in the \Robject{twilight} object.
 
 
-\section{Changes in version 1.0.2}
+\section*{Changes in version 1.0.2}
 
 The \Rfunarg{which} argument of the plot command changed from \Rfunction{plot1} style to more intuitive labels like \Rfunarg{scores} or \Rfunarg{fdr}.
 

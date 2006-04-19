@@ -30,14 +30,14 @@ See vignette.
 \dontrun{
 ### Leukemia data set of Golub et al. (1999).
 library(golubEsets)
-data(golubTrain)
+data(Golub_Train)
 
 ### Variance-stabilizing normalization of Huber et al. (2002).
 library(vsn)
-golubNorm <- vsn(exprs(golubTrain))
+golubNorm <- vsn(exprs(Golub_Train))
 
 ### A binary vector of class labels.
-id <- as.numeric(golubTrain$ALL.AML)
+id <- as.numeric(Golub_Train$ALL.AML)
 
 ### Do an unpaired t-test.
 ### Let's have a quick example with 50 filtered permutations only.

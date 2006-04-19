@@ -6,14 +6,14 @@ library(twilight)
 
 ### Leukemia data set of Golub et al. (1999)
 library(golubEsets)
-data(golubMerge)
+data(Golub_Merge)
 
 ### Variance-stabilizing normalization of Huber et al. (2002)
 library(vsn)
-golubNorm <- vsn(exprs(golubMerge))
+golubNorm <- vsn(exprs(Golub_Merge))
 
 ### A vector of class labels.
-id <- as.numeric(golubMerge$ALL.AML)
+id <- as.numeric(Golub_Merge$ALL.AML)
 
 expval <- twilight.pval(golubNorm,id)
 save(expval,file="../../data/expval.rda")
