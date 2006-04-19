@@ -25,7 +25,7 @@
 \renewcommand{\textfraction}{0}
 
 %---------------------------------------------------------------------------------%  
-\title{Estimation of Local False Discovery Rates \bigskip \\ User's Guide to the Bioconductor Package \Rpackage{twilight} 1.6.1}
+\title{Estimation of Local False Discovery Rates \bigskip \\ User's Guide to the Bioconductor Package \Rpackage{twilight}}
 
 \author{Stefanie Scheid and Rainer Spang \bigskip \\
   \small email: \texttt{first.last@molgen.mpg.de}
@@ -134,7 +134,7 @@ pval <- twilight.pval(golubNorm, id, B=100)
 @
 
 The function checks whether complete enumeration of all permutations is possible. Complete enumeration is performed as long as the number of permutations does not exceed the value set by \Rfunarg{B}. Thus, if you want to turn off the compulsive enumeration and use all possible permutations, you need to select a small \Rfunarg{B} or simply keep the default \Rfunarg{B=1000}. Details on the enumeration functions are given in section \ref{twilight.combi}.
-The values in the accompanying data set \Robject{expval} were computed in the same manner as in the example above but with the complete data set \Rfunction{data(golubMerge)} in \Rfunction{library(golubEsets)} and 1000 permutations.
+The values in the accompanying data set \Robject{expval} were computed in the same manner as in the example above but with the complete data set \Rfunction{data(Golub\_Merge)} in \Rfunction{library(golubEsets)} and 1000 permutations.
 <<>>=
 data(expval)
 expval
