@@ -141,7 +141,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 5 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -273,7 +273,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 3 seconds. 
+Compute expected scores and p-values. This will take approx. 4 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -288,7 +288,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6274115 
+0.6262162 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -304,16 +304,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5688150         1 1.402721e-06 0.006274115
-J03801_f_at       0.7822519  0.5357982         1 2.805443e-06 0.006274115
-D88422_at         0.7772185  0.5163344         1 4.208164e-06 0.006274115
-M19045_f_at       0.7713098  0.5053791         1 5.610885e-06 0.006274115
-Z15115_at        -0.7557720 -0.5633439         1 7.013606e-06 0.006274115
-M83667_rna1_s_at  0.7544589  0.4968903         1 8.416328e-06 0.006274115
-M63138_at         0.7533647  0.4878105         1 9.819049e-06 0.006274115
-X64072_s_at       0.7485502  0.4805274         1 1.122177e-05 0.006274115
-M33195_at         0.7457052  0.4746296         1 1.262449e-05 0.006274115
-U22376_cds2_s_at -0.7387023 -0.5342532         1 1.402721e-05 0.006274115
+M27891_at         1.0000000  0.5797790         1 1.402721e-06 0.006262162
+J03801_f_at       0.7822519  0.5437838         1 2.805443e-06 0.006262162
+D88422_at         0.7772185  0.5239632         1 4.208164e-06 0.006262162
+M19045_f_at       0.7713098  0.5118022         1 5.610885e-06 0.006262162
+Z15115_at        -0.7557720 -0.5637794         1 7.013606e-06 0.006262162
+M83667_rna1_s_at  0.7544589  0.5025014         1 8.416328e-06 0.006262162
+M63138_at         0.7533647  0.4935201         1 9.819049e-06 0.006262162
+X64072_s_at       0.7485502  0.4866900         1 1.122177e-05 0.006262162
+M33195_at         0.7457052  0.4804005         1 1.262449e-05 0.006262162
+U22376_cds2_s_at -0.7387023 -0.5308152         1 1.402721e-05 0.006262162
 \end{Soutput}
 \end{Schunk}
 }
@@ -349,33 +349,25 @@ Calling the filtering within \Rfunction{twilight.pval} is very convenient. If on
 
 The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important. The first one is the number of wanted permutations. Within \Rfunction{twilight.pval}, it is set to \Rfunarg{B}. The argument \Rfunarg{num.take} specifies the number of valid permutations that are kept in each step of the iteration. Within each step, this number increases by \Rfunarg{num.take}. Hence, \Rfunarg{num.take} might be chosen such that \Rfunarg{num.take} is a divisor of \Rfunarg{num.perm}. Within \Rfunction{twilight.pval}, \Rfunarg{num.take} is set to the minimum of 50 and \Rfunarg{num.perm}/20.       
 
-The output of function \Rfunction{twilight.filtering} is a list with two elements. The first element, \Rfunarg{yperm}, is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
+The output of function \Rfunction{twilight.filtering} is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
 
-The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of \Rfunarg{yperm} always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
+The format of the output object complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of teh matrix always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
        
-The second output element is the numerical value \Rfunarg{test}. For each filtered permutation, the Hamming distance to the original labeling \Rfunarg{yin} is computed. The resulting distribution of Hamming distances is tested for randomness using a $\chi^2$-test against the expected frequencies of Hamming distances resulting from all possible permutations of \Rfunarg{yin}. The resulting $\chi^2$ $p$-value is stored in \Rfunarg{test}. A significant $p$-value gives evidence that the filtering did \textit{not} leave a random subset of possible permutations. However, an effective run of \Rfunction{twilight.filtering} results in a \textit{non}-significant $\chi^2$ $p$-value \Rfunarg{test}. Within \Rfunction{twilight.pval}, the result of the $\chi^2$ test is reported in the output element \Rfunarg{call} if \Rfunarg{filtering=TRUE}.
-
 As an illustration, we proceed with a quick example of permutation filtering. We perform the filtering on log ratio scores and only filter for 50 permutations in steps of 10.
 
 \begin{Schunk}
 \begin{Sinput}
-> a <- twilight.filtering(golubNorm, id, method = "fc", num.perm = 50, 
-+     num.take = 10)
+> yperm <- twilight.filtering(golubNorm, id, method = "fc", 
++     num.perm = 50, num.take = 10)
 \end{Sinput}
 \begin{Soutput}
 Filtering: Wait for 5 to 15 dots .....done
 \end{Soutput}
 \begin{Sinput}
-> dim(a$yperm)
+> dim(yperm)
 \end{Sinput}
 \begin{Soutput}
 [1] 50 38
-\end{Soutput}
-\begin{Sinput}
-> a$test
-\end{Sinput}
-\begin{Soutput}
-[1] 0.3525966
 \end{Soutput}
 \end{Schunk}
 
@@ -383,13 +375,13 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 
 \begin{Schunk}
 \begin{Sinput}
-> a$yperm <- a$yperm[-1, ]
-> b <- twilight.pval(golubNorm, a$yperm[1, ], method = "fc", 
-+     yperm = a$yperm)
+> yperm <- yperm[-1, ]
+> b <- twilight.pval(golubNorm, yperm[1, ], method = "fc", 
++     yperm = yperm)
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 2 seconds. 
+Compute expected scores and p-values. This will take approx. 3 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -644,12 +636,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    0    1    1    0    1    0    0    1
+[2,]    1    1    0    0    0    0    1    1
 [3,]    1    0    0    1    0    1    1    0
-[4,]    1    0    0    1    0    1    1    0
+[4,]    0    0    1    1    1    1    0    0
 [5,]    1    0    0    1    0    1    1    0
-[6,]    1    0    0    1    0    1    1    0
-[7,]    1    0    0    1    0    1    1    0
+[6,]    0    0    1    1    1    1    0    0
+[7,]    0    1    1    0    1    0    0    1
 \end{Soutput}
 \end{Schunk}
 
@@ -659,6 +651,10 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+\section*{Changes in version 1.9.1}
+
+New version number due to Bioconductor Release 1.8.
 
 \section*{Changes in version 1.6.2}
 

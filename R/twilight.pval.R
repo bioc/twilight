@@ -164,9 +164,6 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
                     pearson = twilight.filtering(xin,yin,method="pearson",paired,s0,verbose,num.perm,num.take),
                     spearman = twilight.filtering(xin,yin,method="spearman",paired,s0,verbose,num.perm,num.take),
                     gcFirst=TRUE)
-
-    chi2test <- yperm$test
-    yperm <- yperm$yperm
   }
   
   B <- dim(yperm)[1]
@@ -359,7 +356,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
     call <- paste("Test: ",method,". Number of permutations: ",B,".",sep="")
   }
   if (filtering){
-    call <- paste(call,"Permutation filtering was performed. The Hamming distances of the filtered permutations to the original labeling fit to the expected distribution with a p-value of",round(chi2test,4))
+    call <- paste(call,"Permutation filtering was performed.")
   }
   
   res <- list(result=data.frame(

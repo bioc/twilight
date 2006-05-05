@@ -21,9 +21,11 @@ twilight.filtering(xin, yin, method = "fc", paired = FALSE, s0 = 0, verbose = TR
 See vignette.
 }
 \value{
- Returns a list with two elements: Matrix \code{yperm} with permuted input labels \code{yin} as rows, and a numerical value \code{test} giving the p-value of a goodness-of-fit chi2 test to evaluate whether the distribution of Hamming distances of the filtered permutations to the original labeling is still random. Please note that \code{yperm} is already translated into binary labels for two-sample testing or to ranks if Spearman's correlation was chosen. The resulting permutation matrix can be directly passed into function \code{twilight.pval}. Please note that the first row of \code{yperm} always contains the original input \code{yin} to be consistent with the other permutation functions in package \code{twilight}.
+ Returns a matrix with permuted input labels \code{yin} as rows. Please note that this matrix is already translated into binary labels for two-sample testing or to ranks if Spearman's correlation was chosen. The resulting permutation matrix can be directly passed into function \code{twilight.pval}. Please note that the first row always contains the original input \code{yin} to be consistent with the other permutation functions in package \code{twilight}.
 }
-\references{ to come }
+\references{
+Scheid S and Spang R (2006): Permutation filtering: A novel concept for significance analysis of large-scale genomic data, in: Apostolico A, Guerra C, Istrail S, Pevzner P, and Waterman M (Eds.): \emph{Research in Computational Molecular Biology: 10th Annual International Conference, Proceedings of RECOMB 2006, Venice, Italy, April 2-5, 2006}. Lecture Notes in Computer Science vol. 3909, Springer, Heidelberg, pp. 338-347.
+}
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight.pval}} }
 \examples{
@@ -42,13 +44,13 @@ id <- as.numeric(Golub_Train$ALL.AML)
 ### Do an unpaired t-test.
 ### Let's have a quick example with 50 filtered permutations only.
 ### With num.take=10, we only need 5 iteration steps.
-a <- twilight.filtering(golubNorm,id,method="t",num.perm=50,num.take=10)
-dim(a$yperm)
+yperm <- twilight.filtering(golubNorm,id,method="t",num.perm=50,num.take=10)
+dim(yperm)
 
 ### Let's see if the filtered permutations really produce uniform p-value distributions.
 ### The first row is the original labeling, so we try the second permutation.
-a$yperm <- a$yperm[-1,]
-b <- twilight.pval(golubNorm,a$yperm[1,],method="t",yperm=a$yperm)
+yperm <- yperm[-1,]
+b <- twilight.pval(golubNorm,yperm[1,],method="t",yperm=yperm)
 hist(b$result$pvalue)
 }
 }

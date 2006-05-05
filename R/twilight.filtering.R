@@ -234,28 +234,28 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
   if (verbose){cat("done\n")}
 
   ### first row contains original labeling but give back exactly B permutations.
-  id.opt <- rbind(yin,id.opt[-1,])
+  yperm <- rbind(yin,id.opt[-1,])
 
   ### do a goodness-of-fit chi^2-test to see if at least the distribution of Hamming distances of the filtered permutations to the original labeling is random.
-  a <- hamming.exp(yin,paired=paired)
-  b <- hamming.obs(id.opt,yin,paired=paired)
+  #a <- hamming.exp(yin,paired=paired)
+  #b <- hamming.obs(id.opt,yin,paired=paired)
 
   ### concatenate small entries at both ends of the distributions.
-  a <- round(a*sum(b))
+  #a <- round(a*sum(b))
 
-  for (i in 1:2){
-    x <- which(a>=10)[1]-1
-    a[x] <- sum(a[1:x])
-    a <- a[-(1:(x-1))]
-    a <- rev(a)
-    b[x] <- sum(b[1:x])
-    b <- b[-(1:(x-1))]
-    b <- rev(b)
-  }
+  #for (i in 1:2){
+  #  x <- which(a>=10)[1]-1
+  #  a[x] <- sum(a[1:x])
+  #  a <- a[-(1:(x-1))]
+  #  a <- rev(a)
+  #  b[x] <- sum(b[1:x])
+  #  b <- b[-(1:(x-1))]
+  #  b <- rev(b)
+  #}
                    
-  test <- suppressWarnings(chisq.test(x=b,p=a,rescale.p=TRUE)$p.value)
+  #test <- suppressWarnings(chisq.test(x=b,p=a,rescale.p=TRUE)$p.value)
   
-  return(list(yperm=id.opt,test=test))
+  return(yperm)
 }
 
 

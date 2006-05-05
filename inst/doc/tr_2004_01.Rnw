@@ -260,25 +260,22 @@ Calling the filtering within \Rfunction{twilight.pval} is very convenient. If on
 
 The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important. The first one is the number of wanted permutations. Within \Rfunction{twilight.pval}, it is set to \Rfunarg{B}. The argument \Rfunarg{num.take} specifies the number of valid permutations that are kept in each step of the iteration. Within each step, this number increases by \Rfunarg{num.take}. Hence, \Rfunarg{num.take} might be chosen such that \Rfunarg{num.take} is a divisor of \Rfunarg{num.perm}. Within \Rfunction{twilight.pval}, \Rfunarg{num.take} is set to the minimum of 50 and \Rfunarg{num.perm}/20.       
 
-The output of function \Rfunction{twilight.filtering} is a list with two elements. The first element, \Rfunarg{yperm}, is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
+The output of function \Rfunction{twilight.filtering} is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
 
-The format of the output object \Rfunarg{yperm} complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of \Rfunarg{yperm} always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
+The format of the output object complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of teh matrix always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
        
-The second output element is the numerical value \Rfunarg{test}. For each filtered permutation, the Hamming distance to the original labeling \Rfunarg{yin} is computed. The resulting distribution of Hamming distances is tested for randomness using a $\chi^2$-test against the expected frequencies of Hamming distances resulting from all possible permutations of \Rfunarg{yin}. The resulting $\chi^2$ $p$-value is stored in \Rfunarg{test}. A significant $p$-value gives evidence that the filtering did \textit{not} leave a random subset of possible permutations. However, an effective run of \Rfunction{twilight.filtering} results in a \textit{non}-significant $\chi^2$ $p$-value \Rfunarg{test}. Within \Rfunction{twilight.pval}, the result of the $\chi^2$ test is reported in the output element \Rfunarg{call} if \Rfunarg{filtering=TRUE}.
-
 As an illustration, we proceed with a quick example of permutation filtering. We perform the filtering on log ratio scores and only filter for 50 permutations in steps of 10.
 
 <<>>=
-a <- twilight.filtering(golubNorm,id,method="fc",num.perm=50,num.take=10)
-dim(a$yperm)
-a$test
+yperm <- twilight.filtering(golubNorm,id,method="fc",num.perm=50,num.take=10)
+dim(yperm)
 @
 
 The filtering leads to a random subset of possible permutations. Next, we check whether one of these permutations really produces a uniform $p$-value distribution. As the first row of \Rfunarg{yperm} has to contain the labeling for which the $p$-values will be computed, we have to remove the current first row which is the original labeling \Rfunarg{yin}. Thus, we compute $p$-values for the first ``random'' permutation. The resulting histogram is shown in Figure \ref{fig_histo}.
 
 <<>>=
-a$yperm <- a$yperm[-1,]
-b <- twilight.pval(golubNorm,a$yperm[1,],method="fc",yperm=a$yperm)
+yperm <- yperm[-1,]
+b <- twilight.pval(golubNorm,yperm[1,],method="fc",yperm=yperm)
 hist(b$result$pvalue,col="gray",br=20)
 @
 
@@ -446,6 +443,10 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
+
+\section*{Changes in version 1.9.1}
+
+New version number due to Bioconductor Release 1.8.
 
 \section*{Changes in version 1.6.2}
 
