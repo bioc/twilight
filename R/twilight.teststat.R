@@ -61,18 +61,20 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
 
   if ((method!="pearson")&(method!="spearman")){
     funk <- function(a, b, c, d, s) {
-      .C(ifelse(paired,"paired","unpaired"), 
-         as.integer(a),
-         as.integer(sum(a)),
-         as.integer(sum(1 - a)),       
-         as.double(t(b)),
-         as.integer(nrow(b)),
-         as.integer(ncol(b)),
-         as.integer(c), 
-         as.integer(which(d == 1) - 1),
-         as.integer(which(d == 0) - 1),
-         as.double(s),
-         e = double(nrow(b)), PACKAGE = "twilight")$e
+      x <- .C(ifelse(paired,"paired","unpaired"), 
+              as.integer(a),
+              as.integer(sum(a)),
+              as.integer(sum(1 - a)),       
+              as.double(t(b)),
+              as.integer(nrow(b)),
+              as.integer(ncol(b)),
+              as.integer(c), 
+              as.integer(which(d == 1) - 1),
+              as.integer(which(d == 0) - 1),
+              as.double(s),
+              e = double(nrow(b)),
+              fudge = double(1), PACKAGE = "twilight")
+      return(list(e=x$e,fudge=x$fudge))      
     }
     
     stat.obs <- switch(method,
@@ -80,6 +82,8 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
                        z = funk(yin,xin,2,yin,s0),
                        fc = funk(yin,xin,3,yin,s0)
                        )
+    s0 <- stat.obs$fudge
+    stat.obs <- stat.obs$e
   }
   
   if ((method=="pearson")|(method=="spearman")){
@@ -96,5 +100,5 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
   }
 
 
-  return(stat.obs)
+  return(list(observed=stat.obs,s0=s0))
 }

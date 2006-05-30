@@ -161,8 +161,8 @@ The values in the accompanying data set \Robject{expval} were computed in the sa
      p- and q-values
 
  Estimated percentage of non-induced genes:
-      pi0 
-0.6197128 
+     pi0 
+0.619148 
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
@@ -181,8 +181,8 @@ The output object of function \Rfunction{twilight.pval} is of class \Rclass{twil
 > names(expval)
 \end{Sinput}
 \begin{Soutput}
-[1] "result"   "ci.line"  "quant.ci" "lambda"   "pi0"      "boot.pi0"
-[7] "boot.ci"  "effect"   "call"    
+ [1] "result"   "s0"       "ci.line"  "quant.ci" "lambda"   "pi0"     
+ [7] "boot.pi0" "boot.ci"  "effect"   "call"    
 \end{Soutput}
 \end{Schunk}
 
@@ -204,14 +204,14 @@ The dataframe stores observed and expected scores and corresponding empirical $p
 > expval$result[1:7, 1:5]
 \end{Sinput}
 \begin{Soutput}
-                observed   expected candidate       pvalue       qvalue
-M84526_at       3.990578  1.1088376         1 1.402721e-07 0.0006197128
-M27891_at       3.669657  0.9690305         1 2.805443e-07 0.0006197128
-M89957_at      -3.153319 -1.1027192         1 4.208164e-07 0.0006197128
-X82240_rna1_at -3.111376 -0.9680745         1 5.610885e-07 0.0006197128
-U89922_s_at    -2.954233 -0.8948820         1 7.013606e-07 0.0006197128
-M19507_at       2.925666  0.8960149         1 8.416328e-07 0.0006197128
-M11722_at      -2.689999 -0.8422853         1 9.819049e-07 0.0006197128
+                observed   expected candidate       pvalue      qvalue
+M84526_at       3.990578  1.1091753         1 1.402721e-07 0.000619148
+M27891_at       3.669657  0.9709790         1 2.805443e-07 0.000619148
+M89957_at      -3.153319 -1.1007286         1 4.208164e-07 0.000619148
+X82240_rna1_at -3.111376 -0.9651917         1 5.610885e-07 0.000619148
+U89922_s_at    -2.954233 -0.8979189         1 7.013606e-07 0.000619148
+M19507_at       2.925666  0.8936237         1 8.416328e-07 0.000619148
+M11722_at      -2.689999 -0.8471725         1 9.819049e-07 0.000619148
 \end{Soutput}
 \end{Schunk}
 }
@@ -231,7 +231,7 @@ In addition, $q$-values and the estimated percentage of non-induced genes $\pi_0
 > expval$pi0
 \end{Sinput}
 \begin{Soutput}
-[1] 0.6197128
+[1] 0.619148
 \end{Soutput}
 \end{Schunk}
 
@@ -273,7 +273,7 @@ All successive analyses like expected scores, $p$- and $q$-values are kept as be
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 3 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -288,7 +288,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6262162 
+0.6317168 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -304,16 +304,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5797790         1 1.402721e-06 0.006262162
-J03801_f_at       0.7822519  0.5437838         1 2.805443e-06 0.006262162
-D88422_at         0.7772185  0.5239632         1 4.208164e-06 0.006262162
-M19045_f_at       0.7713098  0.5118022         1 5.610885e-06 0.006262162
-Z15115_at        -0.7557720 -0.5637794         1 7.013606e-06 0.006262162
-M83667_rna1_s_at  0.7544589  0.5025014         1 8.416328e-06 0.006262162
-M63138_at         0.7533647  0.4935201         1 9.819049e-06 0.006262162
-X64072_s_at       0.7485502  0.4866900         1 1.122177e-05 0.006262162
-M33195_at         0.7457052  0.4804005         1 1.262449e-05 0.006262162
-U22376_cds2_s_at -0.7387023 -0.5308152         1 1.402721e-05 0.006262162
+M27891_at         1.0000000  0.5758923         1 1.402721e-06 0.006317168
+J03801_f_at       0.7822519  0.5414903         1 2.805443e-06 0.006317168
+D88422_at         0.7772185  0.5219214         1 4.208164e-06 0.006317168
+M19045_f_at       0.7713098  0.5102681         1 5.610885e-06 0.006317168
+Z15115_at        -0.7557720 -0.5759624         1 7.013606e-06 0.006317168
+M83667_rna1_s_at  0.7544589  0.5002560         1 8.416328e-06 0.006317168
+M63138_at         0.7533647  0.4936470         1 9.819049e-06 0.006317168
+X64072_s_at       0.7485502  0.4873378         1 1.122177e-05 0.006317168
+M33195_at         0.7457052  0.4815231         1 1.262449e-05 0.006317168
+U22376_cds2_s_at -0.7387023 -0.5402582         1 1.402721e-05 0.006317168
 \end{Soutput}
 \end{Schunk}
 }
@@ -381,7 +381,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 3 seconds. 
+Compute expected scores and p-values. This will take approx. 2 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -444,11 +444,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
  Bootstrap estimate of percentage of non-induced
  genes with lower and upper 95% CI:
        pi0 lower.pi0 upper.pi0
- 0.6275649 0.5953114  0.656193
+ 0.6263987   0.59279 0.6568944
 
  Function call:
  Test: fc. Paired: FALSE. Number of permutations: 1000. Balanced: FALSE. 
- Function twilight used lambda = 0.035 
+ Function twilight used lambda = 0.02 
 \end{Soutput}
 \end{Schunk}
 \begin{Schunk}
@@ -457,11 +457,11 @@ As an example, we run SEP with 1000 bootstrap samples and $95\%$ boostrap confid
 \end{Sinput}
 \begin{Soutput}
                       fdr   mean.fdr   lower.fdr  upper.fdr
-M84526_at      0.01016839 0.01023125 0.006804447 0.01359302
-M27891_at      0.01016949 0.01023236 0.006805623 0.01359414
-M89957_at      0.01017059 0.01023347 0.006806799 0.01359526
-X82240_rna1_at 0.01017169 0.01023457 0.006807976 0.01359638
-U89922_s_at    0.01017279 0.01023568 0.006809152 0.01359750
+M84526_at      0.01024130 0.01015424 0.007309932 0.01307063
+M27891_at      0.01024240 0.01015535 0.007311074 0.01307174
+M89957_at      0.01024351 0.01015646 0.007312216 0.01307286
+X82240_rna1_at 0.01024461 0.01015756 0.007313358 0.01307398
+U89922_s_at    0.01024571 0.01015867 0.007314500 0.01307509
 \end{Soutput}
 \end{Schunk}
 
@@ -496,14 +496,14 @@ The last plotting argument \Rfunarg{which="table"} tabulates the histogram infor
 \end{Sinput}
 \begin{Soutput}
        LogRatio Mixture Alternative
--2234%    -3.15       2         2.0
+-2234%    -3.15       2         1.6
 -2012%    -3.05       0         0.0
--1811%    -2.95       1         0.8
+-1811%    -2.95       1         1.0
 -1629%    -2.85       0         0.0
 -1464%    -2.75       0         0.0
 -1315%    -2.65       1         1.0
 -1181%    -2.55       0         0.0
--1059%    -2.45       1         0.8
+-1059%    -2.45       1         1.0
 \end{Soutput}
 \end{Schunk}
 
@@ -636,10 +636,10 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    1    1    0    0    0    0    1    1
-[3,]    1    0    0    1    0    1    1    0
-[4,]    0    0    1    1    1    1    0    0
-[5,]    1    0    0    1    0    1    1    0
+[2,]    0    1    1    0    1    0    0    1
+[3,]    1    1    0    0    0    0    1    1
+[4,]    1    1    0    0    0    0    1    1
+[5,]    1    1    0    0    0    0    1    1
 [6,]    0    0    1    1    1    1    0    0
 [7,]    0    1    1    0    1    0    0    1
 \end{Soutput}
@@ -652,9 +652,16 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
+
+\section*{Changes in version 1.9.2}
+
+Bug-fix for computation of fudge factor in permutation scores. The estimated fudge factor $s_0$ will now be returned by functions \Rfunction{twilight.pval} and \Rfunction{twilight.teststat}.
+
+
 \section*{Changes in version 1.9.1}
 
 New version number due to Bioconductor Release 1.8.
+
 
 \section*{Changes in version 1.6.2}
 

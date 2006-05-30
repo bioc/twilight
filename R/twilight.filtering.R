@@ -52,6 +52,12 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
     xin <- t(apply(xin,1,rank))
   }  
 
+  ### compute fudge factor for z-test.
+  if (s0==0){
+    if (method=="z"){
+      s0 <- twilight.teststat(xin,yin,method="z",paired=paired)$s0
+    }
+  }
 
   ### run length check for iteration
   if ((num.perm/num.take > 50)&(verbose)){

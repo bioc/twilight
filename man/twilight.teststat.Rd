@@ -18,7 +18,7 @@ twilight.teststat(xin, yin, method = "fc", paired = FALSE, s0 = NULL)
 Please see vignette for detailed information.
 }
 \value{
-A numerical vector of test statistics is returned. Each entry corresponds to one row of the input data matrix.
+Returns a list with two components: a numerical vector of observed test statistics \code{observed}. Each entry corresponds to one row of the input data matrix. Also, the estimated fudge factor \code{s0} is returned. In any other case except \code{method="z"}, \code{s0} is zero.
 }
 \references{
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.

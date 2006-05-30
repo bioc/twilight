@@ -121,7 +121,12 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
     if((s0==0)&(method=="z")){method <- "t"}
   }
   
-  if (is.null(s0)){s0 <- 0}
+  if (is.null(s0)){
+    s0 <- 0
+    if (method=="z"){
+      s0 <- twilight.teststat(xin,yin,method="z",paired=paired)$s0
+    }
+  }
 
   
   ### prepare matrix of permuted index labels without filtering.
@@ -181,7 +186,8 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
        as.integer(which(d==1)-1),
        as.integer(which(d==0)-1),
        as.double(s),
-       e = double(nrow(b)), PACKAGE = "twilight")$e
+       e = double(nrow(b)),
+       fudge = double(1), PACKAGE = "twilight")$e
   }
   
   if (verbose){cat("Compute vector of observed statistics. \n")}
@@ -193,6 +199,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
                                             z = funk(yin,xin,2,yin,s0),
                                             fc = funk(yin,xin,3,yin,s0)),gcFirst=TRUE)
   }
+  
   if ((method=="pearson")|(method=="spearman")){
     funk <- function(a,b){
       .C("corsingle",
@@ -304,7 +311,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   ### compute permutation based confidence lines for plot1.
   if (verbose){cat("Compute values for confidence lines. \n")}
-  funk <- function(a,b,c,d,orig){
+  funk <- function(a,b,c,d,orig,s){
     x <- .C(ifelse(paired,"pairedci","unpairedci"),
             as.integer(t(a)),
             as.integer(nrow(a)),
@@ -317,6 +324,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
             as.double(d),
             as.integer(which(orig==1)-1),
             as.integer(which(orig==0)-1),
+            as.double(s),
             e=double(nrow(a)),PACKAGE="twilight"
             )$e
   }
@@ -325,9 +333,9 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   ci.sel  <- sample(1:B,min(1000,B))
   if ((method!="pearson")&(method!="spearman")){
     ci.line <- switch(method,
-                      t = funk(yperm[ci.sel,],xin,1,stat.exp,yin),
-                      z = funk(yperm[ci.sel,],xin,2,stat.exp,yin),
-                      fc = funk(yperm[ci.sel,],xin,3,stat.exp,yin))
+                      t = funk(yperm[ci.sel,],xin,1,stat.exp,yin,s0),
+                      z = funk(yperm[ci.sel,],xin,2,stat.exp,yin,s0),
+                      fc = funk(yperm[ci.sel,],xin,3,stat.exp,yin,s0))
   }
   if ((method=="pearson")|(method=="spearman")){
     funk <- function(a,b,c){
@@ -371,6 +379,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
                 upper.fdr=rep(NaN,m),
                 index=index,
                 row.names=rows),
+              s0=s0,
               ci.line=ci.line,
               quant.ci=quant.ci,
               lambda=NaN,

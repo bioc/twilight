@@ -13,10 +13,9 @@ int compare1(const void *x, const void *y)
 }
 
 
-void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *e)
+void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *s0, double *e)
 {
-  double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort, *stat;
-  double s0=0;
+  double *ex1, *ex0, *ex21, *ex20, *r, *s, *stat;
   int i, j, k;
     
   if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
@@ -25,7 +24,6 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   if ((ex20=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
 
 
@@ -38,7 +36,6 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
       ex20[j]=0;
       r[j]=0;
       s[j]=0;
-      ssort[j]=0;
       stat[j]=0;
     }
 
@@ -72,31 +69,18 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
 	stat[j]=r[j]/s[j];
       }
       
+      /* Z test statistic */
+      if (*meth==2){
+	stat[j]=r[j]/(s[j] + *s0);
+      }
+
       /* fold change equivalent */
       if (*meth==3){
 	stat[j]=r[j];
       }
       
-      ssort[j]=s[j];
     }
     
-
-    /* Z test statistic, needs calculation of median(s) */
-    if (*meth==2){
-            
-      qsort((void*)ssort,*ngene,sizeof(double),compare1);
-      
-      if (fmod(*ngene,2)==1){
-	s0=ssort[(*ngene-1)/2];
-      }
-      if (fmod(*ngene,2)==0){
-	s0=(ssort[(*ngene)/2]+ssort[(*ngene)/2-1])/2;
-      }
-      
-      for (j=0; j<*ngene; j++){
-	stat[j]=r[j]/(s[j] + s0);
-      }
-    }
 
     /* Maximum absolute difference between stat and sobs */
     qsort((void*)stat,*ngene,sizeof(double),compare1);
@@ -119,17 +103,15 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   free(ex20);
   free(r);
   free(s);
-  free(ssort);
   free(stat);
 }
 
 
 
 
-void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *e)
+void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, double *sobs, int *which1, int *which0, double *s0, double *e)
 {
-  double *r, *s, *ssort, *ex2, *stat;
-  double s0=0;
+  double *r, *s, *ex2, *stat;
   double *g1, *g0, *diff;
   int i, j, k1, k0, k;
 
@@ -138,7 +120,6 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
   if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
 
@@ -147,7 +128,6 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
     for (j=0; j<*ngene; j++){
       r[j]=0;
       s[j]=0;
-      ssort[j]=0;
       ex2[j]=0;
       stat[j]=0;
     }
@@ -210,32 +190,18 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
 	stat[j]=r[j]/s[j];
       }
 
+      /* Z test statistic */
+      if (*meth==2){      
+	stat[j]=r[j]/(s[j] + *s0);
+      }
+
       /* fold change equivalent */
       if (*meth==3){
 	stat[j]=r[j];
       }
       
-      ssort[j]=s[j];
     }
     
-
-    /* Z test statistic, needs calculation of median(s) */
-    if (*meth==2){
-      
-      qsort((void*)ssort,*ngene,sizeof(double),compare1);
-      
-      if (fmod(*ngene,2)==1){
-	s0=ssort[(*ngene-1)/2];
-      }
-      if (fmod(*ngene,2)==0){
-	s0=(ssort[(*ngene)/2]+ssort[(*ngene)/2-1])/2;
-      }
-      
-      for (j=0; j<*ngene; j++){
-	stat[j]=r[j]/(s[j] + s0);
-      }
-    }
-
 
     /* Maximum absolute difference between stat and sobs */
     qsort((void*)stat,*ngene,sizeof(double),compare1);
@@ -257,7 +223,6 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
   free(diff);
   free(r);
   free(s);
-  free(ssort);
   free(ex2);
   free(stat);
 }

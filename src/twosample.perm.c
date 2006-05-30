@@ -16,22 +16,19 @@ int compare2(const void *x, const void *y)
 
 void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *f)
 {
-  double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort, *stat, *dstat;
+  double *ex1, *ex0, *ex21, *ex20, *r, *s, *stat, *dstat;
   int i, j, k, *test, *indx;
-    
+
   if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex20=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((test=calloc(1,sizeof(int)))==0) {printf("Error, could not allocate memory");}
   if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
   if ((dstat=calloc((*nperm)*(*ngene),sizeof(double)))==0) {printf("Error, could not allocate memory");}
-
-
 
   for (k=0; k<*nperm; k++){
 
@@ -42,7 +39,6 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
       ex20[j]=0;
       r[j]=0;
       s[j]=0;
-      ssort[j]=0;
       stat[j]=0;
     }
 
@@ -84,33 +80,18 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
 	stat[j]=r[j]/s[j];
       }
       
+      /* Z test statistic  */
+      if (*meth==2){            
+	stat[j]=r[j]/(s[j] + *s0);
+      }
+
       /* fold change equivalent */
       if (*meth==3){
 	stat[j]=r[j];
       }
       
-      ssort[j]=s[j];
     }
     
-
-    /* Z test statistic, needs calculation of median(s) */
-    if (*meth==2){
-            
-      if (*s0==0){
-	qsort((void*)ssort,*ngene,sizeof(double),compare2);
-	
-	if (fmod(*ngene,2)==1){
-	  *s0=ssort[(*ngene-1)/2];
-	}
-	if (fmod(*ngene,2)==0){
-	  *s0=(ssort[(*ngene)/2]+ssort[(*ngene)/2-1])/2;
-	}
-      }
-
-      for (j=0; j<*ngene; j++){
-	stat[j]=r[j]/(s[j] + *s0);
-      }
-    }
 
     for (j=0; j<*ngene; j++){
       dstat[j+(*ngene)*k]=fabs(stat[j]);
@@ -149,7 +130,6 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
   free(ex20);
   free(r);
   free(s);
-  free(ssort);
   free(stat);
   free(test);
   free(dstat);
@@ -161,14 +141,13 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
 
 void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *f)
 {
-  double *r, *s, *ssort, *ex2, *stat, *dstat;
+  double *r, *s, *ex2, *stat, *dstat;
   double *diff;
   int i, j, k, *indx;
 
   if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
   if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
@@ -180,7 +159,6 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
     for (j=0; j<*ngene; j++){
       r[j]=0;
       s[j]=0;
-      ssort[j]=0;
       ex2[j]=0;
       stat[j]=0;
     }
@@ -216,33 +194,18 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
 	stat[j]=r[j]/s[j];
       }
 
+      /* Z test statistic */
+      if (*meth==2){
+	stat[j]=r[j]/(s[j] + *s0);
+      }
+
       /* fold change equivalent */
       if (*meth==3){
 	stat[j]=r[j];
       }
       
-      ssort[j]=s[j];
     }
     
-
-    /* Z test statistic, needs calculation of median(s) */
-    if (*meth==2){
-      
-      if (*s0==0){
-	qsort((void*)ssort,*ngene,sizeof(double),compare2);
-	
-	if (fmod(*ngene,2)==1){
-	  *s0=ssort[(*ngene-1)/2];
-	}
-	if (fmod(*ngene,2)==0){
-	  *s0=(ssort[(*ngene)/2]+ssort[(*ngene)/2-1])/2;
-	}
-      }
-
-      for (j=0; j<*ngene; j++){
-	stat[j]=r[j]/(s[j] + *s0);
-      }
-    }
 
     for (j=0; j<*ngene; j++){
       dstat[j+(*ngene)*k]=fabs(stat[j]);
@@ -277,7 +240,6 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   free(diff);
   free(r);
   free(s);
-  free(ssort);
   free(ex2);
   free(stat);
   free(dstat);

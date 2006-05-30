@@ -14,7 +14,7 @@ int compare3(const void *x, const void *y)
 
 
 
-void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e)
+void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *fudge)
 {
   double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort;
   int i, j;
@@ -86,6 +86,8 @@ void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsampl
       e[j]=r[j]/(s[j] + *s0);
     }
   }
+  
+  fudge[0]=*s0;
 
   free(ex1);
   free(ex0);
@@ -99,7 +101,7 @@ void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsampl
 
 
 
-void paired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e)
+void paired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample, int *meth, int *which1, int *which0, double *s0, double *e, double *fudge)
 {
   double *r, *s, *ssort, *ex2;
   double *diff;
@@ -161,6 +163,8 @@ void paired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample,
       e[j]=r[j]/(s[j] + *s0);
     }
   }
+
+  fudge[0]=*s0;
 
   free(diff);
   free(r);

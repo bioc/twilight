@@ -444,9 +444,16 @@ twilight.permute.pair(y,7,bal=TRUE)
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
+
+\section*{Changes in version 1.9.2}
+
+Bug-fix for computation of fudge factor in permutation scores. The estimated fudge factor $s_0$ will now be returned by functions \Rfunction{twilight.pval} and \Rfunction{twilight.teststat}.
+
+
 \section*{Changes in version 1.9.1}
 
 New version number due to Bioconductor Release 1.8.
+
 
 \section*{Changes in version 1.6.2}
 

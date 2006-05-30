@@ -39,6 +39,7 @@ Additional output consists of
 \tabular{ll}{
   \code{ci.line} \tab Quantile corresponding to \code{quant.ci}, passed for plotting. \cr
   \code{pi0} \tab Estimated prior probability. \cr
+  \code{s0} \tab Estimated fudge factor if \code{method="z"}. \cr
   \code{call} \tab Character string of function arguments. \cr
   \code{quant.ci} \tab Passes \code{quant.ci} for plotting. \cr
 }
