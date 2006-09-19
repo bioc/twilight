@@ -17,6 +17,8 @@ twilight(xin, lambda = NULL, B = 0, boot.ci = 0.95, clus = NULL, verbose = TRUE)
 }
 \details{
 In short, the successive exclusion procedure divides the set of p-values into two parts. The first part is chosen such that it resembles a uniform distribution while containing as many p-values as possible. This set of p-values represents the set of p-values derived from non-induced genes. The height of the uninform distribution is a natural estimate for the mixture parameter pi0. The p-value not contained in the uniform part serve as representatives of p-values derived from induced genes. Their distribution is the basis of the final estimate of the local false discovery rate.
+
+NOTE: Library(snow) has to be loaded manually. It is not loaded as part of 'suggests' or 'depends' because it is only available under UNIX. If twilight does not work with the current version of snow, please send a report.
 }
 \value{
 Returns a \code{twilight} object consisting of a \code{data.frame} named \code{result} with variables

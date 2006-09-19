@@ -126,7 +126,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
   if (is.null(clus)==FALSE){
     if (verbose){cat("\n")}
 
-    library(snow)
+    ### library(snow)
     cl <- makeCluster(clus)
     clusterEvalQ(cl,library(twilight))
 

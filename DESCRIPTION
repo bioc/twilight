@@ -1,7 +1,7 @@
 Package: twilight
 Version: 1.9.2
 Title: Estimation of local false discovery rate
-Author: Stefanie Scheid <stefanie.scheid@molgen.mpg.de>
+Author: Stefanie Scheid <stefanie.scheid@gmx.de>
 Description: In a typical microarray setting with gene expression data
         observed under two conditions, the local false discovery rate
         describes the probability that a gene is not differentially
@@ -16,7 +16,7 @@ Description: In a typical microarray setting with gene expression data
         p-values. Function twilight performs a stochastic downhill
         search to estimate local false discovery rates and effect size
         distributions.
-Maintainer: Stefanie Scheid <stefanie.scheid@molgen.mpg.de>
+Maintainer: Stefanie Scheid <stefanie.scheid@gmx.de>
 Depends: R (>= 2.1.0), splines (>= 2.2.0), stats (>= 2.2.0)
 Suggests: golubEsets (>= 1.2.3), vsn (>= 1.7.2)
 License: GPL version 2.0 or newer

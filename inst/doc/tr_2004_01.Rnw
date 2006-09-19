@@ -449,6 +449,8 @@ twilight.permute.pair(y,7,bal=TRUE)
 
 Bug-fix for computation of fudge factor in permutation scores. The estimated fudge factor $s_0$ will now be returned by functions \Rfunction{twilight.pval} and \Rfunction{twilight.teststat}.
 
+\Rfunction{library(snow)} was set to comment in \Rfunction{twilight}. This was necessary to complete the new R checks under Bioconductor. Note that no checks under the current version of \Rfunction{library(snow)} are performed any more. If any problem occurs, please report this.
+
 
 \section*{Changes in version 1.9.1}
 
