@@ -159,10 +159,10 @@ expval$result[1:7,1:5] #$
 }
  
 <<echo=FALSE,results=hide>>=
-png(filename="tr_2004_01-scores.png",width=600,height=450)
+bitmap(file="tr_2004_01-scores.png",width=6,height=4.5,pointsize=10)
 plot(expval,which="scores",grayscale=F,legend=F)
 dev.off()
-png(filename="tr_2004_01-qvalues.png",width=600,height=450)
+bitmap(file="tr_2004_01-qvalues.png",width=6,height=4.5,pointsize=10)
 plot(expval,which="qvalues")
 dev.off()
 @
@@ -226,7 +226,7 @@ corr$result[1:10,1:5] #$
  
 
 <<echo=FALSE,results=hide>>=
-png(filename="tr_2004_01-corr.png",width=600,height=450)
+bitmap(file="tr_2004_01-corr.png",width=6,height=4.5,pointsize=10)
 plot(corr,which="scores",grayscale=F,legend=F)
 dev.off()
 @
@@ -262,7 +262,7 @@ The two input arguments \Rfunarg{num.perm} and \Rfunarg{num.take} are important.
 
 The output of function \Rfunction{twilight.filtering} is a matrix with the filtered permutations of \Rfunarg{yin} in rows. The number of rows is approximately \Rfunarg{num.perm}. The permutations are checked for uniqueness. If the number of possible unique permutations is less than \Rfunarg{num.perm}, the algorithm stops earlier. In this case, the result is likely to be just the set of all possible permutations and it is not sure whether all of these really produce uniform $p$-value distributions. Here, it is advisable to lower \Rfunarg{num.perm}.
 
-The format of the output object complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of teh matrix always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
+The format of the output object complies with the needed format of the input argument \Rfunarg{yperm} in function \Rfunction{twilight.pval} where two-condition labels are binarized or numerical values are changed to ranks if \Rfunarg{method="spearman"}. Please note that the first row of the matrix always contains the original labeling \Rfunarg{yin} to be consistent with the other permutation functions described in Section \ref{twilight.combi}.
        
 As an illustration, we proceed with a quick example of permutation filtering. We perform the filtering on log ratio scores and only filter for 50 permutations in steps of 10.
 
@@ -280,7 +280,7 @@ hist(b$result$pvalue,col="gray",br=20)
 @
 
 <<echo=FALSE,results=hide>>=
-png(filename="tr_2004_01-hist.png",width=600,height=450)
+bitmap(file="tr_2004_01-hist.png",width=6,height=4.5,pointsize=10)
 hist(b$result$pvalue,col="gray",br=20,main="",xlab="P-value")
 dev.off()
 @
@@ -333,13 +333,13 @@ exfdr$result[1:5,6:9] #$
 The output elements \Robject{result\$fdr}, \Robject{result\$mean.fdr}, \Robject{result\$lower.fdr} and \linebreak[5] \Robject{result\$upper.fdr} contain the estimated local false discovery rate, the bootstrap average and upper and lower bootstrap confidence bounds. These values are used to produce the following plots which are only available after application of function \Rfunction{twilight}. First, we plot $p$-values against the corresponding conditional probabilities of being induced given the $p$-value level, that is $1-\mbox{fdr}$, see Figure \ref{fig_fdr}. Going back to observed scores, we produce a \textit{volcano plot}, that is observed scores versus local false discovery rate, see Figure \ref{fig_volcano}.
 
 <<echo=FALSE,results=hide>>=
-png(filename="tr_2004_01-fdr.png",width=600,height=450)
+bitmap(file="tr_2004_01-fdr.png",width=6,height=4.5,pointsize=10)
 plot(exfdr,which="fdr",grayscale=F,legend=T)
 dev.off()
-png(filename="tr_2004_01-volcano.png",width=600,height=450)
+bitmap(file="tr_2004_01-volcano.png",width=6,height=4.5,pointsize=10)
 plot(exfdr,which="volcano")
 dev.off()
-png(filename="tr_2004_01-effectsize.png",width=600,height=450)
+bitmap(file="tr_2004_01-effectsize.png",width=6,height=4.5,pointsize=10)
 plot(exfdr,which="effectsize",legend=T)
 dev.off()
 @
