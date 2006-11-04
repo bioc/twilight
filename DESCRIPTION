@@ -1,5 +1,5 @@
 Package: twilight
-Version: 1.11.0
+Version: 1.11.1
 Title: Estimation of local false discovery rate
 Author: Stefanie Scheid <stefanie.scheid@gmx.de>
 Description: In a typical microarray setting with gene expression data
@@ -17,7 +17,7 @@ Description: In a typical microarray setting with gene expression data
         search to estimate local false discovery rates and effect size
         distributions.
 Maintainer: Stefanie Scheid <stefanie.scheid@gmx.de>
-Depends: R (>= 2.1.0), splines (>= 2.2.0), stats (>= 2.2.0)
+Depends: R (>= 2.1.0), splines (>= 2.2.0), stats (>= 2.2.0),Biobase(>=1.13.13)
 Suggests: golubEsets (>= 1.2.3), vsn (>= 1.7.2)
 License: GPL version 2.0 or newer
 URL: http://compdiag.molgen.mpg.de/software/twilight.shtml
