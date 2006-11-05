@@ -50,8 +50,7 @@
 %---------------------------------------------------------------------------------%  
 \chapter{Introduction}
 
-In a typical microarray setting with gene expression data observed under two conditions, the local false discovery rate describes the probability that a gene is not differentially expressed between the two conditions given its corrresponding observed score or $p$-value level. The resulting curve of $p$-values versus local false discovery rate offers an insight into the \textbf{twilight zone} between clear differential and clear non-differential gene expression. The Bioconductor compliant package \Rpackage{twilight} contains two main functions: Function \Rfunction{twilight.pval} performs a two-condition test on differences in means for a given input matrix or expression set (\Rclass{exprSet}) and computes permutation based $p$-values. Function \Rfunction{twilight} performs the successive exclusion procedure described in Scheid and Spang (2004) \cite{scheid04} to estimate local false discovery rates and effect size distributions. The package is also described in a short application note \cite{scheid05}.
-
+In a typical microarray setting with gene expression data observed under two conditions, the local false discovery rate describes the probability that a gene is not differentially expressed between the two conditions given its corrresponding observed score or $p$-value level. The resulting curve of $p$-values versus local false discovery rate offers an insight into the \textbf{twilight zone} between clear differential and clear non-differential gene expression. The Bioconductor compliant package \Rpackage{twilight} contains two main functions: Function \Rfunction{twilight.pval} performs a two-condition test on differences in means for a given input matrix or expression set (\Rclass{ExpressionSet}) and computes permutation based $p$-values. Function \Rfunction{twilight} performs the successive exclusion procedure described in Scheid and Spang (2004) \cite{scheid04} to estimate local false discovery rates and effect size distributions. The package is also described in a short application note \cite{scheid05}. From version 1.2.0 on, the package includes a permutation filtering algorithm introduced in Scheid and Spang (2006) \cite{scheid06}.
 
 
 %---------------------------------------------------------------------------------%  
@@ -74,7 +73,7 @@ This work was done within the context of the Berlin Center for Genome Based Bioi
 }
 \bigskip       
        
-The input object \Rfunarg{xin} is either a pre-processed gene expression set of class \Rclass{exprSet} or any data matrix where rows correspond to genes and columns to samples. Each sample was taken under one of two distinct conditions, for example under treatment A or treatment B. The functions in package \Rpackage{twilight} are not limited to microarray data only but can be applied to any two-sample data matrix. However, it is necessary for both expression set or numerical matrix that values are on \textbf{additive scale} like log or arsinh scale. The function does not check or transform the data to additive scale. The input vector \Rfunarg{yin} contains condition labels of the samples. Vector \Rfunarg{yin} has to be numeric and dichotomous. Note that in terms of \textit{under}- and \textit{over}-expression, the samples of the higher labeled condition are compared to the samples of the lower labeled condition.
+The input object \Rfunarg{xin} is either a pre-processed gene expression set of class \Rclass{ExpressionSet} or any data matrix where rows correspond to genes and columns to samples. Each sample was taken under one of two distinct conditions, for example under treatment A or treatment B. The functions in package \Rpackage{twilight} are not limited to microarray data only but can be applied to any two-sample data matrix. However, it is necessary for both expression set or numerical matrix that values are on \textbf{additive scale} like log or arsinh scale. The function does not check or transform the data to additive scale. The input vector \Rfunarg{yin} contains condition labels of the samples. Vector \Rfunarg{yin} has to be numeric and dichotomous. Note that in terms of \textit{under}- and \textit{over}-expression, the samples of the higher labeled condition are compared to the samples of the lower labeled condition.
 
 We are given a preprocessed matrix for samples belonging to two distinct conditions A and B, and gene expression values on additive scale. For gene $i$ in the experiment ($i=1,\dots,N$), $\bar \alpha_i$ is the mean expression under condition A and $\bar \beta_i$ is the mean expression under condition B. To test the null hypothesis of no differential gene expression, function \Rfunction{twilight.pval} compares the mean expression levels $\bar \alpha_i$ and $\bar \beta_i$. The current version offers three test variants: The classical $t$-test uses score $T_i$ with
 \begin{equation}
@@ -141,7 +140,7 @@ Continuing the example above, we perform a fold change test on the expression da
 \begin{Soutput}
 No complete enumeration. Prepare permutation matrix. 
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 4 seconds. 
+Compute expected scores and p-values. This will take approx. 3 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -288,7 +287,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6390537 
+0.6364134 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -304,16 +303,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5742116         1 1.402721e-06 0.006390537
-J03801_f_at       0.7822519  0.5410220         1 2.805443e-06 0.006390537
-D88422_at         0.7772185  0.5217354         1 4.208164e-06 0.006390537
-M19045_f_at       0.7713098  0.5095765         1 5.610885e-06 0.006390537
-Z15115_at        -0.7557720 -0.5672743         1 7.013606e-06 0.006390537
-M83667_rna1_s_at  0.7544589  0.5010570         1 8.416328e-06 0.006390537
-M63138_at         0.7533647  0.4916358         1 9.819049e-06 0.006390537
-X64072_s_at       0.7485502  0.4844162         1 1.122177e-05 0.006390537
-M33195_at         0.7457052  0.4786738         1 1.262449e-05 0.006390537
-U22376_cds2_s_at -0.7387023 -0.5347959         1 1.402721e-05 0.006390537
+M27891_at         1.0000000  0.5661188         1 1.402721e-06 0.006364134
+J03801_f_at       0.7822519  0.5353627         1 2.805443e-06 0.006364134
+D88422_at         0.7772185  0.5197921         1 4.208164e-06 0.006364134
+M19045_f_at       0.7713098  0.5072021         1 5.610885e-06 0.006364134
+Z15115_at        -0.7557720 -0.5634840         1 7.013606e-06 0.006364134
+M83667_rna1_s_at  0.7544589  0.4989802         1 8.416328e-06 0.006364134
+M63138_at         0.7533647  0.4904366         1 9.819049e-06 0.006364134
+X64072_s_at       0.7485502  0.4852763         1 1.122177e-05 0.006364134
+M33195_at         0.7457052  0.4792691         1 1.262449e-05 0.006364134
+U22376_cds2_s_at -0.7387023 -0.5348550         1 1.402721e-05 0.006364134
 \end{Soutput}
 \end{Schunk}
 }
@@ -341,7 +340,7 @@ U22376_cds2_s_at -0.7387023 -0.5347959         1 1.402721e-05 0.006390537
 }
 \bigskip       
 
-From version 1.2.0 on, we included an permutation filtering algorithm. In a permutation based test approach, each permutation of the given class labels is thought to reflect the complete null model. However, in applications to real biological data, we often observe that certain permutations produce score distributions that still have larger margins than expected. Therefore, we treat each permutation as the original labeling, transform the permutation scores to pooled $p$-values and test the resulting distribution for uniformity. In an iterative search, we filter for a set of permutations whose $p$-value distributions fit well to a uniform distribution.
+From version 1.2.0 on, we included a permutation filtering algorithm introduced in Scheid and Spang (2006) \cite{scheid06}. In a permutation based test approach, each permutation of the given class labels is thought to reflect the complete null model. However, in applications to real biological data, we often observe that certain permutations produce score distributions that still have larger margins than expected. Therefore, we treat each permutation as the original labeling, transform the permutation scores to pooled $p$-values and test the resulting distribution for uniformity. In an iterative search, we filter for a set of permutations whose $p$-value distributions fit well to a uniform distribution.
 
 The filtering is added as an optional argument in function \Rfunction{twilight.pval}. Although large parts of the algorithm are written in C, the filtering is still time-consuming. Therefore, the default within \Rfunction{twilight.pval} is set to \Rfunarg{FALSE}. If \Rfunarg{filtering=TRUE}, the filtering is called internally with all the test parameters as given by the user. The only exception is the balancing parameter: The filtering is done on unbalanced permutations however \Rfunarg{balance} is specified. Balancing is just a simplier way to select a set of permutations that are not too close to the given labeling. However, this will not remove other sources of deviation from a complete null distribution as the filtering does.
 
@@ -636,12 +635,12 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 \begin{Soutput}
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
-[2,]    0    0    1    1    1    1    0    0
-[3,]    1    0    0    1    0    1    1    0
-[4,]    1    0    0    1    0    1    1    0
+[2,]    1    0    0    1    0    1    1    0
+[3,]    0    1    1    0    1    0    0    1
+[4,]    0    0    1    1    1    1    0    0
 [5,]    1    0    0    1    0    1    1    0
-[6,]    1    0    0    1    0    1    1    0
-[7,]    0    0    1    1    1    1    0    0
+[6,]    0    0    1    1    1    1    0    0
+[7,]    1    1    0    0    0    0    1    1
 \end{Soutput}
 \end{Schunk}
 
@@ -652,6 +651,9 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 %---------------------------------------------------------------------------------%  
 \chapter{Differences to earlier versions}
 
+\section*{Changes in version 1.11.1}
+
+Usual bump in version numbering. In addition, functions work on \Rclass{ExpressionSet} objects, too.
 
 \section*{Changes in version 1.9.2}
 
@@ -749,6 +751,9 @@ S. Scheid and R. Spang, "A stochastic downhill search algorithm for estimating t
 \bibitem{scheid05}
 S. Scheid and R. Spang, "twilight; a Bioconductor package for estimating the local false discovery rate", \emph{Bioinformatics}, vol. 21, no. 12, pp. 2921-2922, 2005.
        
+\bibitem{scheid06}
+S. Scheid and R. Spang R, "Permutation filtering: A novel concept for significance analysis of large-scale genomic data", in: Apostolico A, Guerra C, Istrail S, Pevzner P, and Waterman M (Eds.): \emph{Research in Computational Molecular Biology: 10th Annual International Conference, Proceedings of RECOMB 2006, Venice, Italy, April 2-5, 2006}. Lecture Notes in Computer Science vol. 3909, Springer, Heidelberg, pp. 338-347, 2006.
+
 \bibitem{storey03}
 J.D. Storey and R. Tibshirani, ``Statistical significance for genomewide studies'', \textit{Proc. Natl. Acad. Sci.}, vol. 100, no. 16, pp. 9440-9445, 2003.
 

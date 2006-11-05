@@ -6,9 +6,12 @@ twilight.getmatrix <- function(xin){
     rownames(xout) <- geneNames(xin)
     colnames(xout) <- sampleNames(xin)
     return(xout)
-  }
-
-  if (class(xin)[1]!="exprSet"){
-    return(xin)
-  }
+  } 
+  if (class(xin)[1]=="ExpressionSet"){
+    xout <- exprs(xin)
+    rownames(xout) <- featureNames(xin)
+    colnames(xout) <- sampleNames(xin)
+    return(xout)
+  } 
+  if ((class(xin)[1]!="ExpressionSet")&(class(xin)[1]!="exprSet")){return(xin)}
 }
