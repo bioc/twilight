@@ -1,5 +1,5 @@
 twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
-  ### extract data matrix if class(xin) is exprSet
+  ### extract data matrix if class(xin) is an expression set
   xin <- twilight.getmatrix(xin)
 
   ### check dimensions
@@ -60,7 +60,7 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
 
 
   if ((method!="pearson")&(method!="spearman")){
-    funk <- function(a, b, c, d, s) {
+    funk1 <- function(a, b, c, d, s) {
       x <- .C(ifelse(paired,"paired","unpaired"), 
               as.integer(a),
               as.integer(sum(a)),
@@ -78,16 +78,16 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
     }
     
     stat.obs <- switch(method,
-                       t = funk(yin,xin,1,yin,s0),
-                       z = funk(yin,xin,2,yin,s0),
-                       fc = funk(yin,xin,3,yin,s0)
+                       t = funk1(yin,xin,1,yin,s0),
+                       z = funk1(yin,xin,2,yin,s0),
+                       fc = funk1(yin,xin,3,yin,s0)
                        )
     s0 <- stat.obs$fudge
     stat.obs <- stat.obs$e
   }
   
   if ((method=="pearson")|(method=="spearman")){
-    funk <- function(a,b){
+    funk2 <- function(a,b){
       .C("corsingle",
          as.double(a),
          as.double(t(b)),
@@ -96,7 +96,7 @@ twilight.teststat <- function(xin,yin,method="fc",paired=FALSE,s0=NULL){
          e=double(nrow(b)),PACKAGE="twilight")$e
     }
     
-    stat.obs <- funk(yin,xin)
+    stat.obs <- funk2(yin,xin)
   }
 
 

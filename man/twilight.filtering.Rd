@@ -40,7 +40,7 @@ data(Golub_Train)
 
 ### Variance-stabilizing normalization of Huber et al. (2002).
 library(vsn)
-golubNorm <- vsn(exprs(Golub_Train))
+golubNorm <- justvsn(Golub_Train)
 
 ### A binary vector of class labels.
 id <- as.numeric(Golub_Train$ALL.AML)

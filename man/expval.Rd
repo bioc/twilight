@@ -5,7 +5,7 @@
 \description{
 Application of function twilight.pval on leukemia data set of Golub et al. (1999), as given in \code{data(Golub_Merge)} in \code{library(golubEsets)}.
 
-First step was the variance-stabilizing normalization of Huber et al. (2002) in \code{library(vsn)}: \code{golubNorm <- vsn(exprs(Golub_Merge))}.
+First step was the variance-stabilizing normalization of Huber et al. (2002) in \code{library(vsn)}: \code{golubNorm <- justvsn(Golub_Merge)}.
 
 The function call was then \code{expval <- twilight.pval(golubNorm,id)} with \code{id <- as.numeric(Golub_Merge$ALL.AML)}.
 }

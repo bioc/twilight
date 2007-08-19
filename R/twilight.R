@@ -80,7 +80,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
   }
 
   ### Compute the final estimate for pi0.
-  funk.wrap <- function(a,b,c,d){
+  funk.wrap1 <- function(a,b,c,d){
 
     ### Calling SEP. Returns binary vector (1=included,0=excluded).
     funk.sep <- function(ax,bx){
@@ -118,7 +118,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
   if (is.null(clus)==TRUE){      
     if (verbose){cat("Wait for 10 dots. \n")}
 
-    sep.H0 <- apply(orig.pval,2,funk.wrap,lambda,pval,score)
+    sep.H0 <- apply(orig.pval,2,funk.wrap1,lambda,pval,score)
 
     if (verbose){cat("\n")}
   }
@@ -136,7 +136,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
     
     clusterExport(cl,c(".twilight.lambda.xxx",".twilight.pval.xxx",".twilight.score.xxx"))
     
-    sep.H0 <- parCapply(cl,orig.pval,funk.wrap,.twilight.lambda.xxx,.twilight.pval.xxx,.twilight.score.xxx)
+    sep.H0 <- parCapply(cl,orig.pval,funk.wrap1,.twilight.lambda.xxx,.twilight.pval.xxx,.twilight.score.xxx)
     
     rm(.twilight.score.xxx,pos=1)
   }
@@ -192,7 +192,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
   if (B>0){
     if (verbose){cat("Run SEP on bootstrap samples. ")}
     
-    funk.wrap <- function(a,b,c){
+    funk.wrap2 <- function(a,b,c){
       
       ### Calling SEP. Returns binary vector (1=included,0=excluded).
       funk.sep <- function(ax,bx){
@@ -247,13 +247,13 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
     
     if (is.null(clus)==TRUE){      
       if (verbose){cat("Wait for",B,"dots. \n")}
-      b.H0 <- apply(boot.pval,2,funk.wrap,lambda,pval)
+      b.H0 <- apply(boot.pval,2,funk.wrap2,lambda,pval)
       if (verbose){cat("\n")}
     }
     
     if (is.null(clus)==FALSE){
       if (verbose){cat("\n")}
-      b.H0 <- parCapply(cl,boot.pval,funk.wrap,.twilight.lambda.xxx,.twilight.pval.xxx)
+      b.H0 <- parCapply(cl,boot.pval,funk.wrap2,.twilight.lambda.xxx,.twilight.pval.xxx)
     }
 
     b.pi0 <- numeric(B)

@@ -51,7 +51,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 ###
 ### The remaining slots are left free for function "twilight".
   
-  ### extract data matrix if class(xin) is exprSet
+  ### extract data matrix if class(xin) is an expression set
   xin <- twilight.getmatrix(xin)
 
   ### check dimensions
@@ -174,7 +174,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   B <- dim(yperm)[1]
 
   ### compute observed test statistics.
-  funk <- function(a, b, c, d, s) {
+  funk1 <- function(a, b, c, d, s) {
     .C(ifelse(paired,"paired","unpaired"), 
        as.integer(a),
        as.integer(sum(a)),
@@ -195,13 +195,13 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   if ((method!="pearson")&(method!="spearman")){
     stime <- system.time(stat.obs <- switch(method,
-                                            t = funk(yin,xin,1,yin,s0),
-                                            z = funk(yin,xin,2,yin,s0),
-                                            fc = funk(yin,xin,3,yin,s0)),gcFirst=TRUE)
+                                            t = funk1(yin,xin,1,yin,s0),
+                                            z = funk1(yin,xin,2,yin,s0),
+                                            fc = funk1(yin,xin,3,yin,s0)),gcFirst=TRUE)
   }
   
   if ((method=="pearson")|(method=="spearman")){
-    funk <- function(a,b){
+    funk2 <- function(a,b){
       .C("corsingle",
          as.double(a),
          as.double(t(b)),
@@ -210,7 +210,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
          e=double(nrow(b)),PACKAGE="twilight")$e
     }
     
-    stime <- system.time(stat.obs <- funk(yin,xin),gcFirst=TRUE)
+    stime <- system.time(stat.obs <- funk2(yin,xin),gcFirst=TRUE)
   }
 
   
@@ -222,7 +222,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   ### analysis of mircroarrays applied to the ionizing response,
   ### PNAS 98(9), pp. 5116-5121.
   ###
-  funk <- function(a,b,c,orig,s){
+  funk3 <- function(a,b,c,orig,s){
     x <- .C(ifelse(paired,"pairedperm","unpairedperm"),
             as.integer(t(a)),
             as.integer(nrow(a)),
@@ -246,12 +246,12 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   if ((method!="pearson")&(method!="spearman")){
     stat.exp <- switch(method,
-                       t = funk(yperm,xin,1,yin,s0),
-                       z = funk(yperm,xin,2,yin,s0),
-                       fc = funk(yperm,xin,3,yin,s0))
+                       t = funk3(yperm,xin,1,yin,s0),
+                       z = funk3(yperm,xin,2,yin,s0),
+                       fc = funk3(yperm,xin,3,yin,s0))
   }
   if ((method=="pearson")|(method=="spearman")){
-    funk <- function(a,b){
+    funk4 <- function(a,b){
       x <- .C("corperm",
               as.double(t(a)),
               as.integer(nrow(a)),
@@ -265,7 +265,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
       return(res)
     }
 
-    stat.exp <- funk(yperm,xin)    
+    stat.exp <- funk4(yperm,xin)    
   }
 
   pval     <- stat.exp$pval
@@ -311,7 +311,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 
   ### compute permutation based confidence lines for plot1.
   if (verbose){cat("Compute values for confidence lines. \n")}
-  funk <- function(a,b,c,d,orig,s){
+  funk5 <- function(a,b,c,d,orig,s){
     x <- .C(ifelse(paired,"pairedci","unpairedci"),
             as.integer(t(a)),
             as.integer(nrow(a)),
@@ -333,12 +333,12 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
   ci.sel  <- sample(1:B,min(1000,B))
   if ((method!="pearson")&(method!="spearman")){
     ci.line <- switch(method,
-                      t = funk(yperm[ci.sel,],xin,1,stat.exp,yin,s0),
-                      z = funk(yperm[ci.sel,],xin,2,stat.exp,yin,s0),
-                      fc = funk(yperm[ci.sel,],xin,3,stat.exp,yin,s0))
+                      t = funk5(yperm[ci.sel,],xin,1,stat.exp,yin,s0),
+                      z = funk5(yperm[ci.sel,],xin,2,stat.exp,yin,s0),
+                      fc = funk5(yperm[ci.sel,],xin,3,stat.exp,yin,s0))
   }
   if ((method=="pearson")|(method=="spearman")){
-    funk <- function(a,b,c){
+    funk6 <- function(a,b,c){
       .C("corci",
          as.double(t(a)),
          as.integer(nrow(a)),
@@ -350,7 +350,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
          )$e
     }
     
-    ci.line <- funk(yperm[ci.sel,],xin,stat.exp)
+    ci.line <- funk6(yperm[ci.sel,],xin,stat.exp)
   }
   ci.line <- quantile(ci.line,quant.ci)
 

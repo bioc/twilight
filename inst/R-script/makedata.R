@@ -1,5 +1,6 @@
 ### this script generates the example data sets
 ### (only for internal use)
+### 19AUG2007: updated to "justvsn" but did not run code again.
 
 rm(list=ls())
 library(twilight)
@@ -10,7 +11,7 @@ data(Golub_Merge)
 
 ### Variance-stabilizing normalization of Huber et al. (2002)
 library(vsn)
-golubNorm <- vsn(exprs(Golub_Merge))
+golubNorm <- justvsn(Golub_Merge)
 
 ### A vector of class labels.
 id <- as.numeric(Golub_Merge$ALL.AML)

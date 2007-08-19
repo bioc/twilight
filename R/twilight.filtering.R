@@ -1,7 +1,7 @@
 twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRUE,num.perm=1000,num.take=50){
 
 
-  ### extract data matrix if class(xin) is exprSet
+  ### extract data matrix if class(xin) is an expression set
   xin <- twilight.getmatrix(xin)
 
   ### check dimensions
@@ -215,7 +215,7 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
 
   if (verbose){cat(paste("Filtering: Wait for",ceiling(num.perm/num.take),"to",round(num.perm/num.take)+10,"dots "))}
   id.perm <- perm(yin,NULL,num.take)
-  ks <- funk(id.perm,xin,meth,id,s0,verbose)
+  ks <- funk(id.perm,xin,meth,yin,s0,verbose)
   a <- sort(ks,index.return=TRUE)  
   if (num.take==1){id.opt <- id.perm[a$ix[1:2],]}
   if (num.take>1){id.opt <- id.perm[a$ix[1:min(num.take,length(ks))],]}
@@ -224,7 +224,7 @@ twilight.filtering <- function(xin,yin,method="fc",paired=FALSE,s0=0,verbose=TRU
   
   repeat {
     id.perm <- perm(yin,id.opt,num.take)
-    ks <- funk(id.perm,xin,meth,id,s0,verbose)
+    ks <- funk(id.perm,xin,meth,yin,s0,verbose)
     a <- sort(ks,index.return=TRUE)  
     b <- a$ix[1:min(j*num.take,length(ks))]
     id.opt <- id.perm[b,]
