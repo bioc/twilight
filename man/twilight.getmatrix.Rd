@@ -1,6 +1,6 @@
 \name{twilight.getmatrix}
 \alias{twilight.getmatrix}
-\title{Internal function to extract the gene expression matrix from an expression set}
+\title{ Internal function to extract the gene expression matrix from an expression set }
 \description{If the input object is of class \code{ExpressionSet}, the function extracts the gene expression matrix.}
 \usage{
 twilight.getmatrix(xin)

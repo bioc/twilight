@@ -1,6 +1,6 @@
 \name{twilight.teststat}
 \alias{twilight.teststat}
-\title{ Interface to the test statistics provided within 'twilight'. }
+\title{ Interface to the test statistics provided within 'twilight' }
 \description{
 A function to compute two-sample t, Z and fold change equivalent test statistics (paired or unpaired) and correlation coefficients.
 }

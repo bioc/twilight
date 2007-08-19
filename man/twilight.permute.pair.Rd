@@ -1,7 +1,8 @@
 \name{twilight.permute.pair}
 \alias{twilight.permute.pair}
-\title{A permutation matrix of paired class labels}
-\description{The function returns a matrix where each row is a (un)balanced permutation of the input twosample class labels.
+\title{ Permutation matrix of paired class labels }
+\description{
+The function returns a matrix where each row is a (un)balanced permutation of the input twosample class labels.
 }
 \usage{
 twilight.permute.pair(v, m, bal = TRUE)

@@ -1,7 +1,7 @@
 \name{expval}
 \alias{expval}
-\docType{data}
 \title{ Example of twilight.pval result }
+\docType{data}
 \description{
 Application of function twilight.pval on leukemia data set of Golub et al. (1999), as given in \code{data(Golub_Merge)} in \code{library(golubEsets)}.
 

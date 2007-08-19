@@ -1,6 +1,6 @@
 \name{twilight.getlambda}
 \alias{twilight.getlambda}
-\title{Internal function to compute regularization parameter lambda}
+\title{ Internal function to compute regularization parameter lambda }
 \description{The SEP method optionally includes a penalty term in order to estimate the percentage of non-significant differences/genes.}
 \usage{twilight.getlambda(xin, verbose = TRUE)}
 \arguments{

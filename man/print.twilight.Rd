@@ -1,6 +1,6 @@
 \name{print.twilight}
 \alias{print.twilight}
-\title{A print function for twilight objects}
+\title{ Print function for twilight objects }
 \description{
 Extract and print information about a twilight object.
 }

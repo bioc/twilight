@@ -1,6 +1,6 @@
 \name{plot.twilight}
 \alias{plot.twilight}
-\title{A plot function for twilight objects}
+\title{ Plot function for twilight objects }
 \description{Interface to plotting of \code{twilight} objects. Produces one of five possible plots.}
 \usage{plot.twilight(x, which = NULL, grayscale = FALSE, legend = TRUE, ...)}
 \arguments{

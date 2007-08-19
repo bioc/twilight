@@ -1,6 +1,6 @@
 \name{twilight.permute.unpair}
 \alias{twilight.permute.unpair}
-\title{A permutation matrix of unpaired class labels}
+\title{ Permutation matrix of unpaired class labels }
 \description{The function returns a matrix where each row is a (un)balanced permutation of the input twosample class labels.
 }
 \usage{

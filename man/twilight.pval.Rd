@@ -1,6 +1,6 @@
 \name{twilight.pval}
 \alias{twilight.pval}
-\title{ A function to compute p-values from expression sets }
+\title{ Compute p-values from expression sets }
 \description{
 A function to compute two-sample t, Z and fold change equivalent test statistics (paired or unpaired) and correlation coefficients. Based on permutations, expected test statistics as given in Tusher et al. (2001) and empirical \eqn{p}-values are computed. Additional output are \eqn{q}-values computed as given in Storey and Tibshirani (2003). The resulting object is of class \code{twilight} and can be passed to functions \code{twilight} or \code{plot.twilight}.
 }

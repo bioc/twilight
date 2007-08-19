@@ -1,6 +1,6 @@
 \name{twilight.filtering}
 \alias{twilight.filtering}
-\title{ A function for permutation filtering }
+\title{ Permutation filtering }
 \description{
 The function call invokes the filtering for permutations of class labels that produce a set of complete null scores. Depending on the test setting, the algorithm iteratively generates valid permutations of the class labels and computes scores. These are transformed to pooled p-values and each set of permutation p-values is tested for uniformity. Permutations with acceptable uniform p-value distributions are kept. The search stops if either the number \code{num.perm} of wanted permutations is reached or if the number of possible unique(!) permutations is smaller than \code{num.perm}. The default values are similar to function \code{twilight.pval} but please note the details below.
 }
