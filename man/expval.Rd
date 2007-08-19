@@ -14,7 +14,7 @@ The function call was then \code{expval <- twilight.pval(golubNorm,id)} with \co
 \references{
 Golub TR, Slonim DK, Tamayo P, Huard C, Gaasenbeek M, Mesirov JP, Coller H, Loh ML, Downing JR, Caligiuri MA, Bloomfield CD and Lander ES (1999): Molecular Classification of Cancer: Class Discovery and Class Prediction by Gene Expression Monitoring, \emph{Science} \bold{286}, 531--537.
 
-Huber W, von Heydebreck A, Sültmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, \emph{Bioinformatics} \bold{18}, suppl. 1, S96--S104.
+Huber W, von Heydebreck A, Sultmann H, Poustka A and Vingron M (2002): Variance stabilization applied to microarray data calibration and to the quantification of differential expression, \emph{Bioinformatics} \bold{18}, suppl. 1, S96--S104.
 
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
 
