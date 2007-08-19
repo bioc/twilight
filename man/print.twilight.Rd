@@ -22,7 +22,8 @@ Scheid S and Spang R (2006): Permutation filtering: A novel concept for signific
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{plot.twilight}} }
 \examples{
-data(exfdr) # contains a twilight object created by twilight
-exfdr
+### contains a twilight object created by function twilight
+data(exfdr)
+print(exfdr)
 }
 \keyword{ print }

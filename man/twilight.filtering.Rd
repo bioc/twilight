@@ -51,7 +51,7 @@ id <- as.numeric(Golub_Train$ALL.AML)
 yperm <- twilight.filtering(golubNorm,id,method="t",num.perm=50,num.take=10)
 dim(yperm)
 
-### Let's see if the filtered permutations really produce uniform p-value distributions.
+### Let's check that the filtered permutations really produce uniform p-value distributions.
 ### The first row is the original labeling, so we try the second permutation.
 yperm <- yperm[-1,]
 b <- twilight.pval(golubNorm,yperm[1,],method="t",yperm=yperm)

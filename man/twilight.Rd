@@ -57,8 +57,9 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 \seealso{ \code{\link{twilight.pval}}, \code{\link{plot.twilight}}, \code{\link{exfdr}} }
 
 \examples{
-data(exfdr) # twilight object created by twilight with B=1000 bootstraps
-exfdr
+### twilight object created with B=1000 bootstrap samples
+data(exfdr) 
+print(exfdr)
 plot(exfdr)
 }
 \keyword{ nonparametric }

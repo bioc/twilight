@@ -36,7 +36,8 @@ Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays 
 \author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
 \seealso{ \code{\link{twilight.pval}}, \code{\link{twilight}} }
 \examples{
-data(exfdr) # contains a twilight object created by twilight
+### contains a twilight object created by function twilight
+data(exfdr)
 plot(exfdr)
 }
 \keyword{ hplot }

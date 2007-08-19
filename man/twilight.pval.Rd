@@ -61,8 +61,9 @@ Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays 
 \seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}}, \code{\link{expval}}, \code{\link{twilight.teststat}} }
 
 \examples{
-data(expval)  # twilight object created by twilight.pval on Golub data set
-expval
+### twilight object created from Golub data set
+data(expval)
+print(expval)
 plot(expval)
 }
 \keyword{ nonparametric }
