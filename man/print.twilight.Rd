@@ -4,12 +4,10 @@
 \description{
 Extract and print information about a twilight object.
 }
-\usage{
-print.twilight(x, ...)
-}
+\usage{\method{print}{twilight}(x, \dots)}
 \arguments{
-  \item{x }{Input object of class \code{twilight}.}
-  \item{... }{ Additional printing arguments. }
+  \item{x}{Input object of class \code{twilight}.}
+  \item{\dots}{ Additional printing arguments. }
 }
 \value{
 No value is returned.

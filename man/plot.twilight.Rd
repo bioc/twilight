@@ -2,13 +2,13 @@
 \alias{plot.twilight}
 \title{ Plot function for twilight objects }
 \description{Interface to plotting of \code{twilight} objects. Produces one of five possible plots.}
-\usage{plot.twilight(x, which = NULL, grayscale = FALSE, legend = TRUE, ...)}
+\usage{\method{plot}{twilight}(x, which = NULL, grayscale = FALSE, legend = TRUE, \dots)}
 \arguments{
   \item{x}{ An object of class twilight. }
   \item{which}{ A character string specifying the plot to be made. }
   \item{grayscale}{ Logical value. Specifying whether plots should be colored or grayscaled. Only necessary for "scores" and "fdr". }
   \item{legend}{ Logical value. Produces a legend for "scores" and "effectsize". A legend for "fdr" is only available if bootstrap estimates exist. }
-  \item{...}{ Additional graphical arguments. }
+  \item{\dots}{ Additional graphical arguments. }
 }
 \details{
 Option \code{which="scores"} plots the expected versus the observed test statistics and draws confidence lines calculated from permutations. This plot is similar to plots in Tusher et al. (2001).
