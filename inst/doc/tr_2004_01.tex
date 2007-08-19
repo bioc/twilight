@@ -100,7 +100,7 @@ As an example, we apply function \Rfunction{twilight.pval} on the training set o
 \begin{Schunk}
 \begin{Sinput}
 > data(Golub_Train)
-> golubNorm <- vsn(exprs(Golub_Train))
+> golubNorm <- justvsn(Golub_Train)
 > id <- as.numeric(Golub_Train$ALL.AML)
 \end{Sinput}
 \end{Schunk}
@@ -287,7 +287,7 @@ Compute values for confidence lines.
 
  Estimated percentage of non-induced genes:
       pi0 
-0.6364134 
+0.6539407 
 
  Function call:
  Test: spearman. Number of permutations: 100. 
@@ -303,16 +303,16 @@ Note that the overall percentage of non-induced genes $\pi_0$ is now interpreted
 \end{Sinput}
 \begin{Soutput}
                    observed   expected candidate       pvalue      qvalue
-M27891_at         1.0000000  0.5661188         1 1.402721e-06 0.006364134
-J03801_f_at       0.7822519  0.5353627         1 2.805443e-06 0.006364134
-D88422_at         0.7772185  0.5197921         1 4.208164e-06 0.006364134
-M19045_f_at       0.7713098  0.5072021         1 5.610885e-06 0.006364134
-Z15115_at        -0.7557720 -0.5634840         1 7.013606e-06 0.006364134
-M83667_rna1_s_at  0.7544589  0.4989802         1 8.416328e-06 0.006364134
-M63138_at         0.7533647  0.4904366         1 9.819049e-06 0.006364134
-X64072_s_at       0.7485502  0.4852763         1 1.122177e-05 0.006364134
-M33195_at         0.7457052  0.4792691         1 1.262449e-05 0.006364134
-U22376_cds2_s_at -0.7387023 -0.5348550         1 1.402721e-05 0.006364134
+M27891_at         1.0000000  0.5745858         1 1.402721e-06 0.006539407
+J03801_f_at       0.7875041  0.5382033         1 2.805443e-06 0.006539407
+D88422_at         0.7850968  0.5189561         1 4.208164e-06 0.006539407
+Z15115_at        -0.7583981 -0.5623088         1 5.610885e-06 0.006539407
+M19045_f_at       0.7557720  0.5068147         1 7.013606e-06 0.006539407
+M83667_rna1_s_at  0.7553343  0.4963694         1 8.416328e-06 0.006539407
+M33195_at         0.7481125  0.4881913         1 9.819049e-06 0.006539407
+M63138_at         0.7476748  0.4820374         1 1.122177e-05 0.006539407
+X64072_s_at       0.7474560  0.4768815         1 1.262449e-05 0.006539407
+U22376_cds2_s_at -0.7457052 -0.5343561         1 1.402721e-05 0.006539407
 \end{Soutput}
 \end{Schunk}
 }
@@ -380,7 +380,7 @@ The filtering leads to a random subset of possible permutations. Next, we check 
 \end{Sinput}
 \begin{Soutput}
 Compute vector of observed statistics. 
-Compute expected scores and p-values. This will take approx. 2 seconds. 
+Compute expected scores and p-values. This will take approx. 1 seconds. 
 Compute q-values. 
 Compute values for confidence lines. 
 \end{Soutput}
@@ -636,11 +636,11 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 [1,]    0    0    0    0    1    1    1    1
 [2,]    1    0    0    1    0    1    1    0
-[3,]    0    1    1    0    1    0    0    1
-[4,]    0    0    1    1    1    1    0    0
-[5,]    1    0    0    1    0    1    1    0
-[6,]    0    0    1    1    1    1    0    0
-[7,]    1    1    0    0    0    0    1    1
+[3,]    0    0    1    1    1    1    0    0
+[4,]    1    1    0    0    0    0    1    1
+[5,]    1    1    0    0    0    0    1    1
+[6,]    1    1    0    0    0    0    1    1
+[7,]    0    0    1    1    1    1    0    0
 \end{Soutput}
 \end{Schunk}
 

@@ -110,7 +110,7 @@ Function \Rfunction{twilight.pval} handles paired and unpaired data. In the unpa
 As an example, we apply function \Rfunction{twilight.pval} on the training set of the leukemia data of Golub et al.~(1999) \cite{golub99} as given in \Rfunction{library(golubEsets)}. For normalization, apply the variance-stabilizing method \Rfunction{vsn} in \Rfunction{library(vsn)} \cite{huber02}.
 <<results=hide>>=
 data(Golub_Train)
-golubNorm <- vsn(exprs(Golub_Train))
+golubNorm <- justvsn(Golub_Train)
 id <- as.numeric(Golub_Train$ALL.AML) #$
 @
 
