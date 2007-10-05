@@ -436,7 +436,9 @@ The complete enumeration of \Rfunction{twilight.combi} is limited by the sample 
 twilight.permute.pair(y,7,bal=TRUE)
 @
 
-
+<<echo=FALSE>>=
+Sys.sleep(30)
+@
 
 
 %---------------------------------------------------------------------------------%  
