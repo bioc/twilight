@@ -1,0 +1,13 @@
+useDynLib(twilight)
+
+importMethodsFrom(Biobase, exprs, featureNames, sampleNames)
+importFrom(Biobase, addVigs2WinMenu)
+importFrom(graphics, axis, hist, lines, par, plot, points, rug)
+importFrom(grDevices, gray)
+importFrom(stats, lm, predict, quantile, runif, smooth.spline,
+           wilcox.test)
+
+export(plot.twilight, print.twilight, twilight, twilight.combi,
+       twilight.filtering, twilight.getlambda, twilight.getmatrix,
+       twilight.permute.pair, twilight.permute.unpair, twilight.pval,
+       twilight.teststat)
