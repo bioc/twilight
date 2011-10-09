@@ -13,7 +13,7 @@ double empirical(double *a, int na)
   double *b;
   double e;
 
-  if ((b=malloc(sizeof(double)*1))==0) {printf("Error, could not allocate memory");}
+  b=Calloc(1, double);
 
   e=0;
 
@@ -47,8 +47,8 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
   double *yin;
   double *objfunc;
 
-  if ((ix=malloc(sizeof(int)*(*nxin)))==0) {printf("Error, could not allocate memory");}
-  if ((objfunc=malloc(sizeof(double)*2))==0) {printf("Error, could not allocate memory");}
+  ix=Calloc((*nxin), int);
+  objfunc=Calloc(2, double);
 
   for (i=0; i<*nxin; i++){ 
     ix[i]=1; 
@@ -75,7 +75,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 	    } 
 	  }
 	  
-	  if ((yin=malloc(sizeof(double)*nyin))==0) {printf("Error, could not allocate memory");}
+	  yin=Calloc(nyin, double);
 	  
 	  for (i=0; i<*nxin; i++){ 
 	    if (ix[i]==1){
@@ -121,7 +121,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 	} 
       }
       
-      if ((yin=malloc(sizeof(double)*nyin))==0) {printf("Error, could not allocate memory");}
+      yin=Calloc(nyin, double);
       
       for (i=0; i<*nxin; i++){ 
 	if (ix[i]==1){

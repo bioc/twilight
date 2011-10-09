@@ -13,13 +13,13 @@ print.twilight <- function(x, ...){
   }
 
   cat("\n")
-  if (is.nan(x$boot.pi0[1])){
+  if (is.nan(x$boot.pi0[[1]])){
     cat("\n Estimated percentage of non-induced genes:\n")
     a <- x$pi0
     names(a) <- "pi0"
     print(a)
   }
-  if (!is.nan(x$boot.pi0[1])){
+  if (!is.nan(x$boot.pi0[[1]])){
     cat("\n Bootstrap estimate of percentage of non-induced")
     cat("\n genes with lower and upper ",x$boot.ci*100,"% CI:\n",sep="")
     print(x$boot.pi0)

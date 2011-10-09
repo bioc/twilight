@@ -19,11 +19,11 @@ void corsingle(double *vector, double *matrix, int *ngene, int *nsample, double 
   double *ex0, *ex1, *ex20, *ex21, *exboth;
   int i, j;
 
-  if ((ex0=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((exboth=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  ex0=Calloc(1,double);
+  ex1=Calloc(*ngene,double);
+  ex20=Calloc(1,double);
+  ex21=Calloc(*ngene,double);
+  exboth=Calloc(*ngene,double);
 
   /* compute first and second moments */
   for (i=0; i<*nsample; i++){
@@ -55,14 +55,14 @@ void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsamp
   double *ex0, *ex1, *ex20, *ex21, *exboth, *stat, *dstat;
   int i, j, k, *indx;
 
-  if ((ex0=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((exboth=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((indx=calloc((*nperm)*(*ngene),sizeof(int)))==0) {printf("Error, could not allocate memory");}
-  if ((dstat=calloc((*nperm)*(*ngene),sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  ex0=Calloc(1,double);
+  ex1=Calloc(*ngene,double);
+  ex20=Calloc(1,double);
+  ex21=Calloc(*ngene,double);
+  exboth=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
+  indx=Calloc((*nperm)*(*ngene),int);
+  dstat=Calloc((*nperm)*(*ngene),double);
 
 
   for (k=0; k<*nperm; k++){
@@ -142,12 +142,12 @@ void corci(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsample
   double *ex0, *ex1, *ex20, *ex21, *exboth, *stat;
   int i, j, k;
 
-  if ((ex0=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((exboth=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  ex0=Calloc(1,double);
+  ex1=Calloc(*ngene,double);
+  ex20=Calloc(1,double);
+  ex21=Calloc(*ngene,double);
+  exboth=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
 
   for (k=0; k<*nperm; k++){
 

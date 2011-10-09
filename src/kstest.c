@@ -22,7 +22,7 @@ int* indexx(int n, double *a)
   int *indx;
   int i;
 
-  if ((indx=malloc(sizeof(int)*n))==0) {printf("Error, could not allocate memory");}
+  indx=Calloc(n, int);
 
   for (i=0; i<n; i++){
     a[i]=fabs(a[i]);
@@ -52,10 +52,10 @@ double* kolmogoroff(double *a, int nrowa, int ncola)
   double *eout;
 
 
-  if ((b=malloc(sizeof(double)*1))==0) {printf("Error, could not allocate memory");}
-  if ((asort=malloc(sizeof(double)*nrowa))==0) {printf("Error, could not allocate memory");}
-  if ((pval=malloc(sizeof(double)*n))==0) {printf("Error, could not allocate memory");}
-  if ((eout=malloc(sizeof(double)*ncola))==0) {printf("Error, could not allocate memory");}
+  b=Calloc(1, double);
+  asort=Calloc(nrowa, double);
+  pval=Calloc(n, double);
+  eout=Calloc(ncola, double);
 
   indx=indexx(n,a);
 
@@ -103,16 +103,16 @@ void unpairedKSTEST(int *id, int *nperm, int *n1, int *n0, double *matrix, int *
   int i, j, k, *test;
   int nrowa=*ngene, ncola=*nperm;
 
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((statall=calloc((*ngene)*(*nperm),sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((test=calloc(1,sizeof(int)))==0) {printf("Error, could not allocate memory");}
+  ex1=Calloc(*ngene,double);
+  ex0=Calloc(*ngene,double);
+  ex21=Calloc(*ngene,double);
+  ex20=Calloc(*ngene,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  ssort=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
+  statall=Calloc((*ngene)*(*nperm),double);
+  test=Calloc(1,int);
 
 
   for (k=0; k<*nperm; k++){
@@ -230,13 +230,13 @@ void pairedKSTEST(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
   int i, j, k;
   int nrowa=*ngene, ncola=*nperm;
 
-  if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((statall=calloc((*ngene)*(*nperm),sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  diff=Calloc(*n1,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  ssort=Calloc(*ngene,double);
+  ex2=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
+  statall=Calloc((*ngene)*(*nperm),double);
 
 
   for (k=0; k<*nperm; k++){
@@ -342,14 +342,14 @@ void correlationKSTEST(double *vecperm, int *nperm, double *matrix, int *ngene, 
   int i, j, k;
   int nrowa=*ngene, ncola=*nperm;
 
-  if ((ex0=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((exboth=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((statall=calloc((*ngene)*(*nperm),sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  
+  ex0=Calloc(1,double);
+  ex1=Calloc(*ngene,double);
+  ex20=Calloc(1,double);
+  ex21=Calloc(*ngene,double);
+  exboth=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
+  statall=Calloc((*ngene)*(*nperm),double);
+
 
   for (k=0; k<*nperm; k++){
 

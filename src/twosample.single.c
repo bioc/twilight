@@ -19,13 +19,13 @@ void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsampl
   double *ex1, *ex0, *ex21, *ex20, *r, *s, *ssort;
   int i, j;
 
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  ex1=Calloc(*ngene,double);
+  ex0=Calloc(*ngene,double);
+  ex21=Calloc(*ngene,double);
+  ex20=Calloc(*ngene,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  ssort=Calloc(*ngene,double);
   
 
   /* compute first and second moment to calculate mean and variance */
@@ -107,11 +107,11 @@ void paired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample,
   double *diff;
   int i, j;
 
-  if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ssort=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  diff=Calloc(*n1,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  ssort=Calloc(*ngene,double);
+  ex2=Calloc(*ngene,double);
 
   for (j=0; j<*ngene; j++){
     

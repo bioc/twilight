@@ -18,13 +18,13 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
   double *ex1, *ex0, *ex21, *ex20, *r, *s, *stat;
   int i, j, k;
     
-  if ((ex1=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex0=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex21=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex20=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  ex1=Calloc(*ngene,double);
+  ex0=Calloc(*ngene,double);
+  ex21=Calloc(*ngene,double);
+  ex20=Calloc(*ngene,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
 
 
   for (k=0; k<*nperm; k++){
@@ -115,13 +115,13 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
   double *g1, *g0, *diff;
   int i, j, k1, k0, k;
 
-  if ((g1=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((g0=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((diff=calloc(*n1,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((r=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((s=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((ex2=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
-  if ((stat=calloc(*ngene,sizeof(double)))==0) {printf("Error, could not allocate memory");}
+  g1=Calloc(*n1,double);
+  g0=Calloc(*n1,double);
+  diff=Calloc(*n1,double);
+  r=Calloc(*ngene,double);
+  s=Calloc(*ngene,double);
+  ex2=Calloc(*ngene,double);
+  stat=Calloc(*ngene,double);
 
   for (k=0; k<*nperm; k++){
 

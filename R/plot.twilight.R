@@ -153,7 +153,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk5 <- function(yin,leg,...){
-    if (is.nan(yin$effect[1])){
+    if (is.nan(yin$effect[[1]])){
       stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
@@ -190,7 +190,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk6 <- function(yin){
-    if (is.nan(yin$effect[1])){
+    if (is.nan(yin$effect[[1]])){
       stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
