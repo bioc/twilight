@@ -97,13 +97,13 @@ void unpairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
     
   }
   
-  free(ex1);
-  free(ex0);
-  free(ex21);
-  free(ex20);
-  free(r);
-  free(s);
-  free(stat);
+  Free(ex1);
+  Free(ex0);
+  Free(ex21);
+  Free(ex20);
+  Free(r);
+  Free(s);
+  Free(stat);
 }
 
 
@@ -218,12 +218,12 @@ void pairedci(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngene,
     
   }
 
-  free(g1);
-  free(g0);
-  free(diff);
-  free(r);
-  free(s);
-  free(ex2);
-  free(stat);
+  Free(g1);
+  Free(g0);
+  Free(diff);
+  Free(r);
+  Free(s);
+  Free(ex2);
+  Free(stat);
 }
 

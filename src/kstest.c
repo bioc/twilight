@@ -84,10 +84,10 @@ double* kolmogoroff(double *a, int nrowa, int ncola)
     }    
   }
 
-  free(b); 
-  free(asort);  
-  free(pval);  
-  free(indx);  
+  Free(b); 
+  Free(asort);  
+  Free(pval);  
+  Free(indx);  
 
   return eout;
 
@@ -207,17 +207,17 @@ void unpairedKSTEST(int *id, int *nperm, int *n1, int *n0, double *matrix, int *
     f[k]=e[k];
   }
 
-  free(ex1);
-  free(ex0);
-  free(ex21);
-  free(ex20);
-  free(r);
-  free(s);
-  free(ssort);
-  free(stat);
-  free(statall);
-  free(test);
-  free(e);
+  Free(ex1);
+  Free(ex0);
+  Free(ex21);
+  Free(ex20);
+  Free(r);
+  Free(s);
+  Free(ssort);
+  Free(stat);
+  Free(statall);
+  Free(test);
+  Free(e);
 }
 
 
@@ -321,14 +321,14 @@ void pairedKSTEST(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
   }
   
 
-  free(diff);
-  free(r);
-  free(s);
-  free(ssort);
-  free(ex2);
-  free(stat);
-  free(statall);
-  free(e);
+  Free(diff);
+  Free(r);
+  Free(s);
+  Free(ssort);
+  Free(ex2);
+  Free(stat);
+  Free(statall);
+  Free(e);
 }
 
 
@@ -394,12 +394,12 @@ void correlationKSTEST(double *vecperm, int *nperm, double *matrix, int *ngene, 
   }
 
     
-  free(ex0);
-  free(ex1);
-  free(ex20);
-  free(ex21);
-  free(exboth);
-  free(stat);
-  free(statall);
-  free(e);
+  Free(ex0);
+  Free(ex1);
+  Free(ex20);
+  Free(ex21);
+  Free(exboth);
+  Free(stat);
+  Free(statall);
+  Free(e);
 }

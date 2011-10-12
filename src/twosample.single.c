@@ -89,13 +89,13 @@ void unpaired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsampl
   
   fudge[0]=*s0;
 
-  free(ex1);
-  free(ex0);
-  free(ex21);
-  free(ex20);
-  free(r);
-  free(s);
-  free(ssort);
+  Free(ex1);
+  Free(ex0);
+  Free(ex21);
+  Free(ex20);
+  Free(r);
+  Free(s);
+  Free(ssort);
 }
 
 
@@ -166,9 +166,9 @@ void paired(int *id, int *n1, int *n0, double *matrix, int *ngene, int *nsample,
 
   fudge[0]=*s0;
 
-  free(diff);
-  free(r);
-  free(s);
-  free(ssort);
-  free(ex2);
+  Free(diff);
+  Free(r);
+  Free(s);
+  Free(ssort);
+  Free(ex2);
 }

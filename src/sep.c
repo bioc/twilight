@@ -28,7 +28,7 @@ double empirical(double *a, int na)
 
   }
 
-  free(b);
+  Free(b);
 
   return e;
 }
@@ -100,7 +100,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
 	  
 	  nyin=0;
 	  j=0;
-	  free(yin);
+	  Free(yin);
 	}
     }
 
@@ -146,7 +146,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
       
       nyin=0;
       j=0;
-      free(yin);
+      Free(yin);
     } 
   
   
@@ -156,7 +156,7 @@ void sep(double *xin, int *nxin, double *lambda, int *xout, double *funout)
     }
   
   
-  free(ix);
-  free(objfunc);
+  Free(ix);
+  Free(objfunc);
  
 }

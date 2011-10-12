@@ -124,16 +124,16 @@ void unpairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ng
     f[j]=f[j]/((*nperm)*(*ngene));
   }
   
-  free(ex1);
-  free(ex0);
-  free(ex21);
-  free(ex20);
-  free(r);
-  free(s);
-  free(stat);
-  free(test);
-  free(dstat);
-  free(indx);
+  Free(ex1);
+  Free(ex0);
+  Free(ex21);
+  Free(ex20);
+  Free(r);
+  Free(s);
+  Free(stat);
+  Free(test);
+  Free(dstat);
+  Free(indx);
 }
 
 
@@ -237,12 +237,12 @@ void pairedperm(int *id, int *nperm, int *n1, int *n0, double *matrix, int *ngen
     f[j]=f[j]/((*nperm)*(*ngene));
   }
 
-  free(diff);
-  free(r);
-  free(s);
-  free(ex2);
-  free(stat);
-  free(dstat);
-  free(indx);
+  Free(diff);
+  Free(r);
+  Free(s);
+  Free(ex2);
+  Free(stat);
+  Free(dstat);
+  Free(indx);
 }
 

@@ -41,11 +41,11 @@ void corsingle(double *vector, double *matrix, int *ngene, int *nsample, double 
     e[j]=(exboth[j]-ex0[0]*ex1[j]/(*nsample))/sqrt((ex20[0]-ex0[0]*ex0[0]/(*nsample))*(ex21[j]-ex1[j]*ex1[j]/(*nsample)));
   }
   
-  free(ex0);
-  free(ex1);
-  free(ex20);
-  free(ex21);
-  free(exboth);
+  Free(ex0);
+  Free(ex1);
+  Free(ex20);
+  Free(ex21);
+  Free(exboth);
 }
 
 
@@ -125,14 +125,14 @@ void corperm(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsamp
     f[j]=f[j]/((*nperm)*(*ngene));
   }
     
-  free(ex0);
-  free(ex1);
-  free(ex20);
-  free(ex21);
-  free(exboth);
-  free(stat);
-  free(dstat);
-  free(indx);
+  Free(ex0);
+  Free(ex1);
+  Free(ex20);
+  Free(ex21);
+  Free(exboth);
+  Free(stat);
+  Free(dstat);
+  Free(indx);
 }
 
 
@@ -194,12 +194,12 @@ void corci(double *vecperm, int *nperm, double *matrix, int *ngene, int *nsample
   }
 
     
-  free(ex0);
-  free(ex1);
-  free(ex20);
-  free(ex21);
-  free(exboth);
-  free(stat);
+  Free(ex0);
+  Free(ex1);
+  Free(ex20);
+  Free(ex21);
+  Free(exboth);
+  Free(stat);
 }
 
 
