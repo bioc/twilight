@@ -49,7 +49,7 @@ twilight.pval <- function(xin,yin,method="fc",paired=FALSE,B=1000,yperm=NULL,bal
 ### "call":      String of function arguments.
 ### "quant.ci":  Passes "quant.ci".
 ###
-### The remaining slots are left free for function "twilight".
+### The remaining slots are left empty for function "twilight".
   
   ### extract data matrix if class(xin) is an expression set
   xin <- twilight.getmatrix(xin)
