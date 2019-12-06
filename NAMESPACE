@@ -11,3 +11,6 @@ export(plot.twilight, print.twilight, twilight, twilight.combi,
        twilight.filtering, twilight.getlambda, twilight.getmatrix,
        twilight.permute.pair, twilight.permute.unpair, twilight.pval,
        twilight.teststat)
+
+S3method(plot, twilight)
+S3method(print, twilight)
