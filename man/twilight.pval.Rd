@@ -44,7 +44,7 @@ Additional output consists of
   \code{quant.ci} \tab Passes \code{quant.ci} for plotting. \cr
 }
 
-The remaining slots are left free for function \code{twilight}.
+The remaining slots are left empty for function \code{twilight}.
 }
 \references{
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
@@ -57,7 +57,7 @@ Storey JD and Tibshirani R (2003): Statistical significance for genomewide studi
 
 Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
 }
-\author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
+\author{ Stefanie Scheid }
 \seealso{ \code{\link{twilight}}, \code{\link{plot.twilight}}, \code{\link{twilight.combi}}, \code{\link{twilight.filtering}}, \code{\link{expval}}, \code{\link{twilight.teststat}} }
 
 \examples{
