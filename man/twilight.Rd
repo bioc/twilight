@@ -42,7 +42,7 @@ Additional output consists of
   \code{effect} \tab Histogram of effect size distributions averaged over 10 runs of SEP. \cr
 }
 
-If \code{xin} is of class \code{twilight}, the remaining slots are filled with corresponding input values. If \code{xin} is not of class \code{twilight}, these slots remain free.
+If \code{xin} is of class \code{twilight}, the remaining slots are filled with corresponding input values. If \code{xin} is not of class \code{twilight}, these slots remain empty.
 }
 \references{
 Scheid S and Spang R (2004): A stochastic downhill search algorithm for estimating the local false discovery rate, \emph{IEEE TCBB} \bold{1(3)}, 98--108.
@@ -53,7 +53,7 @@ Scheid S and Spang R (2006): Permutation filtering: A novel concept for signific
 
 Storey JD and Tibshirani R (2003): Statistical significance for genomewide studies, \emph{PNAS} \bold{100(16)}, 9440--9445.
 }
-\author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
+\author{ Stefanie Scheid }
 \seealso{ \code{\link{twilight.pval}}, \code{\link{plot.twilight}}, \code{\link{exfdr}} }
 
 \examples{
