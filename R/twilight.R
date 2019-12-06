@@ -35,7 +35,7 @@ twilight <- function(xin,lambda=NULL,B=0,boot.ci=0.95,clus=NULL,verbose=TRUE){
 ###
 ### If "xin" is of class "twilight", the remaining slots are filled
 ### with corresponding input values. If "xin" is not of class 
-### "twilight", these slots remain free.
+### "twilight", these slots remain empty.
 
   ### Preliminary checks.
   if (class(xin)=="twilight"){
