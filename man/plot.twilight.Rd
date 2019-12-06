@@ -33,7 +33,7 @@ Scheid S and Spang R (2006): Permutation filtering: A novel concept for signific
 
 Tusher VG, Tibshirani R and Chu G (2001): Significance analysis of mircroarrays applied to the ionizing response, \emph{PNAS} \bold{98(9)}, 5116--5121.
  }
-\author{ Stefanie Scheid \url{http://www.molgen.mpg.de/~scheid} }
+\author{ Stefanie Scheid }
 \seealso{ \code{\link{twilight.pval}}, \code{\link{twilight}} }
 \examples{
 ### contains a twilight object created by function twilight
