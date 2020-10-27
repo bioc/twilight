@@ -1,5 +1,5 @@
 Package: twilight
-Version: 1.66.0
+Version: 1.67.0
 Title: Estimation of local false discovery rate
 Author: Stefanie Scheid <stefanie.scheid@gmx.de>
 Description: In a typical microarray setting with gene expression data
