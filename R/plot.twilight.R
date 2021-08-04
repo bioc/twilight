@@ -27,7 +27,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk0 <- function(yin,kol,leg,...){
-    if (is.nan(yin$result$fdr[1])){
+    if (all(is.nan(yin$result$fdr[1]),na.rm=FALSE)){
       par(mfrow=c(1,2),mar=c(4,4,2,2)+0.1)
       funk1(x,kol,leg,...)
       funk2(x,...)      
@@ -44,7 +44,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
   
   funk1 <- function(yin,kol,leg,...){
-    if (is.nan(yin$result$observed[1])){
+    if (all(is.nan(yin$result$observed[1]),na.rm=FALSE)){
       stop("The input object must contain observed and expected test scores.\n Choose 'qvalues' or 'fdr' instead.\n")
     }
 
@@ -94,7 +94,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk3 <- function(yin,kol,leg,...){
-    if (is.nan(yin$result$fdr[1])){
+    if (all(is.nan(yin$result$fdr[1]),na.rm=FALSE)){
       stop("The input object must contain local FDR values.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
@@ -137,7 +137,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk4 <- function(yin,...){
-    if (is.nan(yin$result$fdr[1])){
+    if (all(is.nan(yin$result$fdr[1]),na.rm=FALSE)){
       stop("The input object must contain local FDR values.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
@@ -153,7 +153,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk5 <- function(yin,leg,...){
-    if (is.nan(yin$effect[[1]])){
+    if (all(is.nan(yin$effect[[1]]),na.rm=FALSE)){
       stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
@@ -190,7 +190,7 @@ plot.twilight <- function(x, which=NULL, grayscale=FALSE, legend=TRUE, ...){
 
 
   funk6 <- function(yin){
-    if (is.nan(yin$effect[[1]])){
+    if (all(is.nan(yin$effect[[1]]),na.rm=FALSE)){
       stop("The input object must contain effect size frequencies.\n Choose 'scores' or 'qvalues' instead or run twilight.\n")
     }
 
